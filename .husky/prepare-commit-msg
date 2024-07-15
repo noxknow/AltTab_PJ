@@ -14,8 +14,8 @@ IFS='/' read -ra BRANCH_PARTS <<< "$BRANCH_NAME"
 LAST_PART="${BRANCH_PARTS[-1]}"  # 브랜치명의 마지막 부분 가져오기
 
 # 정규 표현식을 사용하여 브랜치의 마지막 부분이 "S10P22A710-숫자" 형식을 따르는지 확인
-if ! echo "$LAST_PART" | grep -qE '^S11P11A309-[0-9]+$'; then
-  echo "작업형태/팀/작업명/S11P11A309-숫자 형식의 브랜치명을 사용해주세요."
+if ! echo "$LAST_PART" | grep -qE '^S11P12A309-[0-9]+$'; then
+  echo "작업형태/팀/작업명/S11P12A309-숫자 형식의 브랜치명을 사용해주세요."
   exit 1
 fi
 
