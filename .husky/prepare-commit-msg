@@ -24,5 +24,5 @@ JIRA_ID="$LAST_PART"
 
 # 커밋 메시지에 JIRA 이슈 번호가 없는 경우에만 추가
 if ! grep -q "$JIRA_ID" "$1"; then
-  sed -i.bak -e "\$s/$/ $JIRA_ID/" "$1"
+  sed -i.bak -e "\$s/$/ #$JIRA_ID/" "$1"
 fi
