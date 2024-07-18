@@ -1,7 +1,16 @@
+import { RouterProvider } from 'react-router-dom';
+
+import { useRouter } from './hooks/useRouter';
 import './App.css';
 
 function App() {
-  return <div></div>;
+  const router = useRouter();
+
+  return (
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;
