@@ -1,0 +1,49 @@
+.profile_card {
+  display: flex;
+  flex-direction: row;
+  width: 29rem;
+  height: 17rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.profile_card_left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.profile_card_right {
+  height: 4rem;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 3rem;
+  right: 8rem;
+  justify-content: space-between;
+}
+
+.profile_study {
+  color: #6941c6;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.profile_detail {
+  color: #667085;
+  font-size: 1.4rem;
+}
+
+.profile_image {
+  width: 8rem;
+  height: 8rem;
+  border-radius: 50%;
+}
+
+.profile_name {
+  font-size: 1.4rem;
+  font-weight: bold;
+}
