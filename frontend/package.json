@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "classnames": "^2.5.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.25.1"
@@ -26,13 +27,13 @@
     "eslint": "^8.57.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
-    "eslint-plugin-dependencies": "^2.5.0",
-    "eslint-plugin-react": "^7.34.4",
-    "eslint-plugin-sort-exports": "^0.9.1",
     "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-dependencies": "^2.5.0",
     "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-react": "^7.34.4",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "eslint-plugin-sort-exports": "^0.9.1",
     "prettier": "3.3.3",
     "sass": "^1.77.8",
     "typescript": "^5.5.3",
