@@ -32,6 +32,10 @@
 
 .modalButton {
   padding: 1.2rem;
+  border-radius: 4px;
+  &:hover {
+    background-color: $gray;
+  }
 }
 
 .toggleButton {
