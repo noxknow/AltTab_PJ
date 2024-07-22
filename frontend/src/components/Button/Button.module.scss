@@ -8,6 +8,7 @@
   padding:0.8rem;
   border-radius: 0.5rem;
   gap: 1rem;
+  justify-content: center;
 }
 
 .black {
@@ -34,5 +35,11 @@
 
 .small {
   height: 3.8rem;
+  font-size: 1.6rem;
+}
+
+.long{
+  height: auto;
+  width: 100%;
   font-size: 1.6rem;
 }

@@ -4,7 +4,7 @@ import styles from './Button.module.scss';
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   color: 'green' | 'black';
   fill: boolean;
-  size: 'large' | 'small';
+  size: 'large' | 'small' | 'long';
 };
 
 export function Button({ color, fill, size, ...rest }: ButtonProps) {
@@ -15,6 +15,7 @@ export function Button({ color, fill, size, ...rest }: ButtonProps) {
     [styles.empty]: !fill,
     [styles.large]: size === 'large',
     [styles.small]: size === 'small',
+    [styles.long]: size === 'long',
   });
 
   return (
