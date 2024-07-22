@@ -2,7 +2,12 @@
 @import '../../styles/font.module.scss';
 
 .container {
+  position: relative;
   margin: 0 auto;
+}
+
+.compilerContainer {
+  position: relative;
   padding: 2.4rem;
 }
 

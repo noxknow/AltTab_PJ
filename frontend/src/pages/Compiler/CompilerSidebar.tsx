@@ -7,7 +7,11 @@ import BookSVG from '@/assets/icons/book.svg?react';
 import BoardSVG from '@/assets/icons/board.svg?react';
 import styles from './CompilerSidebar.module.scss';
 
-export function CompilerSidebar() {
+type ModalProps = {
+  handleModal: () => void;
+};
+
+export function CompilerSidebar({ handleModal }: ModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const sidebar = classNames(styles.sidebar, {
     [styles.openSidebar]: isOpen,
@@ -17,9 +21,9 @@ export function CompilerSidebar() {
   });
   const modalButton = classNames(styles.button, styles.modalButton);
 
-  function handleToggleClick() {
+  const handleToggleClick = () => {
     setIsOpen(!isOpen);
-  }
+  };
 
   return (
     <div className={sidebar}>
@@ -28,13 +32,13 @@ export function CompilerSidebar() {
       </button>
       <div className={styles.buttonContainer}>
         <div className={styles.modalButtonContainer}>
-          <button className={modalButton}>
+          <button className={modalButton} onClick={handleModal}>
             <CodeSVG width={24} height={24} />
           </button>
-          <button className={modalButton}>
+          <button className={modalButton} onClick={handleModal}>
             <BookSVG width={24} height={24} />
           </button>
-          <button className={modalButton}>
+          <button className={modalButton} onClick={handleModal}>
             <BoardSVG width={24} height={24} />
           </button>
         </div>
