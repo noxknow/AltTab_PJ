@@ -5,7 +5,7 @@
   @include poppins-semibold;
   display: flex;
   align-items: center;
-  padding: 0.8rem;
+  padding:0.8rem;
   border-radius: 0.5rem;
   gap: 1rem;
 }
@@ -28,7 +28,7 @@
 }
 
 .large {
-  height: 6.6rem;
+  height: auto;
   font-size: 2.4rem;
 }
 
