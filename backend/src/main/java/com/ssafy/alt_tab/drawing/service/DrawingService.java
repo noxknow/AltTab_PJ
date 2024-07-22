@@ -1,5 +1,6 @@
 package com.ssafy.alt_tab.drawing.service;
 
+import com.ssafy.alt_tab.drawing.dto.DrawingRequestDto;
 import com.ssafy.alt_tab.drawing.dto.DrawingResponseDto;
 import com.ssafy.alt_tab.drawing.entity.Drawing;
 import com.ssafy.alt_tab.drawing.repository.DrawingRepository;
@@ -13,10 +14,10 @@ public class DrawingService {
 
     private final DrawingRepository drawingRepository;
 
-    public ResponseEntity<String> saveDrawing(String drawingData) {
+    public ResponseEntity<String> saveDrawing(DrawingRequestDto drawingRequestDto) {
 
         Drawing drawing = Drawing.builder()
-                .drawingData(drawingData)
+                .drawingData(drawingRequestDto.getDrawingData())
                 .build();
 
         drawingRepository.save(drawing);
