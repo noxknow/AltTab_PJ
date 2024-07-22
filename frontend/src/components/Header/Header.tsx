@@ -19,18 +19,24 @@ export function Header() {
   }
 
   return (
-    <>
-      <div className={styles.header}>
+    <div className={styles.header}>
+      <div className={`${styles.header_item} ${styles.left_item}`}>
         <HamburgerSVG width={30} height={30} />
+      </div>
+
+      <div className={`${styles.header_item} ${styles.middle_item}`}>
         <NavLink to="/">
           <LogoSVG width={148} height={70} />
         </NavLink>
-        {isLoggedIn ? (
-          <div className={styles.profile}>
-            <Alarm />
-            <UserSVG width={40} height={40} />
-          </div>
-        ) : (
+      </div>
+
+      {isLoggedIn ? (
+        <div className={`${styles.profile} ${styles.header_item}`}>
+          <Alarm />
+          <UserSVG width={40} height={40} />
+        </div>
+      ) : (
+        <div className={`${styles.header_item} ${styles.right_item}`}>
           <Button
             color="black"
             fill={false}
@@ -40,8 +46,8 @@ export function Header() {
             <GithubSVG />
             시작하기
           </Button>
-        )}
-      </div>
-    </>
+        </div>
+      )}
+    </div>
   );
 }
