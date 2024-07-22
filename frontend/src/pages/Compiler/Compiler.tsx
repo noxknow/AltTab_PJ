@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { LineNumber } from './LineNumber';
+import { CompilerSidebar } from './CompilerSidebar';
+
 import styles from './Compiler.module.scss';
 
 export function Compiler() {
@@ -13,6 +15,7 @@ export function Compiler() {
 
   return (
     <div className={styles.container}>
+      <CompilerSidebar />
       <div className={styles.compilerTitle}>Code Snippet</div>
       <div className={styles.compiler}>
         <div className={styles.compilerBody}>
