@@ -1,0 +1,58 @@
+@import '../../styles/theme.module.scss';
+
+.sidebar {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 20rem;
+  right: 0;
+  z-index: 100;
+  transform: translate(7.4rem, 0);
+  transition: all 0.5s ease-in-out;
+}
+
+.button {
+  background-color: $white;
+  border: none;
+}
+
+.buttonContainer {
+  padding: 1.6rem 1.2rem;
+  background-color: $white;
+  border: 1px solid $gray;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.modalButtonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.modalButton {
+  padding: 1.2rem;
+  border-radius: 4px;
+  &:hover {
+    background-color: $gray;
+  }
+}
+
+.toggleButton {
+  padding: 1.6rem 0.8rem;
+  border: 1px solid $gray;
+  border-right: none;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.openSidebar {
+  transform: translate(0, 0);
+  transition: all 0.5s ease-in-out;
+}
+
+.flip {
+  svg {
+    transform: scale(-1, 1);
+  }
+}
