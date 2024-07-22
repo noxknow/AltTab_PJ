@@ -1,5 +1,6 @@
 package com.ssafy.alt_tab.drawing.controller;
 
+import com.ssafy.alt_tab.drawing.dto.DrawingResponseDto;
 import com.ssafy.alt_tab.drawing.service.DrawingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,5 +17,11 @@ public class DrawingController {
     public ResponseEntity<String> saveDrawing(@RequestBody String drawingData) {
 
         return drawingService.saveDrawing(drawingData);
+    }
+
+    @GetMapping("/load")
+    public ResponseEntity<DrawingResponseDto> loadDrawing() {
+
+        return drawingService.loadDrawing();
     }
 }

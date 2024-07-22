@@ -1,5 +1,6 @@
 package com.ssafy.alt_tab.drawing.service;
 
+import com.ssafy.alt_tab.drawing.dto.DrawingResponseDto;
 import com.ssafy.alt_tab.drawing.entity.Drawing;
 import com.ssafy.alt_tab.drawing.repository.DrawingRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,18 @@ public class DrawingService {
         drawingRepository.save(drawing);
 
         return ResponseEntity.ok().body("save success");
+    }
+
+    public ResponseEntity<DrawingResponseDto> loadDrawing() {
+
+        String drawingData = drawingRepository.findTopByOrderByIdDesc()
+                .map(Drawing::getDrawingData)
+                .orElse("");
+
+        DrawingResponseDto drawingResponseDto = DrawingResponseDto.builder()
+                .drawingData(drawingData)
+                .build();
+
+        return ResponseEntity.ok().body(drawingResponseDto);
     }
 }
