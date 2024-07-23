@@ -5,6 +5,7 @@ import { MainPage } from '@/pages/Main/Main';
 import { NoStudy } from '../pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
 import { StudySetting } from '../pages/StudySetting/StudySetting';
+import CanvasSection from '../pages/Canvas/CanvasSection';
 
 export const useRouter = () =>
   createBrowserRouter([
@@ -26,4 +27,9 @@ export const useRouter = () =>
       element: <Layout />,
       children: [{ index: true, element: <StudySetting /> }],
     },
+    {
+      path: '/test',
+      element: <Layout />,
+      children: [{ index: true, element: <CanvasSection /> }],
+    }
   ]);
