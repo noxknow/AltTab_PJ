@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface DrawingRepository extends JpaRepository<Drawing, Long> {
 
-    Optional<Drawing> findTopByOrderByIdDesc();
+    Optional<Drawing> findTopByOrderByDrawingIdDesc();
 }

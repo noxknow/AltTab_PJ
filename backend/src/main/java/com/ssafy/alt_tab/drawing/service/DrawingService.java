@@ -5,6 +5,13 @@ import com.ssafy.alt_tab.drawing.dto.DrawingResponseDto;
 import com.ssafy.alt_tab.drawing.entity.Drawing;
 import com.ssafy.alt_tab.drawing.repository.DrawingRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RBucket;
+import org.redisson.api.RedissonClient;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,21 +20,29 @@ import org.springframework.stereotype.Service;
 public class DrawingService {
 
     private final DrawingRepository drawingRepository;
+    private final RedissonClient redissonClient;
+    private final RedisTemplate<Object, Object> redisTemplate;
+    private static final String DRAWING_ID_KEY = "drawing:id";
 
     public ResponseEntity<String> saveDrawing(DrawingRequestDto drawingRequestDto) {
+        try {
+            Long id = redisTemplate.opsForValue().increment(DRAWING_ID_KEY, 1);
 
-        Drawing drawing = Drawing.builder()
-                .drawingData(drawingRequestDto.getDrawingData())
-                .build();
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to generate ID");
+            }
 
-        drawingRepository.save(drawing);
+            redisTemplate.opsForValue().set(id.toString(), drawingRequestDto.getDrawingData());
 
-        return ResponseEntity.ok().body("save success");
+            return ResponseEntity.ok().body("save success with ID: " + id);
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save drawing");
+        }
     }
 
     public ResponseEntity<DrawingResponseDto> loadDrawing() {
 
-        String drawingData = drawingRepository.findTopByOrderByIdDesc()
+        String drawingData = drawingRepository.findTopByOrderByDrawingIdDesc()
                 .map(Drawing::getDrawingData)
                 .orElse("");
 
