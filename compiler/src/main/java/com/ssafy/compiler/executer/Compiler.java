@@ -1,6 +1,7 @@
 package com.ssafy.compiler.executer;
 
 import com.ssafy.compiler.dto.CodeExecutionResponseDto;
+import java.net.URISyntaxException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
@@ -40,7 +40,7 @@ public class Compiler {
 
             return runCode(outputStream, errorStream);
         } catch (Exception e) {
-            return CodeExecutionResponseDto.builder().error(e.getMessage()).build();
+            return CodeExecutionResponseDto.builder().errorMessage(e.getMessage()).build();
         }
     }
 
@@ -65,12 +65,16 @@ public class Compiler {
     }
 
     private CodeExecutionResponseDto runCode(ByteArrayOutputStream outputStream, ByteArrayOutputStream errorStream) throws IOException, URISyntaxException, ClassNotFoundException {
-        try (URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{new File("").toURI().toURL()})) {
+        File classDir = new File(".");
+
+        try (URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{classDir.toURI().toURL()})) {
             Class<?> cls = Class.forName("Main", true, classLoader);
             Method method = cls.getMethod("main", String[].class);
 
-            try (PrintStream originalOut = System.out;
-                 PrintStream originalErr = System.err) {
+            PrintStream originalOut = System.out;
+            PrintStream originalErr = System.err;
+
+            try {
                 System.setOut(new PrintStream(outputStream));
                 System.setErr(new PrintStream(errorStream));
 
@@ -81,12 +85,12 @@ public class Compiler {
                     errorStream.write(getStackTrace(targetException).getBytes());
                 } catch (Throwable e) {
                     errorStream.write(getStackTrace(e).getBytes());
-                } finally {
-                    System.setOut(originalOut);
-                    System.setErr(originalErr);
                 }
+            } finally {
+                System.setOut(originalOut);
+                System.setErr(originalErr);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             errorStream.write(e.toString().getBytes());
         }
         return buildResponse(outputStream, errorStream);
@@ -98,7 +102,7 @@ public class Compiler {
         if (error.isEmpty()) {
             return CodeExecutionResponseDto.builder().output(output).build();
         } else {
-            return CodeExecutionResponseDto.builder().error(error).build();
+            return CodeExecutionResponseDto.builder().errorMessage(error).build();
         }
     }
 
