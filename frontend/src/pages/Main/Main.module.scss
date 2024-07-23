@@ -5,14 +5,15 @@
   display: flex;
   flex-direction: row;
   padding: 2rem 0rem 0rem 12rem;
-  justify-content: space-between
+  justify-content: space-between;
+  height: 66rem;
 }
 
 .main_left {
   @include poppins-regular;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .title {
@@ -29,6 +30,7 @@
 }
 
 .image {
+  -webkit-user-drag: none;
   max-width: 57rem;
   max-height: 61rem;
   z-index: -1;

@@ -1,10 +1,10 @@
 package com.ssafy.alt_tab.drawing.service;
 
-import com.ssafy.alt_tab.drawing.dto.DrawingRequestDto;
-import com.ssafy.alt_tab.drawing.dto.DrawingResponseDto;
-import com.ssafy.alt_tab.drawing.entity.Drawing;
-import com.ssafy.alt_tab.drawing.repository.DrawingRepository;
 import lombok.RequiredArgsConstructor;
+import org.redisson.api.RedissonClient;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -12,29 +12,45 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class DrawingService {
 
-    private final DrawingRepository drawingRepository;
+    private final RedissonClient redissonClient;
+    private final RedisTemplate<Object, Object> redisTemplate;
+    private static final String DRAWING_ID_KEY = "drawing:id";
+    private static final String LATEST_DRAWING_ID_KEY = "drawing:latest";
 
-    public ResponseEntity<String> saveDrawing(DrawingRequestDto drawingRequestDto) {
+    public ResponseEntity<String> saveDrawing(String drawingData) {
+        try {
+            Long id = redisTemplate.opsForValue().increment(DRAWING_ID_KEY, 1);
 
-        Drawing drawing = Drawing.builder()
-                .drawingData(drawingRequestDto.getDrawingData())
-                .build();
+            if (id == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to generate ID");
+            }
 
-        drawingRepository.save(drawing);
+            redisTemplate.opsForValue().set(id.toString(), drawingData);
+            redisTemplate.opsForValue().set(LATEST_DRAWING_ID_KEY, id.toString());
 
-        return ResponseEntity.ok().body("save success");
+            return ResponseEntity.ok().body("save success with ID: " + id);
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to save drawing");
+        }
     }
 
-    public ResponseEntity<DrawingResponseDto> loadDrawing() {
+    public ResponseEntity<String> loadLatestDrawing() {
+        try {
+            String latestId = (String) redisTemplate.opsForValue().get(LATEST_DRAWING_ID_KEY);
 
-        String drawingData = drawingRepository.findTopByOrderByIdDesc()
-                .map(Drawing::getDrawingData)
-                .orElse("");
+            if (latestId == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No drawings found");
+            }
 
-        DrawingResponseDto drawingResponseDto = DrawingResponseDto.builder()
-                .drawingData(drawingData)
-                .build();
+            String drawingData = (String) redisTemplate.opsForValue().get(latestId);
 
-        return ResponseEntity.ok().body(drawingResponseDto);
+            if (drawingData == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Drawing not found");
+            }
+
+            return ResponseEntity.ok().body(drawingData);
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to load drawing");
+        }
     }
 }

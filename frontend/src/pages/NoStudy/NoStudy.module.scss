@@ -1,0 +1,28 @@
+@import '../../styles/theme.module.scss';
+@import '../../styles/font.module.scss';
+
+.main {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  padding: 7rem 0rem 0rem 0rem;
+  justify-content: space-between;
+  align-items: center;
+  height: 66rem;
+}
+
+.title {
+  font-size: 5.4rem;
+  font-weight: bold;
+}
+
+.comment {
+  font-size: 1.5rem;
+  font-weight: lighter;
+}
+
+.image {
+  -webkit-user-drag: none;
+  max-width: 75rem;
+  max-height: 56rem;
+}

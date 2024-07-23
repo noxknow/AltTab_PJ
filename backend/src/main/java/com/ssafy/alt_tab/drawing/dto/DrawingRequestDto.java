@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DrawingRequestDto {
-
-    private Long id;
+    private Long drawingId;
     private String drawingData;
 }
