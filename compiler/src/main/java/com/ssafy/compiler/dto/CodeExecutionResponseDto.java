@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CodeExecutionResponseDto {
     private String output;
-    private String error;
+    private String errorMessage;
 }
