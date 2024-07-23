@@ -1,4 +1,4 @@
-package com.ssafy.compiler.dto;
+package com.ssafy.alt_tab.compiler.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CodeExecutionResponseDto {
+
     private String output;
     private String errorMessage;
 }
