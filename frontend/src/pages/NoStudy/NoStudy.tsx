@@ -1,5 +1,6 @@
 import { Button } from '../../components/Button/Button';
 import styles from './NoStudy.module.scss';
+import MAIN_IMAGE from '@/assets/images/NoStudy.png';
 
 export function NoStudy() {
   return (
@@ -16,7 +17,7 @@ export function NoStudy() {
       <div>
         <img
           className={styles.image}
-          src="src/assets/images/NoStudy.png"
+          src={MAIN_IMAGE}
           alt="No Image"
         />
       </div>
