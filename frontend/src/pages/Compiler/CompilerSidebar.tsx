@@ -7,7 +7,6 @@ import BookSVG from '@/assets/icons/book.svg?react';
 import BoardSVG from '@/assets/icons/board.svg?react';
 
 import { ProblemModal } from './ProblemModal/ProblemModal';
-// import { RunCodeModal } from './RunCodeModal/RunCodeModal';
 import { SolutionModal } from './SolutionModal/SolutionModal';
 import { CanvasModal } from './CanvasModal/CanvasModal';
 import styles from './CompilerSidebar.module.scss';
