@@ -1,6 +1,7 @@
 import { CommunityProfile } from '@/components/CommunityProfile/CommunityProfile';
 import styles from './Main.module.scss';
-import { Button } from '../../components/Button/Button';
+import { Button } from '@/components/Button/Button';
+import MAIN_IMAGE from '@/assets/images/LandingPage.png';
 
 export function MainPage() {
   return (
@@ -32,7 +33,7 @@ export function MainPage() {
       <div className={styles.main_right}>
         <img
           className={styles.image}
-          src="src/assets/images/LandingPage.png"
+          src={MAIN_IMAGE}
           alt="No Image"
         />
       </div>

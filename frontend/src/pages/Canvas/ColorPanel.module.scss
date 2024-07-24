@@ -1,0 +1,52 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  justify-content: space-between;
+  height: 20rem;
+  right: 7rem;
+  bottom: 0rem;
+  padding: 0.8rem;
+  background-color: #e7e6e7;
+  border-radius: 1rem;
+}
+
+.none {
+  display: none;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.color {
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.red {
+  background-color: #df5536;
+}
+
+.yellow {
+  background-color: #f2c947;
+}
+
+.forsythia {
+  background-color: #fcf467;
+}
+
+.lightGreen {
+  background-color: #d3e660;
+}
+
+.blue {
+  background-color: #5099e9;
+}
+
+.black {
+  background-color: #000000;
+}

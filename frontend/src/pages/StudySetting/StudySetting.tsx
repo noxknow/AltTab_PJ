@@ -1,10 +1,10 @@
-import { Button } from '../../components/Button/Button';
+import { Button } from '@/components/Button/Button';
 import { Tool } from '@/components/Tool/Tool';
-import { People } from '../../components/People/People';
-import { Info } from '../../components/Info/Info';
+import { People } from '@/components/People/People';
+import { Info } from '@/components/Info/Info';
 
 import styles from './StudySetting.module.scss';
-import { Check } from '../../components/Check/Check';
+import { Check } from '@/components/Check/Check';
 
 export function StudySetting() {
   return (

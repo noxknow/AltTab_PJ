@@ -1,10 +1,10 @@
 import { createBrowserRouter } from 'react-router-dom';
 
-import { Layout } from '../components/Layout/Layout';
+import { Layout } from '@/components/Layout/Layout';
 import { MainPage } from '@/pages/Main/Main';
-import { NoStudy } from '../pages/NoStudy/NoStudy';
+import { NoStudy } from '@/pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
-import { StudySetting } from '../pages/StudySetting/StudySetting';
+import { StudySetting } from '@/pages/StudySetting/StudySetting';
 
 export const useRouter = () =>
   createBrowserRouter([
