@@ -18,7 +18,7 @@ public class CodeService {
     private final CodeSnippetRepository codeSnippetRepository;
     private CompletableFuture<CodeExecutionResponseDto> futureResponse;
 
-    public Long saveCode(String code){
+    public Long saveCode(String code) {
         CodeSnippet codeSnippet = CodeSnippet.builder().
                 code(code)
                 .build();
@@ -34,7 +34,7 @@ public class CodeService {
     }
 
     @RabbitListener(queues = "code-execution-response-queue")
-    public void receive(CodeExecutionResponseDto response){
+    public void receive(CodeExecutionResponseDto response) {
         futureResponse.complete(response);
     }
 }
