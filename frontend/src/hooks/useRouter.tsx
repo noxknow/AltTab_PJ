@@ -14,16 +14,8 @@ export const useRouter = () =>
       children: [
         { index: true, element: <MainPage /> },
         { path: 'compiler', element: <Compiler /> },
+        { path: 'nostudy', element: <NoStudy /> },
+        { path: 'studysetting', element: <StudySetting /> },
       ],
-    },
-    {
-      path: '/nostudy',
-      element: <Layout />,
-      children: [{ index: true, element: <NoStudy /> }],
-    },
-    {
-      path: '/studysetting',
-      element: <Layout />,
-      children: [{ index: true, element: <StudySetting /> }],
     },
   ]);
