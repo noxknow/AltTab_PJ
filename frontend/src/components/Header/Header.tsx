@@ -21,7 +21,9 @@ export function Header() {
   return (
     <div className={styles.header}>
       <div className={`${styles.header_item} ${styles.left_item}`}>
-        <HamburgerSVG width={30} height={30} />
+        <button className={styles.button}>
+          <HamburgerSVG width={30} height={30} />
+        </button>
       </div>
 
       <div className={`${styles.header_item} ${styles.middle_item}`}>
