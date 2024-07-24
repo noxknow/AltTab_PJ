@@ -21,6 +21,6 @@ public class CompileService {
     @RabbitListener(queues = "code-execution-request-queue")
     @SendTo("code-execution-response-queue")
     public CodeExecutionResponseDto executeCode(CodeExecutionRequestDto request){
-        return compiler.execute(request.getCode());
+        return compiler.execute(request);
     }
 }
