@@ -4,11 +4,13 @@
 .container {
   position: relative;
   margin: 0 auto;
+  height: calc(100vh - 7rem);
 }
 
 .compilerContainer {
   position: relative;
   padding: 2.4rem;
+  height: 100%;
 }
 
 .compiler {
@@ -45,11 +47,11 @@
   overflow: hidden;
 }
 
-.drawButton {
-  position: absolute;
-  bottom: 4rem;
-  right: 4rem;
-}
+// .drawButton {
+//   position: absolute;
+//   bottom: 4rem;
+//   right: 4rem;
+// }
 
 .hidden {
   display: none;
