@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CodeExecutionRequestDto implements Serializable {
+public class CodeExecutionRequestDto{
+    private String input;
     private String code;
 }
