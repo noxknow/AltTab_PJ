@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CodeExecutionRequestDto {
+    private String input;
     private String code;
 }

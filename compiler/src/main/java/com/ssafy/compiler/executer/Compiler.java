@@ -1,6 +1,9 @@
 package com.ssafy.compiler.executer;
 
+import com.ssafy.compiler.dto.CodeExecutionRequestDto;
 import com.ssafy.compiler.dto.CodeExecutionResponseDto;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -24,9 +27,10 @@ import java.util.List;
 public class Compiler {
 
     private String code;
+    private String input;
 
-    public CodeExecutionResponseDto execute(String code) {
-        this.code = code;
+    public CodeExecutionResponseDto execute(CodeExecutionRequestDto request) {
+        setRequest(request);
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
              ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
@@ -73,10 +77,12 @@ public class Compiler {
 
             PrintStream originalOut = System.out;
             PrintStream originalErr = System.err;
+            InputStream originalIn = System.in;
 
             try {
                 System.setOut(new PrintStream(outputStream));
                 System.setErr(new PrintStream(errorStream));
+                System.setIn(new ByteArrayInputStream(input.getBytes()));
 
                 try {
                     method.invoke(null, (Object) new String[]{});
@@ -89,6 +95,7 @@ public class Compiler {
             } finally {
                 System.setOut(originalOut);
                 System.setErr(originalErr);
+                System.setIn(originalIn);
             }
         } catch (Exception e) {
             errorStream.write(e.toString().getBytes());
@@ -115,6 +122,11 @@ public class Compiler {
             }
         }
         return result.toString();
+    }
+
+    private void setRequest(CodeExecutionRequestDto request){
+        this.code = request.getCode();
+        this.input = request.getInput();
     }
 
     static public class JavaSourceFromString extends SimpleJavaFileObject {
