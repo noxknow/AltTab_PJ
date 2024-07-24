@@ -19,9 +19,11 @@ export function Header() {
   }
 
   return (
-    <div className={styles.header}>
+    <header className={styles.header}>
       <div className={`${styles.header_item} ${styles.left_item}`}>
-        <HamburgerSVG width={30} height={30} />
+        <button className={styles.button}>
+          <HamburgerSVG width={30} height={30} />
+        </button>
       </div>
 
       <div className={`${styles.header_item} ${styles.middle_item}`}>
@@ -44,10 +46,10 @@ export function Header() {
             onClick={onClickLogin}
           >
             <GithubSVG />
-            시작하기
+            <div className={styles.login}>시작하기</div>
           </Button>
         </div>
       )}
-    </div>
+    </header>
   );
 }

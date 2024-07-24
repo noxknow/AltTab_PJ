@@ -4,11 +4,13 @@
 .container {
   position: relative;
   margin: 0 auto;
+  height: calc(100vh - 7rem);
 }
 
 .compilerContainer {
   position: relative;
   padding: 2.4rem;
+  height: 100%;
 }
 
 .compiler {
@@ -43,4 +45,13 @@
   line-height: 2.4rem;
   resize: none;
   overflow: hidden;
+}
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.2rem;
+}
+
+.hidden {
+  display: none;
 }

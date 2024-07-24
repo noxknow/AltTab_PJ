@@ -12,6 +12,7 @@
   padding: 1.2rem;
   background-color: $white;
   box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+  z-index: 500;
 }
 .header_item {
   display: flex;
@@ -35,4 +36,13 @@
   align-items: center;
   justify-content: right;
   gap: 1.6rem;
+}
+.button {
+  background-color: transparent;
+  border: none;
+}
+.login {
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 }

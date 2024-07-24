@@ -8,8 +8,8 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function Button({ color, fill, size, ...rest }: ButtonProps) {
-  const { type = 'button', disabled = false, children } = rest;
-  const buttonClass = classNames(styles.button, {
+  const { type = 'button', disabled = false, children, className } = rest;
+  const buttonClass = classNames(className, styles.button, {
     [styles.green]: color === 'green',
     [styles.black]: color === 'black',
     [styles.empty]: !fill,

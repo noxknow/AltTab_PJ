@@ -1,8 +1,16 @@
-.canvas{
-    margin-top: 1rem;
-    width: calc(100%);
-    height: 66rem;
-    position: absolute;
-    left: 0rem;
-    top: 7rem;
+.canvas {
+  width: calc(100%);
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.closeButton {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background-color: transparent;
+  border: none;
+  z-index: 100;
 }
