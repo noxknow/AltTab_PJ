@@ -1,4 +1,4 @@
-import { Button } from '../../components/Button/Button';
+import { Button } from '@/components/Button/Button';
 import styles from './NoStudy.module.scss';
 import MAIN_IMAGE from '@/assets/images/NoStudy.png';
 

@@ -1,6 +1,6 @@
 import { CommunityProfile } from '@/components/CommunityProfile/CommunityProfile';
 import styles from './Main.module.scss';
-import { Button } from '../../components/Button/Button';
+import { Button } from '@/components/Button/Button';
 import MAIN_IMAGE from '@/assets/images/LandingPage.png';
 
 export function MainPage() {
