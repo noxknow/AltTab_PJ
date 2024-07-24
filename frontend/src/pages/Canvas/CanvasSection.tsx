@@ -1,9 +1,14 @@
 import { fabric } from 'fabric';
 import { useEffect, useRef, useState } from 'react';
+import CloseSVG from '@/assets/icons/close.svg?react';
 import Toolbar from './Toolbar';
 import styles from './CanvasSection.module.scss';
 
-const CanvasSection = () => {
+type CanvasProps = {
+  handleCanvas: () => void;
+};
+
+const CanvasSection = ({ handleCanvas }: CanvasProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -86,8 +91,10 @@ const CanvasSection = () => {
 
   return (
     <div className={styles.canvas} ref={canvasContainerRef}>
+      <button className={styles.closeButton} onClick={handleCanvas}>
+        <CloseSVG width={24} height={24} stroke="#F24242" />
+      </button>
       <canvas ref={canvasRef} />
-
       <Toolbar canvas={canvas} />
     </div>
   );

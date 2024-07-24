@@ -6,10 +6,12 @@ import { Modal } from './Modal';
 
 import styles from './Compiler.module.scss';
 import CanvasSection from '@/pages/Canvas/CanvasSection';
+import { Button } from '@/components/Button/Button';
 
 export function Compiler() {
   const [codeText, setCodeText] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [canvasIsOpen, setCanvasIsOpen] = useState(false);
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newCodeText = event.target.value;
@@ -22,6 +24,14 @@ export function Compiler() {
 
   const closeModal = () => {
     setModalIsOpen(false);
+  };
+
+  const openCanvas = () => {
+    setCanvasIsOpen(true);
+  };
+
+  const closeCanvas = () => {
+    setCanvasIsOpen(false);
   };
 
   return (
@@ -40,9 +50,20 @@ export function Compiler() {
               ></textarea>
             </div>
           </div>
+          {!canvasIsOpen && (
+            <Button
+              className={styles.drawButton}
+              color="green"
+              fill={true}
+              size="large"
+              onClick={openCanvas}
+            >
+              Draw
+            </Button>
+          )}
         </div>
       </div>
-      <CanvasSection />
+      {canvasIsOpen && <CanvasSection handleCanvas={closeCanvas} />}
     </div>
   );
 }
