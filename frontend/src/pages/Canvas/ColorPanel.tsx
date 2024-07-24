@@ -3,6 +3,11 @@ import { useEffect, useState } from 'react';
 import { fabric } from 'fabric';
 import styles from './ColorPanel.module.scss';
 
+type ColorPanelProps = {
+  canvas: fabric.Canvas | null;
+  className: string;
+};
+
 type PenColorTypes =
   | 'red'
   | 'yellow'
@@ -20,10 +25,8 @@ const COLOR_CODE = {
   black: '#000000',
 };
 
-const ColorPanel = (props) => {
-  const canvas = props.canvas;
+const ColorPanel = ({ canvas, className }: ColorPanelProps) => {
   const [penColor, setPenColor] = useState<PenColorTypes>('black');
-  const className = props.className;
 
   useEffect(() => {
     if (!(canvas instanceof fabric.Canvas)) return;
