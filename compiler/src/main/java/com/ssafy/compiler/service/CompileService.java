@@ -6,7 +6,6 @@ import com.ssafy.compiler.dto.CodeExecutionResponseDto;
 import com.ssafy.compiler.executer.Compiler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,6 @@ import org.springframework.stereotype.Service;
 public class CompileService {
 
     private final Compiler compiler;
-    private final RabbitTemplate rabbitTemplate;
-
 
     @RabbitListener(queues = "code-execution-request-queue")
     @SendTo("code-execution-response-queue")
