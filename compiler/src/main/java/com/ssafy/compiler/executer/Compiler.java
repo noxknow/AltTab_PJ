@@ -3,23 +3,27 @@ package com.ssafy.compiler.executer;
 import com.ssafy.compiler.dto.CodeExecutionRequestDto;
 import com.ssafy.compiler.dto.CodeExecutionResponseDto;
 import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import javax.tools.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.SimpleJavaFileObject;
+import javax.tools.ToolProvider;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Component
 @NoArgsConstructor
@@ -61,14 +65,15 @@ public class Compiler {
         if (!success) {
             for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
                 if (diagnostic.getSource() != null && diagnostic.getSource().getName().contains("Main")) {
-                    errPrintStream.println(diagnostic.toString());
+                    errPrintStream.println(diagnostic);
                 }
             }
         }
         return success;
     }
 
-    private CodeExecutionResponseDto runCode(ByteArrayOutputStream outputStream, ByteArrayOutputStream errorStream) throws IOException, URISyntaxException, ClassNotFoundException {
+    private CodeExecutionResponseDto runCode(ByteArrayOutputStream outputStream, ByteArrayOutputStream errorStream)
+            throws IOException, URISyntaxException, ClassNotFoundException {
         File classDir = new File(".");
 
         try (URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{classDir.toURI().toURL()})) {
@@ -103,7 +108,8 @@ public class Compiler {
         return buildResponse(outputStream, errorStream);
     }
 
-    private CodeExecutionResponseDto buildResponse(ByteArrayOutputStream outputStream, ByteArrayOutputStream errorStream) {
+    private CodeExecutionResponseDto buildResponse(ByteArrayOutputStream outputStream,
+                                                   ByteArrayOutputStream errorStream) {
         String output = outputStream.toString();
         String error = errorStream.toString();
         if (error.isEmpty()) {
@@ -118,13 +124,13 @@ public class Compiler {
         result.append(throwable.toString()).append("\n");
         for (StackTraceElement element : throwable.getStackTrace()) {
             if (element.getClassName().equals("Main")) {
-                result.append("\tat ").append(element.toString()).append("\n");
+                result.append("\tat ").append(element).append("\n");
             }
         }
         return result.toString();
     }
 
-    private void setRequest(CodeExecutionRequestDto request){
+    private void setRequest(CodeExecutionRequestDto request) {
         this.code = request.getCode();
         this.input = request.getInput();
     }
