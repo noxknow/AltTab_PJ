@@ -34,7 +34,8 @@ public class GithubOAuth2Member implements OAuth2User {
 
     @Override
     public String getName() {
-        return "";
+        return memberDto.getName();
+//        return "";
     }
 
     public String getUsername(){

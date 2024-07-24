@@ -1,5 +1,6 @@
 package com.ssafy.alt_tab.config;
 
+import com.ssafy.alt_tab.jwt.JWTFilter;
 import com.ssafy.alt_tab.jwt.JWTUtil;
 import com.ssafy.alt_tab.member.service.MemberOAuth2Service;
 import com.ssafy.alt_tab.oauth2.SuccessHandler;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -27,15 +29,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-//        http.authorizeHttpRequests(auth -> { auth
-//                        .requestMatchers("/","/login")
-//                            .permitAll() // 누구나 접근할 수 있도록 허용
-////                        .requestMatchers("/admin").hanRole("ADMIN")
-////                        .requestMatchers("/my/**").hanAnyRole("ADMIN","USER")
-//                        .anyRequest().authenticated();
-//                })
-//                .oauth2Login(Customizer.withDefaults()) // OAuth2 로그인 설정을 기본값으로 구성합니다. 이는 OAuth2 로그인에 필요한 기본적인 설정을 자동으로 적용합니다.
-//                .formLogin(Customizer.withDefaults()); // 폼 기반 로그인을 설정합니다. 기본값으로 설정되어, 로그인 폼과 관련된 기본적인 설정을 자동으로 적용합니다.
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
 
@@ -70,6 +63,10 @@ public class SecurityConfig {
         http
                 .httpBasic((auth) -> auth.disable());
 
+        //JWTFilter 추가
+        http
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+
         //oauth2
         http
                 .oauth2Login((oauth2) -> oauth2
@@ -82,7 +79,6 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/login").permitAll()
                         .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
