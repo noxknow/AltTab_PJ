@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +23,8 @@ public class CodeSnippet {
     @Column(name = "code_snippet_id")
     private Long id;
     private String language;
+
+    @Lob
+    @Column(name = "code", columnDefinition = "TEXT")
     private String code;
 }
