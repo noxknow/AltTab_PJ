@@ -5,6 +5,7 @@ import { CompilerSidebar } from './CompilerSidebar';
 import { Modal } from './Modal';
 
 import styles from './Compiler.module.scss';
+import CanvasSection from '@/pages/Canvas/CanvasSection';
 
 export function Compiler() {
   const [codeText, setCodeText] = useState('');
@@ -24,21 +25,24 @@ export function Compiler() {
   };
 
   return (
-    <div className={styles.container}>
-      {modalIsOpen && <Modal handleModal={closeModal} />}
-      <div className={styles.compilerContainer}>
-        <CompilerSidebar handleModal={openModal} />
-        <div className={styles.compilerTitle}>Code Snippet</div>
-        <div className={styles.compiler}>
-          <div className={styles.compilerBody}>
-            <LineNumber codeText={codeText} />
-            <textarea
-              className={styles.textArea}
-              onChange={handleChange}
-            ></textarea>
+    <div>
+      <div className={styles.container}>
+        {modalIsOpen && <Modal handleModal={closeModal} />}
+        <div className={styles.compilerContainer}>
+          <CompilerSidebar handleModal={openModal} />
+          <div className={styles.compilerTitle}>Code Snippet</div>
+          <div className={styles.compiler}>
+            <div className={styles.compilerBody}>
+              <LineNumber codeText={codeText} />
+              <textarea
+                className={styles.textArea}
+                onChange={handleChange}
+              ></textarea>
+            </div>
           </div>
         </div>
       </div>
+      <CanvasSection />
     </div>
   );
 }

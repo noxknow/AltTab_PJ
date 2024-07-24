@@ -1,7 +1,7 @@
-import { fabric } from "fabric";
-import { useEffect, useRef, useState } from "react";
-import Toolbar from "./Toolbar";
-import styles from "./CanvasSection.module.scss";
+import { fabric } from 'fabric';
+import { useEffect, useRef, useState } from 'react';
+import Toolbar from './Toolbar';
+import styles from './CanvasSection.module.scss';
 
 const CanvasSection = () => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
@@ -15,15 +15,15 @@ const CanvasSection = () => {
     // 캔버스 생성
     const newCanvas = new fabric.Canvas(canvasRef.current, {
       width: canvasContainer.offsetWidth,
-      height: canvasContainer.offsetHeight
+      height: canvasContainer.offsetHeight,
     });
 
     setCanvas(newCanvas);
 
-    newCanvas.backgroundColor = "white";
+    newCanvas.backgroundColor = 'transparent';
 
     // 휠을 이용해서 줌인/줌아웃
-    newCanvas.on("mouse:wheel", (opt) => {
+    newCanvas.on('mouse:wheel', (opt) => {
       const delta = opt.e.deltaY;
       let zoom = newCanvas.getZoom();
       zoom *= 0.999 ** delta;
@@ -38,10 +38,10 @@ const CanvasSection = () => {
     const handleResize = () => {
       newCanvas.setDimensions({
         width: canvasContainer.offsetWidth,
-        height: canvasContainer.offsetHeight
+        height: canvasContainer.offsetHeight,
       });
     };
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     // 처음 접속했을 때 캔버스에 그리기 가능하도록 설정
     newCanvas.freeDrawingBrush.width = 10;
@@ -50,7 +50,7 @@ const CanvasSection = () => {
     // 언마운트 시 캔버스 정리, 이벤트 제거
     return () => {
       newCanvas.dispose();
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -58,7 +58,15 @@ const CanvasSection = () => {
     // delete 키를 이용해서 선택된 객체 삭제
     const handleDelete = ({ key, code }: { key: string; code: string }) => {
       if (!canvas) return;
-      if (!(code === "Delete" || key === "Delete" || code === "Backspace" || key === "Backspace")) return;
+      if (
+        !(
+          code === 'Delete' ||
+          key === 'Delete' ||
+          code === 'Backspace' ||
+          key === 'Backspace'
+        )
+      )
+        return;
       const activeObjects = canvas!.getActiveObjects();
       if (activeObjects && activeObjects.length > 0) {
         // 선택된 모든 객체 삭제
@@ -69,8 +77,10 @@ const CanvasSection = () => {
       }
     };
 
+    window.addEventListener('keyup', handleDelete);
+
     return () => {
-      window.removeEventListener("keyup", handleDelete);
+      window.removeEventListener('keyup', handleDelete);
     };
   }, [canvas]);
 
@@ -78,7 +88,7 @@ const CanvasSection = () => {
     <div className={styles.canvas} ref={canvasContainerRef}>
       <canvas ref={canvasRef} />
 
-      <Toolbar canvas={canvas}/>
+      <Toolbar canvas={canvas} />
     </div>
   );
 };
