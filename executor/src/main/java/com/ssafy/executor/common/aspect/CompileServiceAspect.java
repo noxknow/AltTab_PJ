@@ -22,7 +22,13 @@ public class CompileServiceAspect {
             return CodeExecutionResponseDto.builder()
                     .errorMessage("Compile error: " + ex.getMessage())
                     .build();
-        } catch (Throwable ex) {
+        } catch (SecurityException ex){
+            log.error("Security error: ", ex);
+            return CodeExecutionResponseDto.builder()
+                    .errorMessage("Security error: " + ex.getMessage())
+                    .build();
+        }
+        catch (Throwable ex) {
             log.error("Unexpected error: ", ex);
             return CodeExecutionResponseDto.builder()
                     .errorMessage("Unexpected error: " + ex.getMessage())
