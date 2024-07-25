@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class CompileServiceAspect {
+public class CodeExecutorAspect {
 
     @Around("execution(* com.ssafy.executor.service.CodeExecutionService.executeCode(..))")
     public Object handleCompileServiceExceptions(ProceedingJoinPoint joinPoint) throws Throwable {
