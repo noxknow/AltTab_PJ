@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Component
-public class JWTUtil {
+public class JWTUtil { // JWT 발급 & 검증
 
     private SecretKey secretKey;
 

@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MemberController {
 
-    @GetMapping("/login")
+//    @GetMapping("/login")
+    @GetMapping("/")
     public String login() {
         return "login";
     }

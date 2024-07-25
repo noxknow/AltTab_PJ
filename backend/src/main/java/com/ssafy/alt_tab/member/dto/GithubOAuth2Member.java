@@ -9,12 +9,13 @@ import java.util.Collection;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public class GithubOAuth2Member implements OAuth2User {
+public class GithubOAuth2Member implements OAuth2User { // OAuth2UserDetail
 
     private final MemberDto memberDto;
 
     @Override
     public Map<String, Object> getAttributes() {
+
         return Map.of();
     }
 
