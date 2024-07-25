@@ -1,5 +1,6 @@
 package com.ssafy.executor.executer;
 
+import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
 import com.ssafy.executor.common.exception.CompileException;
 import java.net.URI;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 public class CodeCompiler {
 
     private static final String MAIN_CLASS_NAME = "Main";
-    private static final String MAIN_METHOD_NAME = "main";
 
     private final JavaCompiler compiler;
 
@@ -32,19 +32,34 @@ public class CodeCompiler {
     /**
      * 전체 코드 컴파일 과정
      *
-     * @param sourceCode
-     * @throws CompileException
+     * @param sourceCode 컴파일할 소스 코드
+     * @throws CompileException 컴파일 실패 시 발생
      */
     public void compileCode(String sourceCode) throws CompileException {
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<>();
+        checkForbiddenPattern(sourceCode);
         boolean success = performCompile(sourceCode, diagnostics);
         checkCompileResult(success, diagnostics);
     }
 
     /**
+     * 금지된 패턴 검사
+     *
+     * @param sourceCode 검사할 소스 코드
+     * @throws SecurityException 금지된 패턴 발견 시 발생
+     */
+    private void checkForbiddenPattern(String sourceCode) throws SecurityException {
+        if (!CodeFilter.isSafeCode(sourceCode)) {
+            List<String> violations = CodeFilter.getViolations(sourceCode);
+            String violationsMessage = String.join(", ", violations);
+            throw new SecurityException(ExceptionMessage.UNSAFE_CODE_DETECTED.formatMessage(violationsMessage));
+        }
+    }
+
+    /**
      * 코드 컴파일 수행
      *
-     * @param sourceCode
+     * @param sourceCode 컴파일할 소스 코드
      * @param diagnostics 디버깅 과정에서 진단데이터 수집 목적
      * @return 컴파일 수행 완료 여부
      */
@@ -61,9 +76,9 @@ public class CodeCompiler {
     /**
      * 컴파일 성공 여부 확인
      *
-     * @param success
-     * @param diagnostics
-     * @throws CompileException 실패시 exception throw
+     * @param success 컴파일 성공 여부
+     * @param diagnostics 컴파일 진단 정보
+     * @throws CompileException 컴파일 실패 시 발생
      */
     private void checkCompileResult(boolean success, DiagnosticCollector<JavaFileObject> diagnostics)
             throws CompileException {
@@ -72,18 +87,18 @@ public class CodeCompiler {
                     .filter(d -> d.getKind() == Diagnostic.Kind.ERROR)
                     .map(this::formatDiagnostic)
                     .collect(Collectors.joining("\n"));
-            log.error(LogMessage.COMPILE_FAILED.getMessage(), errors);
-            throw new CompileException(errors);
+            log.error(ExceptionMessage.COMPILATION_FAILED.formatMessage(errors));
+            throw new CompileException(ExceptionMessage.COMPILATION_FAILED.formatMessage(errors));
         }
 
         log.info(LogMessage.COMPILE_SUCCESSFUL.getMessage());
     }
 
     /**
-     * 진단 에러 정보 이쁘게 출력하기 위한 메서드
+     * 진단 에러 정보 포맷
      *
-     * @param diagnostic
-     * @return 포멧된 진단 에러 메시지
+     * @param diagnostic 진단 정보
+     * @return 포맷된 진단 에러 메시지
      */
     private String formatDiagnostic(Diagnostic<?> diagnostic) {
         return String.format("Line %d: %s",
@@ -92,7 +107,7 @@ public class CodeCompiler {
     }
 
     /**
-     * String -> java
+     * String to Java Source
      */
     static public class JavaSourceFromString extends SimpleJavaFileObject {
         final String code;
