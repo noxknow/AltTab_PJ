@@ -10,16 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^1.7.2",
     "classnames": "^2.5.1",
+    "fabric": "^5.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.25.1",
-    "fabric": "^5.3.0"
+    "react-router-dom": "^6.25.1"
   },
   "devDependencies": {
-    "@types/fabric": "^5.3.6",
     "@eslint/js": "^9.7.0",
     "@types/eslint__js": "^8.42.3",
+    "@types/fabric": "^5.3.6",
     "@types/node": "^20.14.11",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
