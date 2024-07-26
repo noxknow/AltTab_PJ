@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.jwt;
+package com.ssafy.alt_tab.config.jwt;
 
 import com.ssafy.alt_tab.member.dto.GithubOAuth2Member;
 import com.ssafy.alt_tab.member.dto.MemberDto;
@@ -25,12 +25,15 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //cookie들을 불러온 뒤 Authorization Key에 담긴 쿠키를 찾음
 
+        System.out.println("JWTFilter Run...");
+
         String authorization = null;
         Cookie[] cookies = request.getCookies();
         for (Cookie cookie : cookies) {
 
             System.out.println(cookie.getName());
             if (cookie.getName().equals("Authorization")) {
+//            if (cookie.getName().equals("AccessToken")) {
 
                 authorization = cookie.getValue();
             }

@@ -46,7 +46,7 @@ public class MemberOAuth2Service extends DefaultOAuth2UserService {
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
         MemberEntity existData = memberRepository.findByUsername(username);
-        System.out.println("exist Data" + existData);
+        System.out.println("exist Data: " + existData);
 
         if (existData == null) {
             MemberEntity memberEntity = new MemberEntity();

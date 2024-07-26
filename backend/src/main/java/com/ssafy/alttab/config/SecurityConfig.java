@@ -1,9 +1,9 @@
 package com.ssafy.alt_tab.config;
 
-import com.ssafy.alt_tab.jwt.JWTFilter;
-import com.ssafy.alt_tab.jwt.JWTUtil;
+import com.ssafy.alt_tab.config.jwt.JWTFilter;
+import com.ssafy.alt_tab.config.jwt.JWTUtil;
 import com.ssafy.alt_tab.member.service.MemberOAuth2Service;
-import com.ssafy.alt_tab.oauth2.SuccessHandler;
+import com.ssafy.alt_tab.oauth2.OAuth2SuccessHandler;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ import java.util.Collections;
 public class SecurityConfig {
 
     private final MemberOAuth2Service memberOAuth2Service;
-    private final SuccessHandler successHandler;
+    private final OAuth2SuccessHandler OAuth2SuccessHandler;
     private final JWTUtil jwtUtil;
 
     @Bean
@@ -71,7 +71,7 @@ public class SecurityConfig {
                 .oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
                                 .userService(memberOAuth2Service))
-                        .successHandler(successHandler)
+                        .successHandler(OAuth2SuccessHandler)
                 );
 
         //경로별 인가 작업
