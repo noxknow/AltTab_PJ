@@ -18,17 +18,11 @@ public class DrawingService {
 
     private static final String DRAWING_KEY_PREFIX = "drawing:room:";
 
-    public ResponseEntity<String> saveDrawing(Long roomId, String drawingData) {
+    public void saveDrawing(Long roomId, String drawingData) {
         String key = DRAWING_KEY_PREFIX + roomId;
         redisTemplate.opsForValue().set(key, drawingData);
 
-        // Publish to Redis channel
-        redisTemplate.convertAndSend("drawingChannel:" + roomId, drawingData);
-
-        // Send to WebSocket subscribers
-//        messagingTemplate.convertAndSend("/sub/rooms/" + roomId, drawingData);
-
-        return ResponseEntity.ok(drawingData);
+        redisTemplate.convertAndSend("drawing:room:" + roomId, drawingData);
     }
 
     public ResponseEntity<String> loadLatestDrawing(Long roomId) {

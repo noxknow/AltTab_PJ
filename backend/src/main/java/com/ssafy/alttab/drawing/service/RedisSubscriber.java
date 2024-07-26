@@ -22,10 +22,10 @@ public class RedisSubscriber implements MessageListener {
         try {
             // redis에서 발행된 데이터를 받아 deserialize
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            // ChatMessage 객채로 맵핑
-            DrawingRequestDto roomMessage = objectMapper.readValue(publishMessage, DrawingRequestDto.class);
-            // Websocket 구독자에게 채팅 메시지 Send
-            messagingTemplate.convertAndSend("/sub/api/v1/rooms/" + roomMessage.getRoomId(), roomMessage);
+            // DrawingRequestDto 객체로 맵핑
+            DrawingRequestDto drawingRequestDto = objectMapper.readValue(publishMessage, DrawingRequestDto.class);
+            // Websocket 구독자에게 메시지 전송
+            messagingTemplate.convertAndSend("/sub/api/v1/rooms/" + drawingRequestDto.getRoomId(), drawingRequestDto);
         } catch (Exception e) {
             e.printStackTrace();
         }
