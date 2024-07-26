@@ -28,11 +28,11 @@ public class CodeExecutionService {
      */
     @RabbitListener(queues = "code-execution-request-queue")
     @SendTo("code-execution-response-queue")
-    public CodeExecutionResponseDto executeCode(CodeExecutionRequestDto request) throws Exception {
+    public CodeExecutionResponseDto executeCode(CodeExecutionRequestDto request) throws Throwable {
         codeCompiler.compileCode(request.getCode());
         log.debug(LogMessage.COMPILE_SUCCESSFUL.getMessage());
 
-        CodeExecutionResponseDto response = codeExecutor.executeCode(request.getInput());
+        CodeExecutionResponseDto response = codeExecutor.executeCode(request.getCode(), request.getInput());
         log.debug(LogMessage.EXECUTION_SUCCESSFUL.getMessage(), response.getOutput());
 
         return response;

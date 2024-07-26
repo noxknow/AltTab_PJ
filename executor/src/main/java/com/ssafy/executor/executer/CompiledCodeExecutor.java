@@ -1,118 +1,136 @@
 package com.ssafy.executor.executer;
 
+import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
-import com.ssafy.executor.common.util.StreamRedirector;
 import com.ssafy.executor.dto.CodeExecutionResponseDto;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
+import com.ssafy.executor.common.exception.CompileException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.io.*;
+import java.nio.file.*;
+import java.util.concurrent.*;
+
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class CompiledCodeExecutor {
     private static final String MAIN_CLASS_NAME = "Main";
-    private static final String MAIN_METHOD_NAME = "main";
+    private static final long TIMEOUT_SECONDS = 2;
 
+    private final CodeCompiler codeCompiler;
 
-    /**
-     * 컴파일 된 코드 실행
-     *
-     * @param input
-     * @return output, errorMessage
-     * @throws Exception
-     */
-    public CodeExecutionResponseDto executeCode(String input) throws Exception {
-        URLClassLoader classLoader = URLClassLoader.newInstance(new URL[]{new File(".").toURI().toURL()});
-        Class<?> cls = classLoader.loadClass(MAIN_CLASS_NAME);
-        Method method = cls.getMethod(MAIN_METHOD_NAME, String[].class);
-
-        return runWithRedirectedIO(input, () -> method.invoke(null, (Object) new String[]{}));
-    }
-
-    /**
-     * 표준 입력으로 리디렉션
-     *
-     * @param input
-     * @param runnable
-     * @return output, errorMessage
-     */
-    private CodeExecutionResponseDto runWithRedirectedIO(String input, IORunnable runnable) {
-        StreamRedirector redirect = new StreamRedirector(input);
+    public CodeExecutionResponseDto executeCode(String code, String input) throws Exception {
+        Path tempDir = createTempDirectory();
         try {
-            redirect.redirect();
-            return executeAndCaptureOutput(runnable, redirect.getOutputStream(), redirect.getErrorStream());
+            compileCode(code);
+            writeCodeToFile(tempDir, code);
+            return runCode(tempDir, input);
         } finally {
-            redirect.restore();
+            cleanupTempDirectory(tempDir);
         }
     }
 
-    /**
-     * 표준 출력과 표준 오류를 캡쳐
-     *
-     * @param runnable
-     * @param outputStream
-     * @param errorStream
-     * @return output, errorMessage
-     */
-    private CodeExecutionResponseDto executeAndCaptureOutput(IORunnable runnable,
-                                                             ByteArrayOutputStream outputStream,
-                                                             ByteArrayOutputStream errorStream) {
+    private Path createTempDirectory() throws IOException {
+        return Files.createTempDirectory("code_execution");
+    }
+
+    private void compileCode(String code) throws CompileException {
+        codeCompiler.compileCode(code);
+    }
+
+    private void writeCodeToFile(Path tempDir, String code) throws IOException {
+        Path mainJavaFile = tempDir.resolve("Main.java");
+        Files.write(mainJavaFile, code.getBytes());
+    }
+
+    private CodeExecutionResponseDto runCode(Path tempDir, String input) throws IOException {
+        log.info(LogMessage.EXECUTION_STARTED.getMessage(), input);
+        ProcessBuilder runProcessBuilder = new ProcessBuilder("java", "-cp", tempDir.toString(), MAIN_CLASS_NAME);
+        runProcessBuilder.redirectErrorStream(true);
+        Process runProcess = runProcessBuilder.start();
+
+        provideInput(runProcess, input);
+
+        return executeWithTimeout(runProcess);
+    }
+
+    private void provideInput(Process process, String input) throws IOException {
+        if (!input.isEmpty()) {
+            try (OutputStream os = process.getOutputStream()) {
+                os.write(input.getBytes());
+                os.flush();
+            }
+        }
+    }
+
+    private CodeExecutionResponseDto executeWithTimeout(Process process) {
+        StringBuilder output = new StringBuilder();
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(() -> readProcessOutput(process, output));
+
         try {
-            runnable.run();
-        } catch (Exception e) {
-            log.error(LogMessage.EXECUTION_FAILED.getMessage(), e.getMessage());
-            try {
-                errorStream.write(getStackTrace(e).getBytes());
-            } catch (IOException ioException) {
-                log.error("Failed to write stack trace to error stream", ioException);
+            future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            return handleTimeout(process, future);
+        } catch (InterruptedException | ExecutionException e) {
+            return handleExecutionError(e);
+        } finally {
+            executor.shutdownNow();
+        }
+
+        return handleProcessResult(process, output.toString());
+    }
+
+    private String readProcessOutput(Process process, StringBuilder output) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
             }
         }
-        return buildResponse(outputStream, errorStream);
+        return output.toString();
     }
 
-    /**
-     * response dto set
-     *
-     * @param outputStream
-     * @param errorStream
-     * @return output, errorMessage
-     */
-    private CodeExecutionResponseDto buildResponse(ByteArrayOutputStream outputStream,
-                                                   ByteArrayOutputStream errorStream) {
-        String output = outputStream.toString();
-        String error = errorStream.toString();
-        if (error.isEmpty()) {
-            return CodeExecutionResponseDto.builder().output(output).build();
-        } else {
-            return CodeExecutionResponseDto.builder().errorMessage(error).build();
+    private CodeExecutionResponseDto handleTimeout(Process process, Future<?> future) {
+        process.destroy();
+        future.cancel(true);
+        log.error(LogMessage.EXECUTION_FAILED.getMessage(), ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS));
+        return CodeExecutionResponseDto.builder()
+                .errorMessage(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS))
+                .build();
+    }
+
+    private CodeExecutionResponseDto handleExecutionError(Exception e) {
+        log.error(LogMessage.EXECUTION_FAILED.getMessage(), e.getMessage());
+        return CodeExecutionResponseDto.builder()
+                .errorMessage(ExceptionMessage.UNEXPECTED_ERROR.formatMessage(e.getMessage()))
+                .build();
+    }
+
+    private CodeExecutionResponseDto handleProcessResult(Process process, String output) {
+        if (process.exitValue() != 0) {
+            log.error(LogMessage.EXECUTION_FAILED.getMessage(), ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()));
+            return CodeExecutionResponseDto.builder()
+                    .errorMessage(ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()))
+                    .build();
+        }
+
+        log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage(), output);
+        return CodeExecutionResponseDto.builder()
+                .output(output)
+                .build();
+    }
+
+    private void cleanupTempDirectory(Path tempDir) {
+        try {
+            Files.walk(tempDir)
+                    .sorted(java.util.Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            log.error("Failed to cleanup temporary directory", e);
         }
     }
-
-    /**
-     * 에러난 줄 추적해서 build
-     *
-     * @param throwable
-     * @return 에러난 줄과 에러메시지
-     */
-    private String getStackTrace(Throwable throwable) {
-        StringBuilder result = new StringBuilder();
-        result.append(throwable.toString()).append("\n");
-        for (StackTraceElement element : throwable.getStackTrace()) {
-            if (element.getClassName().equals("Main")) {
-                result.append("\tat ").append(element).append("\n");
-            }
-        }
-        return result.toString();
-    }
-
-    @FunctionalInterface
-    private interface IORunnable {
-        void run() throws Exception;
-    }
-
 }

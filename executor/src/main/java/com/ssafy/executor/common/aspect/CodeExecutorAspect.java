@@ -2,6 +2,7 @@ package com.ssafy.executor.common.aspect;
 
 import com.ssafy.executor.common.exception.CompileException;
 import com.ssafy.executor.dto.CodeExecutionResponseDto;
+import java.util.concurrent.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -26,6 +27,11 @@ public class CodeExecutorAspect {
             log.error("Security error: ", ex);
             return CodeExecutionResponseDto.builder()
                     .errorMessage("Security error: " + ex.getMessage())
+                    .build();
+        } catch (TimeoutException ex){
+            log.error("Timeout error: ", ex);
+            return CodeExecutionResponseDto.builder()
+                    .errorMessage("Timeout error: " + ex.getMessage())
                     .build();
         }
         catch (Throwable ex) {
