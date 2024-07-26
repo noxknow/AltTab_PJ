@@ -5,6 +5,7 @@ import { MainPage } from '@/pages/Main/Main';
 import { NoStudy } from '@/pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
 import { StudySetting } from '@/pages/StudySetting/StudySetting';
+import { CompilerProvider } from '@/context/compiler';
 
 export const useRouter = () =>
   createBrowserRouter([
@@ -13,7 +14,14 @@ export const useRouter = () =>
       element: <Layout />,
       children: [
         { index: true, element: <MainPage /> },
-        { path: 'compiler', element: <Compiler /> },
+        {
+          path: 'compiler',
+          element: (
+            <CompilerProvider>
+              <Compiler />
+            </CompilerProvider>
+          ),
+        },
         { path: 'nostudy', element: <NoStudy /> },
         { path: 'studysetting', element: <StudySetting /> },
       ],
