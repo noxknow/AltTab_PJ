@@ -5,21 +5,14 @@ import ArrowSVG from '@/assets/icons/arrow.svg?react';
 import CodeSVG from '@/assets/icons/code.svg?react';
 import BookSVG from '@/assets/icons/book.svg?react';
 import BoardSVG from '@/assets/icons/board.svg?react';
+import { useCompilerModalState } from '@/hooks/useCompilerState';
+import { MODAL } from '@/constants/Modal';
 
-import { ProblemModal } from './ProblemModal/ProblemModal';
-import { SolutionModal } from './SolutionModal/SolutionModal';
-import { CanvasModal } from './CanvasModal/CanvasModal';
 import styles from './CompilerSidebar.module.scss';
 
-type ModalProps = {
-  handleModal: () => void;
-  setModalContent: React.Dispatch<
-    React.SetStateAction<JSX.Element | undefined>
-  >;
-};
-
-export function CompilerSidebar({ handleModal, setModalContent }: ModalProps) {
+export function CompilerSidebar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { setIsModalOpen, setModal, setIsFill } = useCompilerModalState();
   const sidebar = classNames(styles.sidebar, {
     [styles.openSidebar]: isOpen,
   });
@@ -32,9 +25,10 @@ export function CompilerSidebar({ handleModal, setModalContent }: ModalProps) {
     setIsOpen(!isOpen);
   };
 
-  const showModal = (modalType: () => JSX.Element) => {
-    setModalContent(modalType);
-    handleModal();
+  const showModal = (modalType: string) => {
+    setModal(modalType);
+    setIsFill(true);
+    setIsModalOpen(true);
   };
 
   return (
@@ -46,19 +40,19 @@ export function CompilerSidebar({ handleModal, setModalContent }: ModalProps) {
         <div className={styles.modalButtonContainer}>
           <button
             className={modalButton}
-            onClick={() => showModal(ProblemModal)}
+            onClick={() => showModal(MODAL.PROBLEM)}
           >
             <CodeSVG width={24} height={24} />
           </button>
           <button
             className={modalButton}
-            onClick={() => showModal(SolutionModal)}
+            onClick={() => showModal(MODAL.SOLUTION)}
           >
             <BookSVG width={24} height={24} />
           </button>
           <button
             className={modalButton}
-            onClick={() => showModal(CanvasModal)}
+            onClick={() => showModal(MODAL.CANVAS)}
           >
             <BoardSVG width={24} height={24} />
           </button>
