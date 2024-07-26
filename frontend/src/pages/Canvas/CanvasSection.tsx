@@ -5,7 +5,7 @@ import Toolbar from './Toolbar';
 import styles from './CanvasSection.module.scss';
 
 type CanvasProps = {
-  handleCanvas: () => void;
+  handleCanvas?: () => void;
 };
 
 const CanvasSection = ({ handleCanvas }: CanvasProps) => {
