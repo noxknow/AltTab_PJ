@@ -3,8 +3,7 @@ package com.ssafy.executor.executer;
 import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
 import com.ssafy.executor.dto.CodeExecutionResponseDto;
-import com.ssafy.executor.common.exception.CompileException;
-import lombok.RequiredArgsConstructor;
+import java.util.Comparator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,19 +12,17 @@ import java.nio.file.*;
 import java.util.concurrent.*;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class CompiledCodeExecutor {
     private static final String MAIN_CLASS_NAME = "Main";
     private static final long TIMEOUT_SECONDS = 2;
-
-    private final CodeCompiler codeCompiler;
+    private static final long COMPILE_TIMEOUT_SECONDS = 10;
 
     public CodeExecutionResponseDto executeCode(String code, String input) throws Exception {
         Path tempDir = createTempDirectory();
         try {
-            compileCode(code);
-            writeCodeToFile(tempDir, code);
+            Path mainJavaFile = writeCodeToFile(tempDir, code);
+            compileCode(mainJavaFile);
             return runCode(tempDir, input);
         } finally {
             cleanupTempDirectory(tempDir);
@@ -36,13 +33,24 @@ public class CompiledCodeExecutor {
         return Files.createTempDirectory("code_execution");
     }
 
-    private void compileCode(String code) throws CompileException {
-        codeCompiler.compileCode(code);
-    }
-
-    private void writeCodeToFile(Path tempDir, String code) throws IOException {
+    private Path writeCodeToFile(Path tempDir, String code) throws IOException {
         Path mainJavaFile = tempDir.resolve("Main.java");
         Files.write(mainJavaFile, code.getBytes());
+        return mainJavaFile;
+    }
+
+    private void compileCode(Path mainJavaFile) throws Exception {
+        log.info(LogMessage.COMPILE_STARTED.getMessage(), mainJavaFile);
+        ProcessBuilder compileProcessBuilder = new ProcessBuilder("javac", mainJavaFile.toString());
+        Process compileProcess = compileProcessBuilder.start();
+        if (!compileProcess.waitFor(COMPILE_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
+            compileProcess.destroy();
+            throw new Exception(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS));
+        }
+        if (compileProcess.exitValue() != 0) {
+            throw new Exception(ExceptionMessage.COMPILATION_FAILED.formatMessage("Unknown error"));
+        }
+        log.info(LogMessage.COMPILE_SUCCESSFUL.getMessage());
     }
 
     private CodeExecutionResponseDto runCode(Path tempDir, String input) throws IOException {
@@ -126,7 +134,7 @@ public class CompiledCodeExecutor {
     private void cleanupTempDirectory(Path tempDir) {
         try {
             Files.walk(tempDir)
-                    .sorted(java.util.Comparator.reverseOrder())
+                    .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
                     .forEach(File::delete);
         } catch (IOException e) {
