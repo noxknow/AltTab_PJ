@@ -1,6 +1,6 @@
 package com.ssafy.alt_tab.member.service;
 
-import com.ssafy.alt_tab.member.dto.GithubOAuth2Member;
+import com.ssafy.alt_tab.member.dto.CustomOAuth2User;
 import com.ssafy.alt_tab.member.dto.GithubResponse;
 import com.ssafy.alt_tab.member.dto.MemberDto;
 import com.ssafy.alt_tab.member.dto.OAuth2Response;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class MemberOAuth2Service extends DefaultOAuth2UserService {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
@@ -26,22 +26,15 @@ public class MemberOAuth2Service extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
         System.out.println("oAuth2User = " + oAuth2User);
-        System.out.println("oAuth2UserRequest.getClientRegistration() = " + oAuth2UserRequest.getClientRegistration());
 
         String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
-        System.out.println("registrationId = " + registrationId);
-        System.out.println("oAuth2User.getAttributes() = " + oAuth2User.getAttributes());
 
         OAuth2Response oAuth2Response = null;
         if (registrationId.equals("github")) {
             oAuth2Response = new GithubResponse(oAuth2User.getAttributes());
-            System.out.println("oAuth2Response = " + oAuth2Response);
         } else {
             return null;
         }
-
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        System.out.println("attributes = " + attributes);
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
@@ -62,7 +55,7 @@ public class MemberOAuth2Service extends DefaultOAuth2UserService {
             memberDto.setName(oAuth2Response.getName());
             memberDto.setRole("ROLE_USER");
 
-            return new GithubOAuth2Member(memberDto);
+            return new CustomOAuth2User(memberDto);
         } else {
             existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
@@ -74,7 +67,7 @@ public class MemberOAuth2Service extends DefaultOAuth2UserService {
             memberDto.setName(oAuth2Response.getName());
             memberDto.setRole(existData.getRole());
 
-            return new GithubOAuth2Member(memberDto);
+            return new CustomOAuth2User(memberDto);
         }
     }
 }

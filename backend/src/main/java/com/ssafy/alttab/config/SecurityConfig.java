@@ -1,10 +1,9 @@
 package com.ssafy.alt_tab.config;
 
-import com.ssafy.alt_tab.config.jwt.JWTFilter;
-import com.ssafy.alt_tab.config.jwt.JWTUtil;
-import com.ssafy.alt_tab.member.service.MemberOAuth2Service;
+import com.ssafy.alt_tab.jwt.JWTFilter;
+import com.ssafy.alt_tab.jwt.JWTUtil;
+import com.ssafy.alt_tab.member.service.CustomOAuth2UserService;
 import com.ssafy.alt_tab.oauth2.OAuth2SuccessHandler;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,8 +13,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 
 import java.util.Collections;
 
@@ -24,7 +23,7 @@ import java.util.Collections;
 @Configuration
 public class SecurityConfig {
 
-    private final MemberOAuth2Service memberOAuth2Service;
+    private final CustomOAuth2UserService CustomOAuth2UserService;
     private final OAuth2SuccessHandler OAuth2SuccessHandler;
     private final JWTUtil jwtUtil;
 
@@ -33,20 +32,16 @@ public class SecurityConfig {
 
         //cors 설정
         http
-                .cors(corsCustomizer -> corsCustomizer.configurationSource(new CorsConfigurationSource() {
-
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration configuration = new CorsConfiguration();
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
-                        configuration.setAllowCredentials(true);
-                        configuration.setAllowedHeaders(Collections.singletonList("*"));
-                        configuration.setMaxAge(3600L);
-                        configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
-                        configuration.setExposedHeaders(Collections.singletonList("Authorization"));
-                        return configuration;
-                    }
+                .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                    configuration.setAllowedMethods(Collections.singletonList("*"));
+                    configuration.setAllowCredentials(true);
+                    configuration.setAllowedHeaders(Collections.singletonList("*"));
+                    configuration.setMaxAge(1800L);
+                    configuration.setExposedHeaders(Collections.singletonList("Set-Cookie"));
+                    configuration.setExposedHeaders(Collections.singletonList("Access-Token"));
+                    return configuration;
                 }));
 
         //csrf disable
@@ -63,14 +58,14 @@ public class SecurityConfig {
 
         //JWTFilter 추가
         http
-                //.addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
-                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
+//                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
+                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http
                 .oauth2Login((oauth2) -> oauth2
                         .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(memberOAuth2Service))
+                                .userService(CustomOAuth2UserService))
                         .successHandler(OAuth2SuccessHandler)
                 );
 

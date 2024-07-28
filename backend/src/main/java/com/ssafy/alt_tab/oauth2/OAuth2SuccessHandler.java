@@ -1,7 +1,7 @@
 package com.ssafy.alt_tab.oauth2;
 
-import com.ssafy.alt_tab.config.jwt.JWTUtil;
-import com.ssafy.alt_tab.member.dto.GithubOAuth2Member;
+import com.ssafy.alt_tab.jwt.JWTUtil;
+import com.ssafy.alt_tab.member.dto.CustomOAuth2User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,28 +23,26 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        GithubOAuth2Member githubOAuth2Member = (GithubOAuth2Member) authentication.getPrincipal();
+        CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-        String username = githubOAuth2Member.getUsername();
+        String username = customOAuth2User.getUsername();
+//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+//        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+//        GrantedAuthority auth = iterator.next();
+//        String role = auth.getAuthority();
+//        String accessToken = jwtUtil.createAccessToken(username, role);
 
-        System.out.println("@@@@@ authentication = " + authentication);
+        String accessToken = jwtUtil.generateAccessToken(authentication, username);
+        jwtUtil.generateRefreshToken(authentication, accessToken, username);
 
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-        GrantedAuthority auth = iterator.next();
-        String role = auth.getAuthority();
-
-        String accessToken = jwtUtil.createAccessToken(username, role); // 10분
-        jwtUtil.createRefreshToken(username, role); // 30일
-
-        response.addCookie(createCookie("Authorization", accessToken));
+        response.addCookie(createCookie("Access-Token", accessToken));
         response.sendRedirect("http://localhost:3000/");
     }
 
-    private Cookie createCookie(String key, String value) {
+    static public Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(60 * 60 * 60); // 60시간
+        cookie.setMaxAge(1800);
         cookie.setPath("/");
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
