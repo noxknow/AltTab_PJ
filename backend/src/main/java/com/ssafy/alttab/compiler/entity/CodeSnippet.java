@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.compiler.entity;
+package com.ssafy.alttab.compiler.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

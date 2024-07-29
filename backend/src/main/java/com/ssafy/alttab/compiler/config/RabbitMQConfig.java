@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.compiler.config;
+package com.ssafy.alttab.compiler.config;
 
 
 import org.springframework.amqp.core.Queue;

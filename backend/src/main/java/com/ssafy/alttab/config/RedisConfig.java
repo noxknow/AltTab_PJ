@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.config;
+package com.ssafy.alttab.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

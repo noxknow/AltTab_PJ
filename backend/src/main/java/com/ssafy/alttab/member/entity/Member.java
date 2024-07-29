@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.member.entity;
+package com.ssafy.alttab.member.entity;
 
 public class Member {
 }

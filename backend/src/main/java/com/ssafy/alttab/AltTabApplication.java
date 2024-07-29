@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab;
+package com.ssafy.alttab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

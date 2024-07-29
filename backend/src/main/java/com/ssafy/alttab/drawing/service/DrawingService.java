@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.drawing.service;
+package com.ssafy.alttab.drawing.service;
 
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;

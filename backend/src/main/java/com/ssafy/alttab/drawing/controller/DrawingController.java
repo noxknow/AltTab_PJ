@@ -1,6 +1,6 @@
-package com.ssafy.alt_tab.drawing.controller;
+package com.ssafy.alttab.drawing.controller;
 
-import com.ssafy.alt_tab.drawing.service.DrawingService;
+import com.ssafy.alttab.drawing.service.DrawingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

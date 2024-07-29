@@ -1,8 +1,8 @@
-package com.ssafy.alt_tab.compiler.controller;
+package com.ssafy.alttab.compiler.controller;
 
 
-import com.ssafy.alt_tab.compiler.dto.CodeExecutionRequestDto;
-import com.ssafy.alt_tab.compiler.service.CodeService;
+import com.ssafy.alttab.compiler.dto.CodeExecutionRequestDto;
+import com.ssafy.alttab.compiler.service.CodeService;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

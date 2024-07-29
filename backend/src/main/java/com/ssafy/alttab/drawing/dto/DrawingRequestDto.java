@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.drawing.dto;
+package com.ssafy.alttab.drawing.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

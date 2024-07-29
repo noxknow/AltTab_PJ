@@ -1,12 +1,10 @@
-package com.ssafy.alt_tab.socket;
+package com.ssafy.alttab.socket;
 
-import com.ssafy.alt_tab.drawing.dto.DrawingRequestDto;
+import com.ssafy.alttab.drawing.dto.DrawingRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/socket")

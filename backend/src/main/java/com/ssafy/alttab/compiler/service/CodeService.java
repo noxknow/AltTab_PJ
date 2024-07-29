@@ -1,9 +1,9 @@
-package com.ssafy.alt_tab.compiler.service;
+package com.ssafy.alttab.compiler.service;
 
-import com.ssafy.alt_tab.compiler.dto.CodeExecutionRequestDto;
-import com.ssafy.alt_tab.compiler.dto.CodeExecutionResponseDto;
-import com.ssafy.alt_tab.compiler.entity.CodeSnippet;
-import com.ssafy.alt_tab.compiler.repository.CodeSnippetRepository;
+import com.ssafy.alttab.compiler.dto.CodeExecutionRequestDto;
+import com.ssafy.alttab.compiler.dto.CodeExecutionResponseDto;
+import com.ssafy.alttab.compiler.entity.CodeSnippet;
+import com.ssafy.alttab.compiler.repository.CodeSnippetRepository;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
