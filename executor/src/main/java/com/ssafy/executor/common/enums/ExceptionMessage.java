@@ -4,15 +4,22 @@ import lombok.Getter;
 
 @Getter
 public enum ExceptionMessage {
-    UNSAFE_CODE_DETECTED("Unsafe code detected: %s"),
-    COMPILATION_FAILED("Compilation failed: %s"),
-    COMPILATION_TIMEOUT("Compilation timed out after %d seconds"),
-    EXECUTION_FAILED("Execution failed: %s"),
-    EXECUTION_TIMEOUT("Execution timed out after %d seconds"),
+    // 코드 필터 오류
+    UNSAFE_CODE_DETECTED("Unsafe code detected: {}"),
+
+    // 컴파일 오류
+    COMPILATION_FAILED("Compilation failed: {}"),
+    COMPILATION_TIMEOUT("Compilation timed out after {} seconds"),
+
+    // 실행 오류
+    EXECUTION_FAILED("Execution failed: {}"),
+    EXECUTION_TIMEOUT("Execution timed out after {} seconds"),
     EXECUTION_INTERRUPTED("Code execution was interrupted"),
-    UNEXPECTED_ERROR("An unexpected error occurred: %s"),
-    STACK_TRACE_WRITE_FAILED("Failed to write stack trace to error stream"),
-    EXECUTION_FAILED_WITH_EXIT_CODE("Execution failed with exit code: %d");
+    EXECUTION_FAILED_WITH_EXIT_CODE("Execution failed with exit code: {}"),
+
+    // 그 외 오류
+    UNEXPECTED_ERROR("An unexpected error occurred: {}"),
+    STACK_TRACE_WRITE_FAILED("Failed to write stack trace to error stream");
 
     private final String message;
 
@@ -21,6 +28,6 @@ public enum ExceptionMessage {
     }
 
     public String formatMessage(Object... args) {
-        return String.format(message, args);
+        return String.format(this.message.replace("{}", "%s"), args);
     }
 }
