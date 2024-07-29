@@ -12,7 +12,7 @@ type RunCodeModalProps = {
 
 export function RunCodeModal({ code }: RunCodeModalProps) {
   const [inputText, setInputText] = useState('');
-  const [outputText, setOutputText] = useState('');
+  const [outputText, setOutputText] = useState<string | null>('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.currentTarget.value);
@@ -23,8 +23,8 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
       code,
       input: inputText,
     };
-    const { output } = await compiler.execute(form);
-    setOutputText(output !== null ? output : '');
+    const { output, errorMessage } = await compiler.execute(form);
+    setOutputText(output !== null ? output : errorMessage);
   };
 
   return (
@@ -44,7 +44,7 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
             name="output"
             className={styles.textarea}
             readOnly
-            value={outputText}
+            value={outputText ? outputText : ''}
           ></textarea>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { MainPage } from '@/pages/Main/Main';
 import { NoStudy } from '@/pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
 import { StudySetting } from '@/pages/StudySetting/StudySetting';
-import { CompilerProvider } from '@/context/compiler';
+import { CompilerProvider } from '@/contexts/compiler';
 
 export const useRouter = () =>
   createBrowserRouter([
