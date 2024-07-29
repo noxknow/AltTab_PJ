@@ -1,9 +1,9 @@
 package com.ssafy.alttab.config;
 
-import com.ssafy.alttab.jwt.JWTFilter;
-import com.ssafy.alttab.jwt.JWTUtil;
-import com.ssafy.alttab.oauth2.handler.OAuth2SuccessHandler;
-import com.ssafy.alttab.oauth2.service.CustomOAuth2UserService;
+import com.ssafy.alttab.security.jwt.JWTFilter;
+import com.ssafy.alttab.security.jwt.JWTUtil;
+import com.ssafy.alttab.security.oauth2.handler.OAuth2SuccessHandler;
+import com.ssafy.alttab.security.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
