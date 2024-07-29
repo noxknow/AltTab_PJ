@@ -34,7 +34,6 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
     canvas.isDrawingMode = false;
     canvas.selection = false;
     canvas.defaultCursor = 'default';
-    canvas.defaultCursor = 'default';
   };
 
   const handleSelect = () => {
@@ -42,7 +41,6 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
 
     setIsObjectSelectable(true);
     canvas.selection = true;
-    canvas.defaultCursor = 'default';
     canvas.defaultCursor = 'default';
   };
 
@@ -68,18 +66,13 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
 
     const handleSelectionCreated = (selected: fabric.Object[] | undefined) => {
       if (activeTool === 'eraser') {
-      if (activeTool === 'eraser') {
         selected?.forEach((object) => canvas.remove(object));
       }
       canvas.discardActiveObject().renderAll();
     };
 
     canvas.on('mouse:up', ({ target }) => handleMouseUp(target));
-    canvas.on('mouse:up', ({ target }) => handleMouseUp(target));
 
-    canvas.on('selection:created', ({ selected }) =>
-      handleSelectionCreated(selected),
-    );
     canvas.on('selection:created', ({ selected }) =>
       handleSelectionCreated(selected),
     );
@@ -88,7 +81,6 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
   const handleHand = () => {
     if (!(canvas instanceof fabric.Canvas)) return;
 
-    canvas.defaultCursor = 'move';
     canvas.defaultCursor = 'move';
 
     let panning = false;
@@ -107,17 +99,10 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
     canvas.on('mouse:down', handleMouseDown);
     canvas.on('mouse:move', handleMouseMove);
     canvas.on('mouse:up', handleMouseUp);
-    canvas.on('mouse:down', handleMouseDown);
-    canvas.on('mouse:move', handleMouseMove);
-    canvas.on('mouse:up', handleMouseUp);
   };
 
   useEffect(() => {
     if (!(canvas instanceof fabric.Canvas)) return;
-    canvas.off('mouse:down');
-    canvas.off('mouse:move');
-    canvas.off('mouse:up');
-    canvas.off('selection:created');
     canvas.off('mouse:down');
     canvas.off('mouse:move');
     canvas.off('mouse:up');
@@ -127,21 +112,17 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
 
     switch (activeTool) {
       case 'select':
-      case 'select':
         handleSelect();
         break;
 
-      case 'pen':
       case 'pen':
         handlePen();
         break;
 
       case 'eraser':
-      case 'eraser':
         handleEraser();
         break;
 
-      case 'hand':
       case 'hand':
         handleHand();
         break;
@@ -166,49 +147,12 @@ const Toolbar = ({ canvas }: ToolbarProps) => {
         disabled={activeTool === 'pen'}
         title="Pen Tool"
       />
-      <ToolButton
-        icon={MouseIcon}
-        onClick={() => {
-          setActiveTool('select');
-        }}
-        disabled={activeTool === 'select'}
-        title="Select Tool"
-      />
-      <ToolButton
-        icon={PenIcon}
-        onClick={() => {
-          setActiveTool('pen');
-        }}
-        disabled={activeTool === 'pen'}
-        title="Pen Tool"
-      />
 
       <ColorPanel
         canvas={canvas}
         className={`${activeTool === 'pen' ? 'block' : 'hidden'}`}
       />
-      <ColorPanel
-        canvas={canvas}
-        className={`${activeTool === 'pen' ? 'block' : 'hidden'}`}
-      />
 
-      <ToolButton
-        icon={EraserIcon}
-        onClick={() => {
-          setActiveTool('eraser');
-        }}
-        disabled={activeTool === 'eraser'}
-        title="Eraser Tool"
-      />
-      <ToolButton
-        icon={HandIcon}
-        onClick={() => {
-          setActiveTool('hand');
-        }}
-        disabled={activeTool === 'hand'}
-        title="Hand Tool"
-      />
-    </div>
       <ToolButton
         icon={EraserIcon}
         onClick={() => {

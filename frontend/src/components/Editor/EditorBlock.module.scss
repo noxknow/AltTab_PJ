@@ -1,0 +1,13 @@
+.zz {
+  background-color: aqua;
+}
+.default {
+  background-color: gray;
+  border-width: 1rem;
+  font-size: 3rem;
+  margin-top: 1rem;
+}
+
+:empty:before {
+  content: '내용을 입력하세요';
+}
