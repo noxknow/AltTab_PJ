@@ -169,7 +169,7 @@ public class CompiledCodeExecutor {
                     .build();
         }
 
-        log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage(), output);
+        log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage());
         return CodeExecutionResponseDto.builder()
                 .output(output)
                 .build();
