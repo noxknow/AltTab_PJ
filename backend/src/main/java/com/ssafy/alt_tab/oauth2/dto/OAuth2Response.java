@@ -1,6 +1,7 @@
-package com.ssafy.alt_tab.member.dto;
+package com.ssafy.alt_tab.oauth2.dto;
 
 public interface OAuth2Response {
+
     //제공자 (Ex. naver, google, ...)
     String getProvider();
 

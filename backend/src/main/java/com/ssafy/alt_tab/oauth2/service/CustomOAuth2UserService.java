@@ -1,9 +1,9 @@
-package com.ssafy.alt_tab.member.service;
+package com.ssafy.alt_tab.oauth2.service;
 
-import com.ssafy.alt_tab.member.dto.CustomOAuth2User;
-import com.ssafy.alt_tab.member.dto.GithubResponse;
+import com.ssafy.alt_tab.oauth2.dto.CustomOAuth2User;
+import com.ssafy.alt_tab.oauth2.dto.GithubResponse;
 import com.ssafy.alt_tab.member.dto.MemberDto;
-import com.ssafy.alt_tab.member.dto.OAuth2Response;
+import com.ssafy.alt_tab.oauth2.dto.OAuth2Response;
 import com.ssafy.alt_tab.member.entity.MemberEntity;
 import com.ssafy.alt_tab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +12,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
 
-        OAuth2Response oAuth2Response = null;
+        OAuth2Response oAuth2Response;
         if (registrationId.equals("github")) {
             oAuth2Response = new GithubResponse(oAuth2User.getAttributes());
         } else {

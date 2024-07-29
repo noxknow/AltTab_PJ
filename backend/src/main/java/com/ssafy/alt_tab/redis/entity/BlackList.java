@@ -1,16 +1,20 @@
 package com.ssafy.alt_tab.redis.entity;
 
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 
+import static com.ssafy.alt_tab.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
+
 @Getter
 @AllArgsConstructor
-@RedisHash(value = "blacklist", timeToLive = 60 * 60 * 24 * 7)
-//@RedisHash(value = "blacklist", timeToLive = 20)
+@NoArgsConstructor
+@RedisHash(value = "blacklist", timeToLive = REFRESH_TOKEN_EXPIRE_TIME)
 public class BlackList {
+
     @Id
     private String token;
-
 }

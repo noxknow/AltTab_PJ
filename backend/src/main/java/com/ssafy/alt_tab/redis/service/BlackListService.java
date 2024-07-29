@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class BlackListService {
+
     private final BlackListRepository blackListRepository;
 
     public void addToBlacklist(String token) {

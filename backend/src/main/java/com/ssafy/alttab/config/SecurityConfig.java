@@ -2,8 +2,8 @@ package com.ssafy.alt_tab.config;
 
 import com.ssafy.alt_tab.jwt.JWTFilter;
 import com.ssafy.alt_tab.jwt.JWTUtil;
-import com.ssafy.alt_tab.member.service.CustomOAuth2UserService;
-import com.ssafy.alt_tab.oauth2.OAuth2SuccessHandler;
+import com.ssafy.alt_tab.oauth2.service.CustomOAuth2UserService;
+import com.ssafy.alt_tab.oauth2.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -58,7 +57,6 @@ public class SecurityConfig {
 
         //JWTFilter 추가
         http
-//                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
                 .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
@@ -72,8 +70,9 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll()); // 모든 요청을 허용
+//                        .requestMatchers("/").permitAll()
+//                        .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
         http

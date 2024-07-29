@@ -1,20 +1,18 @@
-package com.ssafy.alt_tab.oauth2;
+package com.ssafy.alt_tab.oauth2.handler;
 
 import com.ssafy.alt_tab.jwt.JWTUtil;
-import com.ssafy.alt_tab.member.dto.CustomOAuth2User;
-import jakarta.servlet.ServletException;
+import com.ssafy.alt_tab.oauth2.dto.CustomOAuth2User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
+
+import static com.ssafy.alt_tab.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_TIME;
 
 @Component
 @RequiredArgsConstructor
@@ -22,15 +20,11 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     private final JWTUtil jwtUtil;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        System.out.println("customOAuth2User.getAttributes() = " + customOAuth2User.getAttributes());
 
         String username = customOAuth2User.getUsername();
-//        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-//        Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-//        GrantedAuthority auth = iterator.next();
-//        String role = auth.getAuthority();
-//        String accessToken = jwtUtil.createAccessToken(username, role);
 
         String accessToken = jwtUtil.generateAccessToken(authentication, username);
         jwtUtil.generateRefreshToken(authentication, accessToken, username);
@@ -42,7 +36,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     static public Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
-        cookie.setMaxAge(1800);
+        cookie.setMaxAge((int) ACCESS_TOKEN_EXPIRE_TIME);
         cookie.setPath("/");
         cookie.setSecure(true);
         cookie.setHttpOnly(true);

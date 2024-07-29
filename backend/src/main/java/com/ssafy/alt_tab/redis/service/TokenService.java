@@ -16,34 +16,31 @@ public class TokenService {
 
     private final TokenRepository tokenRepository;
 
-    public void deleteRefreshToken(String memberKey) {
-        tokenRepository.deleteById(memberKey);
+    public void deleteRefreshToken(String username) {
+
+        tokenRepository.deleteById(username);
     }
 
     @Transactional
-    public void saveOrUpdate(String memberKey, String refreshToken, String accessToken) {
+    public void saveOrUpdate(String username, String refreshToken, String accessToken) {
+
         Token token = tokenRepository.findByAccessToken(accessToken)
                 .map(o -> o.updateRefreshToken(refreshToken))
-                .orElseGet(() -> new Token(memberKey, refreshToken, accessToken));
+                .orElseGet(() -> new Token(username, refreshToken, accessToken));
 
         tokenRepository.save(token);
     }
 
     public Token findByAccessTokenOrThrow(String accessToken) {
+
         return tokenRepository.findByAccessToken(accessToken)
                 .orElseThrow(() -> new TokenException(TOKEN_EXPIRED));
     }
 
     @Transactional
     public void updateAccessToken(String accessToken, Token token) {
+
         token.updateAccessToken(accessToken);
         tokenRepository.save(token);
     }
-
-//    @Transactional
-//    public void updateRefreshToken(String refreshToken, Token token) {
-//        token.updateRefreshToken(refreshToken);
-//        tokenRepository.save(token);
-//    }
-
 }

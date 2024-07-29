@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.member.dto;
+package com.ssafy.alt_tab.oauth2.dto;
 
 import java.util.Map;
 

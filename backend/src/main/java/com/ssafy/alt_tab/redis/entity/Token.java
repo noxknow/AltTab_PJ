@@ -1,19 +1,22 @@
 package com.ssafy.alt_tab.redis.entity;
 
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
+import static com.ssafy.alt_tab.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
+
 @Getter
 @AllArgsConstructor
-@RedisHash(value = "jwt", timeToLive = 60 * 60 * 24 * 7)
-//@RedisHash(value = "jwt", timeToLive = 20)
+@NoArgsConstructor
+@RedisHash(value = "jwt", timeToLive = REFRESH_TOKEN_EXPIRE_TIME)
 public class Token {
 
     @Id
-    private String id;
+    private String username;
 
     private String refreshToken;
 
@@ -21,6 +24,7 @@ public class Token {
     private String accessToken;
 
     public Token updateRefreshToken(String refreshToken) {
+
         this.refreshToken = refreshToken;
         return this;
     }

@@ -8,8 +8,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 @EnableRedisRepositories(basePackages = "com.ssafy.alt_tab.redis.repository")
 public class AltTabApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AltTabApplication.class, args);
-	}
-
+    public static void main(String[] args) {
+        SpringApplication.run(AltTabApplication.class, args);
+    }
 }
