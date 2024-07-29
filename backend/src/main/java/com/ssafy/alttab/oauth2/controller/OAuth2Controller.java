@@ -1,7 +1,7 @@
-package com.ssafy.alt_tab.oauth2.controller;
+package com.ssafy.alttab.oauth2.controller;
 
-import com.ssafy.alt_tab.redis.service.BlackListService;
-import com.ssafy.alt_tab.redis.service.TokenService;
+import com.ssafy.alttab.redis.service.BlackListService;
+import com.ssafy.alttab.redis.service.TokenService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
-import static com.ssafy.alt_tab.jwt.JWTUtil.findCookie;
+import static com.ssafy.alttab.jwt.JWTUtil.findCookie;
 
 @Controller
 @RequiredArgsConstructor

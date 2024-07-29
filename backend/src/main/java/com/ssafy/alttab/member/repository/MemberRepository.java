@@ -1,6 +1,6 @@
-package com.ssafy.alt_tab.member.repository;
+package com.ssafy.alttab.member.repository;
 
-import com.ssafy.alt_tab.member.entity.MemberEntity;
+import com.ssafy.alttab.member.entity.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

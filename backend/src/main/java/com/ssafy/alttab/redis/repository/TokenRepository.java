@@ -1,6 +1,6 @@
-package com.ssafy.alt_tab.redis.repository;
+package com.ssafy.alttab.redis.repository;
 
-import com.ssafy.alt_tab.redis.entity.Token;
+import com.ssafy.alttab.redis.entity.Token;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,12 @@
-package com.ssafy.alt_tab.redis.entity;
+package com.ssafy.alttab.redis.entity;
 
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.annotation.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.data.redis.core.RedisHash;
 
-import static com.ssafy.alt_tab.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
+import static com.ssafy.alttab.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
 
 @Getter
 @AllArgsConstructor

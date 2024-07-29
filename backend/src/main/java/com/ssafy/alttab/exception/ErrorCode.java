@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.exception;
+package com.ssafy.alttab.exception;
 
 import static org.springframework.http.HttpStatus.*;
 

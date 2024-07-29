@@ -1,9 +1,9 @@
-package com.ssafy.alt_tab.jwt;
+package com.ssafy.alttab.jwt;
 
-import com.ssafy.alt_tab.oauth2.exception.TokenException;
-import com.ssafy.alt_tab.redis.entity.Token;
-import com.ssafy.alt_tab.redis.service.BlackListService;
-import com.ssafy.alt_tab.redis.service.TokenService;
+import com.ssafy.alttab.oauth2.exception.TokenException;
+import com.ssafy.alttab.redis.entity.Token;
+import com.ssafy.alttab.redis.service.BlackListService;
+import com.ssafy.alttab.redis.service.TokenService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -27,10 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ssafy.alt_tab.exception.ErrorCode.INVALID_JWT_SIGNATURE;
-import static com.ssafy.alt_tab.exception.ErrorCode.INVALID_TOKEN;
-import static com.ssafy.alt_tab.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_TIME;
-import static com.ssafy.alt_tab.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
+import static com.ssafy.alttab.exception.ErrorCode.INVALID_JWT_SIGNATURE;
+import static com.ssafy.alttab.exception.ErrorCode.INVALID_TOKEN;
+import static com.ssafy.alttab.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_TIME;
+import static com.ssafy.alttab.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
 
 @Component
 public class JWTUtil { // JWT 발급 & 검증

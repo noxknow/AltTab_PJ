@@ -1,7 +1,7 @@
-package com.ssafy.alt_tab.oauth2.handler;
+package com.ssafy.alttab.oauth2.handler;
 
-import com.ssafy.alt_tab.jwt.JWTUtil;
-import com.ssafy.alt_tab.oauth2.dto.CustomOAuth2User;
+import com.ssafy.alttab.jwt.JWTUtil;
+import com.ssafy.alttab.oauth2.dto.CustomOAuth2User;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static com.ssafy.alt_tab.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_TIME;
+import static com.ssafy.alttab.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_TIME;
 
 @Component
 @RequiredArgsConstructor

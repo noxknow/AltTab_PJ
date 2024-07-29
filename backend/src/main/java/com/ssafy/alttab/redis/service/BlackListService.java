@@ -1,7 +1,7 @@
-package com.ssafy.alt_tab.redis.service;
+package com.ssafy.alttab.redis.service;
 
-import com.ssafy.alt_tab.redis.entity.BlackList;
-import com.ssafy.alt_tab.redis.repository.BlackListRepository;
+import com.ssafy.alttab.redis.entity.BlackList;
+import com.ssafy.alttab.redis.repository.BlackListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.member.controller;
+package com.ssafy.alttab.member.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

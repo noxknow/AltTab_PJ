@@ -1,7 +1,7 @@
-package com.ssafy.alt_tab.jwt;
+package com.ssafy.alttab.jwt;
 
-import com.ssafy.alt_tab.oauth2.dto.CustomOAuth2User;
-import com.ssafy.alt_tab.member.dto.MemberDto;
+import com.ssafy.alttab.oauth2.dto.CustomOAuth2User;
+import com.ssafy.alttab.member.dto.MemberDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,8 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.ssafy.alt_tab.jwt.JWTUtil.findCookie;
-import static com.ssafy.alt_tab.oauth2.handler.OAuth2SuccessHandler.createCookie;
+import static com.ssafy.alttab.jwt.JWTUtil.findCookie;
+import static com.ssafy.alttab.oauth2.handler.OAuth2SuccessHandler.createCookie;
 
 @RequiredArgsConstructor
 public class JWTFilter extends OncePerRequestFilter {

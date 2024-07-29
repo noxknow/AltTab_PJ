@@ -1,6 +1,6 @@
-package com.ssafy.alt_tab.redis.repository;
+package com.ssafy.alttab.redis.repository;
 
-import com.ssafy.alt_tab.redis.entity.BlackList;
+import com.ssafy.alttab.redis.entity.BlackList;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

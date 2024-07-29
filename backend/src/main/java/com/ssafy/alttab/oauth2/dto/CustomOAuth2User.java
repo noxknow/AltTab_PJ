@@ -1,6 +1,6 @@
-package com.ssafy.alt_tab.oauth2.dto;
+package com.ssafy.alttab.oauth2.dto;
 
-import com.ssafy.alt_tab.member.dto.MemberDto;
+import com.ssafy.alttab.member.dto.MemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

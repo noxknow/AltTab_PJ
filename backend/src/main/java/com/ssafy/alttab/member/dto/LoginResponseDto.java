@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.member.dto;
+package com.ssafy.alttab.member.dto;
 
 public class LoginResponseDto {
 }

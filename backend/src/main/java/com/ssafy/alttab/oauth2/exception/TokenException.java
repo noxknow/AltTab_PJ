@@ -1,7 +1,7 @@
-package com.ssafy.alt_tab.oauth2.exception;
+package com.ssafy.alttab.oauth2.exception;
 
-import com.ssafy.alt_tab.exception.CustomException;
-import com.ssafy.alt_tab.exception.ErrorCode;
+import com.ssafy.alttab.exception.CustomException;
+import com.ssafy.alttab.exception.ErrorCode;
 
 public class TokenException extends CustomException {
 

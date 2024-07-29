@@ -1,13 +1,13 @@
-package com.ssafy.alt_tab.redis.service;
+package com.ssafy.alttab.redis.service;
 
-import com.ssafy.alt_tab.oauth2.exception.TokenException;
-import com.ssafy.alt_tab.redis.entity.Token;
-import com.ssafy.alt_tab.redis.repository.TokenRepository;
+import com.ssafy.alttab.oauth2.exception.TokenException;
+import com.ssafy.alttab.redis.entity.Token;
+import com.ssafy.alttab.redis.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.ssafy.alt_tab.exception.ErrorCode.TOKEN_EXPIRED;
+import static com.ssafy.alttab.exception.ErrorCode.TOKEN_EXPIRED;
 
 
 @Service

@@ -1,4 +1,4 @@
-package com.ssafy.alt_tab.jwt;
+package com.ssafy.alttab.jwt;
 
 public class TokenExpireTime {
     public static final long ACCESS_TOKEN_EXPIRE_TIME = 60 * 30;

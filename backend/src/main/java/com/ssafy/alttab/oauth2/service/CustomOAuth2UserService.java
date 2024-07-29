@@ -1,11 +1,11 @@
-package com.ssafy.alt_tab.oauth2.service;
+package com.ssafy.alttab.oauth2.service;
 
-import com.ssafy.alt_tab.oauth2.dto.CustomOAuth2User;
-import com.ssafy.alt_tab.oauth2.dto.GithubResponse;
-import com.ssafy.alt_tab.member.dto.MemberDto;
-import com.ssafy.alt_tab.oauth2.dto.OAuth2Response;
-import com.ssafy.alt_tab.member.entity.MemberEntity;
-import com.ssafy.alt_tab.member.repository.MemberRepository;
+import com.ssafy.alttab.oauth2.dto.CustomOAuth2User;
+import com.ssafy.alttab.oauth2.dto.GithubResponse;
+import com.ssafy.alttab.member.dto.MemberDto;
+import com.ssafy.alttab.oauth2.dto.OAuth2Response;
+import com.ssafy.alttab.member.entity.MemberEntity;
+import com.ssafy.alttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
