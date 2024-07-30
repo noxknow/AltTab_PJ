@@ -25,6 +25,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService CustomOAuth2UserService;
     private final OAuth2SuccessHandler OAuth2SuccessHandler;
     private final JWTUtil jwtUtil;
+    private final UrlProperties urlProperties;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,7 +34,7 @@ public class SecurityConfig {
         http
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
-                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+                    configuration.setAllowedOrigins(Collections.singletonList(urlProperties.getFront()));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));

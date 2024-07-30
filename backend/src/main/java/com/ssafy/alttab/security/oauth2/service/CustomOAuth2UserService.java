@@ -42,8 +42,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
             Member member = new Member();
             member.setUsername(username);
-            member.setEmail(oAuth2Response.getEmail());
             member.setName(oAuth2Response.getName());
+            member.setEmail(oAuth2Response.getEmail());
+            member.setAvatar_url(oAuth2Response.getAvatarUrl());
+            member.setHtml_url(oAuth2Response.getHtmlUrl());
             member.setRole("ROLE_USER");
 
             memberRepository.save(member);
@@ -51,18 +53,24 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             MemberDto memberDto = new MemberDto();
             memberDto.setUsername(username);
             memberDto.setName(oAuth2Response.getName());
+//            memberDto.setAvatar_url(oAuth2Response.getAvatarUrl());
+//            memberDto.setHtml_url(oAuth2Response.getHtmlUrl());
             memberDto.setRole("ROLE_USER");
 
             return new CustomOAuth2User(memberDto);
         } else {
-            existData.setEmail(oAuth2Response.getEmail());
             existData.setName(oAuth2Response.getName());
+            existData.setEmail(oAuth2Response.getEmail());
+            existData.setAvatar_url(oAuth2Response.getAvatarUrl());
+            existData.setHtml_url(oAuth2Response.getHtmlUrl());
 
             memberRepository.save(existData);
 
             MemberDto memberDto = new MemberDto();
             memberDto.setUsername(existData.getUsername());
             memberDto.setName(oAuth2Response.getName());
+//            memberDto.setAvatar_url(oAuth2Response.getAvatarUrl());
+//            memberDto.setHtml_url(oAuth2Response.getHtmlUrl());
             memberDto.setRole(existData.getRole());
 
             return new CustomOAuth2User(memberDto);

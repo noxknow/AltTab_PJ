@@ -1,5 +1,6 @@
 package com.ssafy.alttab.security.oauth2.dto;
 
+import java.io.Serializable;
 import java.util.Map;
 
 public class GithubResponse implements OAuth2Response {
@@ -28,5 +29,15 @@ public class GithubResponse implements OAuth2Response {
     @Override
     public String getName() {
         return attribute.get("login").toString();
+    }
+
+    @Override
+    public String getAvatarUrl() {
+        return attribute.get("avatar_url").toString();
+    }
+
+    @Override
+    public String getHtmlUrl() {
+        return attribute.get("html_url").toString();
     }
 }

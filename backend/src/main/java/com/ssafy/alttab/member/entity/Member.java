@@ -10,7 +10,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-    public class Member {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,5 +18,7 @@ import lombok.Setter;
     private String username;
     private String name;
     private String email;
+    private String avatar_url;
+    private String html_url;
     private String role;
 }
