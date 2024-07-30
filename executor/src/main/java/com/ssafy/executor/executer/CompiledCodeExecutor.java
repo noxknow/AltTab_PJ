@@ -2,6 +2,8 @@ package com.ssafy.executor.executer;
 
 import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
+import com.ssafy.executor.common.exception.CodeExecutionException;
+import com.ssafy.executor.dto.CodeExecutionRequestDto;
 import com.ssafy.executor.dto.CodeExecutionResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,19 +25,17 @@ public class CompiledCodeExecutor {
     private final CodeCompiler codeCompiler;
 
     /**
-     * 코드 실행
      *
-     * @param code
-     * @param input
-     * @return 실행결과
+     * @param request
+     * @return
      * @throws Exception
      */
-    public CodeExecutionResponseDto executeCode(String code, String input) throws Exception {
+    public CodeExecutionResponseDto executeCode(CodeExecutionRequestDto request) throws Exception {
         Path tempDir = createTempDirectory();
         try {
-            Path mainJavaFile = writeCodeToFile(tempDir, code);
-            compileCode(mainJavaFile);
-            return runCode(tempDir, input);
+            Path mainJavaFile = writeCodeToFile(tempDir, request.getCode());
+            compileCode(mainJavaFile, request.getId());
+            return runCode(request.getId(), tempDir, request.getInput());
         } finally {
             cleanupTempDirectory(tempDir);
         }
@@ -71,9 +71,9 @@ public class CompiledCodeExecutor {
      * @param mainJavaFile 컴파일할 Java 파일의 Path
      * @throws Exception 컴파일 실패 시 발생
      */
-    private void compileCode(Path mainJavaFile) throws Exception {
+    private void compileCode(Path mainJavaFile, Long id) throws Exception {
         log.info(LogMessage.COMPILE_STARTED.getMessage(), mainJavaFile);
-        codeCompiler.compileCode(mainJavaFile);
+        codeCompiler.compileCode(mainJavaFile, id);
     }
 
     /**
@@ -84,7 +84,7 @@ public class CompiledCodeExecutor {
      * @return 코드 실행 결과
      * @throws IOException 프로세스 실행 또는 입출력 오류 시 발생
      */
-    private CodeExecutionResponseDto runCode(Path tempDir, String input) throws IOException, TimeoutException, ExecutionException, InterruptedException {
+    private CodeExecutionResponseDto runCode(Long id, Path tempDir, String input) throws IOException, TimeoutException, ExecutionException, InterruptedException {
         log.info(LogMessage.EXECUTION_STARTED.getMessage(), input);
         ProcessBuilder runProcessBuilder = new ProcessBuilder("java", "-cp", tempDir.toString(), MAIN_CLASS_NAME);
         runProcessBuilder.redirectErrorStream(true);
@@ -92,8 +92,8 @@ public class CompiledCodeExecutor {
 
         provideInput(runProcess, input);
 
-        String output = executeWithTimeout(runProcess);
-        return handleProcessResult(runProcess, output);
+        String output = executeWithTimeout(runProcess, id);
+        return handleProcessResult(id, runProcess, output);
     }
 
     /**
@@ -121,7 +121,7 @@ public class CompiledCodeExecutor {
      * @throws ExecutionException 실행 중 예외가 발생한 경우
      * @throws InterruptedException 실행이 중단된 경우
      */
-    private String executeWithTimeout(Process process) throws TimeoutException, ExecutionException, InterruptedException {
+    private String executeWithTimeout(Process process, Long id) throws ExecutionException, InterruptedException {
         StringBuilder output = new StringBuilder();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
@@ -129,7 +129,7 @@ public class CompiledCodeExecutor {
             future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
             return output.toString();
         } catch (TimeoutException e) {
-            throw new TimeoutException(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS));
+            throw new CodeExecutionException(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS), id);
         } finally {
             executor.shutdownNow();
         }
@@ -161,16 +161,18 @@ public class CompiledCodeExecutor {
      * @param output 프로세스의 출력 문자열
      * @return 코드 실행 결과를 담은 CodeExecutionResponseDto
      */
-    private CodeExecutionResponseDto handleProcessResult(Process process, String output) {
+    private CodeExecutionResponseDto handleProcessResult(Long id, Process process, String output) {
         if (process.exitValue() != 0) {
             log.error(LogMessage.EXECUTION_FAILED.getMessage(), ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()));
             return CodeExecutionResponseDto.builder()
+                    .id(id)
                     .errorMessage(ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()))
                     .build();
         }
 
         log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage());
         return CodeExecutionResponseDto.builder()
+                .id(id)
                 .output(output)
                 .build();
     }
