@@ -1,5 +1,6 @@
 package com.ssafy.alttab.compiler.entity;
 
+import com.ssafy.alttab.compiler.enums.ExecutionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,4 +28,26 @@ public class CodeSnippet {
     @Lob
     @Column(name = "code", columnDefinition = "TEXT")
     private String code;
+
+    @Column(name = "execution_status")
+    private ExecutionStatus executionStatus;
+
+    //==비즈니스 로직==//
+
+    /**
+     * 코드 변경
+     * @param code
+     */
+    public void changeCode(String code){
+        this.code = code;
+    }
+
+    /**
+     * 상태 변경
+     * @param executionStatus
+     */
+    public void changeExecutionStatus(ExecutionStatus executionStatus){
+        this.executionStatus = executionStatus;
+    }
+
 }
