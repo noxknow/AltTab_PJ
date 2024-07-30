@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,6 +21,7 @@ public class CodeService {
 
     private final RabbitTemplate rabbitTemplate;
     private final CodeSnippetRepository codeSnippetRepository;
+    private final CacheManager cacheManager;
 
     /**
      * 코드와 실행 ID를 저장하거나 업데이트합
@@ -92,54 +95,60 @@ public class CodeService {
         return response;
     }
 
-    /**
-     * 코드 실행 결과를 받아 처리
-     *
-     * @param response 코드 실행 결과를 담은 DTO
-     */
     @RabbitListener(queues = "code-execution-response-queue")
     public void receive(CodeExecutionResponseDto response) {
         Long id = response.getId();
-        Optional<CodeSnippet> codeSnippet = codeSnippetRepository.findById(id);
+        codeSnippetRepository.findById(id)
+                .ifPresent(snippet -> processExecutionResponse(snippet, response));
+    }
 
-        if (codeSnippet.isPresent()) {
-            CodeSnippet update = codeSnippet.get();
-            update.changeExecutionStatus(ExecutionStatus.DONE);
-            codeSnippetRepository.save(update);
+    private void processExecutionResponse(CodeSnippet snippet, CodeExecutionResponseDto response) {
+        updateCodeSnippet(snippet);
+        cacheOutput(response.getId(), response);
+    }
+
+    private void updateCodeSnippet(CodeSnippet snippet) {
+        snippet.changeExecutionStatus(ExecutionStatus.DONE);
+        codeSnippetRepository.save(snippet);
+    }
+
+    private void cacheOutput(Long id, CodeExecutionResponseDto response) {
+        Cache cache = cacheManager.getCache("outputCache");
+        if (cache != null) {
+            cache.put(id, response);
         }
     }
 
-    /**
-     * 주어진 ID에 해당하는 코드 실행 결과를 조회
-     *
-     * @param id 조회할 코드 스니펫의 ID
-     * @return 코드 실행 결과를 담은 CodeExecutionResponseDto 객체
-     */
     public CodeExecutionResponseDto getExecutionResult(Long id) {
-        Optional<CodeSnippet> codeSnippet = codeSnippetRepository.findById(id);
-        return codeSnippet.map(this::mapToResponseDto)
+        return codeSnippetRepository.findById(id)
+                .map(this::createResponseDtoFromSnippet)
                 .orElseGet(() -> createFailResponseDto(id));
     }
 
-    /**
-     * CodeSnippet 객체를 CodeExecutionResponseDto 객체로 변환
-     *
-     * @param snippet 변환할 CodeSnippet 객체
-     * @return 변환된 CodeExecutionResponseDto 객체
-     */
-    private CodeExecutionResponseDto mapToResponseDto(CodeSnippet snippet) {
+    private CodeExecutionResponseDto createResponseDtoFromSnippet(CodeSnippet snippet) {
+        CodeExecutionResponseDto result = getOutputFromCache(snippet.getId());
         return CodeExecutionResponseDto.builder()
                 .id(snippet.getId())
                 .status(snippet.getExecutionStatus())
+                .output(result.getOutput())
+                .errorMessage(result.getErrorMessage())
                 .build();
     }
 
-    /**
-     * 실행 실패 상태의 CodeExecutionResponseDto 객체를 생성
-     *
-     * @param id 실패한 코드 스니펫의 ID
-     * @return 실행 실패 상태를 나타내는 CodeExecutionResponseDto 객체
-     */
+    private CodeExecutionResponseDto getOutputFromCache(Long id) {
+        Cache cache = cacheManager.getCache("outputCache");
+        if (cache != null) {
+            Cache.ValueWrapper wrapper = cache.get(id);
+            if (wrapper != null) {
+                Object value = wrapper.get();
+                if (value instanceof CodeExecutionResponseDto) {
+                    return (CodeExecutionResponseDto) value;
+                }
+            }
+        }
+        return null;
+    }
+
     private CodeExecutionResponseDto createFailResponseDto(Long id) {
         return CodeExecutionResponseDto.builder()
                 .id(id)
