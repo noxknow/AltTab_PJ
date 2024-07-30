@@ -95,6 +95,11 @@ public class CodeService {
         return response;
     }
 
+    /**
+     * RabbitMQ로부터 코드 실행 결과를 받아 처리하는 메서드
+     *
+     * @param response 코드 실행 결과를 담은 DTO
+     */
     @RabbitListener(queues = "code-execution-response-queue")
     public void receive(CodeExecutionResponseDto response) {
         Long id = response.getId();
@@ -102,16 +107,33 @@ public class CodeService {
                 .ifPresent(snippet -> processExecutionResponse(snippet, response));
     }
 
+    /**
+     * 코드 실행 결과를 처리하고 캐시에 저장하는 메서드
+     *
+     * @param snippet 코드 스니펫 엔티티
+     * @param response 코드 실행 결과를 담은 DTO
+     */
     private void processExecutionResponse(CodeSnippet snippet, CodeExecutionResponseDto response) {
         updateCodeSnippet(snippet);
         cacheOutput(response.getId(), response);
     }
 
+    /**
+     * 코드 스니펫의 실행 상태를 업데이트하는 메서드
+     *
+     * @param snippet 업데이트할 코드 스니펫 엔티티
+     */
     private void updateCodeSnippet(CodeSnippet snippet) {
         snippet.changeExecutionStatus(ExecutionStatus.DONE);
         codeSnippetRepository.save(snippet);
     }
 
+    /**
+     * 코드 실행 결과를 캐시에 저장하는 메서드
+     *
+     * @param id 코드 스니펫의 ID
+     * @param response 캐시에 저장할 코드 실행 결과 DTO
+     */
     private void cacheOutput(Long id, CodeExecutionResponseDto response) {
         Cache cache = cacheManager.getCache("outputCache");
         if (cache != null) {
@@ -119,12 +141,24 @@ public class CodeService {
         }
     }
 
+    /**
+     * 주어진 ID에 해당하는 코드 실행 결과를 조회하는 메서드
+     *
+     * @param id 조회할 코드 스니펫의 ID
+     * @return 코드 실행 결과를 담은 DTO
+     */
     public CodeExecutionResponseDto getExecutionResult(Long id) {
         return codeSnippetRepository.findById(id)
                 .map(this::createResponseDtoFromSnippet)
                 .orElseGet(() -> createFailResponseDto(id));
     }
 
+    /**
+     * 코드 스니펫 엔티티로부터 실행 결과 DTO를 생성하는 메서드
+     *
+     * @param snippet 코드 스니펫 엔티티
+     * @return 생성된 코드 실행 결과 DTO
+     */
     private CodeExecutionResponseDto createResponseDtoFromSnippet(CodeSnippet snippet) {
         CodeExecutionResponseDto result = getOutputFromCache(snippet.getId());
         return CodeExecutionResponseDto.builder()
@@ -135,6 +169,12 @@ public class CodeService {
                 .build();
     }
 
+    /**
+     * 캐시에서 코드 실행 결과를 조회하는 메서드
+     *
+     * @param id 조회할 코드 스니펫의 ID
+     * @return 캐시에서 조회된 코드 실행 결과 DTO, 없으면 null
+     */
     private CodeExecutionResponseDto getOutputFromCache(Long id) {
         Cache cache = cacheManager.getCache("outputCache");
         if (cache != null) {
@@ -149,6 +189,12 @@ public class CodeService {
         return null;
     }
 
+    /**
+     * 실행 실패 상태의 응답 DTO를 생성하는 메서드
+     *
+     * @param id 실패한 코드 스니펫의 ID
+     * @return 실행 실패 상태를 나타내는 코드 실행 결과 DTO
+     */
     private CodeExecutionResponseDto createFailResponseDto(Long id) {
         return CodeExecutionResponseDto.builder()
                 .id(id)
