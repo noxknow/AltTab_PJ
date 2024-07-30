@@ -5,7 +5,7 @@ import { fabric } from 'fabric';
 import Toolbar from './Toolbar';
 import styles from './CanvasSection.module.scss';
 import CloseSVG from '@/assets/icons/close.svg?react';
-import { compressData, decompressData } from './CompressUtil';
+import { compressData, decompressData } from '@/utils/CompressUtil';
 
 function App() {
   const stompClient = useRef<Client | null>(null);
