@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CodeExecutionRequestDto {
+    private Long id;
     private String input;
     private String code;
 }
