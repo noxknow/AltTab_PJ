@@ -6,16 +6,18 @@ import { NoStudy } from '@/pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
 import { StudySetting } from '@/pages/StudySetting/StudySetting';
 import { CompilerProvider } from '@/contexts/compiler';
+import { NotFound } from '@/pages/NotFound/NotFound';
 
 export const useRouter = () =>
   createBrowserRouter([
     {
       path: '/',
       element: <Layout />,
+      errorElement: <NotFound />,
       children: [
         { index: true, element: <MainPage /> },
         {
-          path: 'compiler',
+          path: 'compiler/:studyId/:problemId',
           element: (
             <CompilerProvider>
               <Compiler />
