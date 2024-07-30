@@ -6,7 +6,7 @@ import GithubSVG from '@/assets/icons/github.svg?react';
 import UserSVG from '@/assets/icons/user.svg?react';
 import { Button } from '@/components/Button/Button';
 import { Alarm } from '@/components/Alarm/Alarm';
-import { baseURL } from '@/services/api';
+import { URL } from '@/constants/url';
 
 import styles from './Header.module.scss';
 
@@ -35,7 +35,7 @@ export function Header() {
         </div>
       ) : (
         <div className={`${styles.header_item} ${styles.right_item}`}>
-          <NavLink to={`${baseURL}/oauth2/authorization/github`}>
+          <NavLink to={`${URL.LOGIN}/oauth2/authorization/github`}>
             <Button color="black" fill={false} size="small">
               <GithubSVG />
               <div className={styles.login}>시작하기</div>
