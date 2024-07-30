@@ -3,41 +3,45 @@ import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import styles from './EditorBlock.module.scss';
 
 type EditorBlockProps = {
-  index: number;
-  addBlock: (index: number) => void;
-  deleteBlock: (index: number) => void;
+  id: string;
+  text: string;
+  option: string;
+  addBlock: (id: string) => void;
+  deleteBlock: (id: string) => void;
 };
 
 export default function EditorBlock({
-  index,
+  id,
+  text,
+  option,
   addBlock,
   deleteBlock,
 }: EditorBlockProps) {
-  const text = useRef<string>('');
-  const [name, setName] = useState<string>('default');
-
+  const innerText = useRef<string>(text);
+  const [innerOption, setInnerOption] = useState(option);
   const handleChange = (e: ContentEditableEvent) => {
-    text.current = e.target.value;
+    innerText.current = e.target.value;
   };
-
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
-    if (e.key === '/') {
-      setName('zz');
-    } else if (e.key === 'Enter') {
+    if (e.key === 'Enter') {
       e.preventDefault();
-      addBlock(index);
+      addBlock(id);
+      return;
     } else if (e.key === 'Backspace') {
-      if (text.current === '') {
+      if (innerText.current === '') {
         e.preventDefault();
-        deleteBlock(index);
+        deleteBlock(id);
+        return;
       }
+    } else if (e.key === '/') {
+      setInnerOption('zz');
+      return;
     }
   };
-
   return (
     <ContentEditable
-      className={`class${index} ${styles[name]}`}
-      html={text.current}
+      className={`a${id} ${styles[innerOption]}`}
+      html={innerText.current}
       onChange={handleChange}
       onKeyDown={onKeyDownHandler}
     />
