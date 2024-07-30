@@ -81,7 +81,7 @@ export function Compiler() {
           </Button>
         </div>
       </div>
-      {canvasIsOpen && <CanvasSection handleCanvas={closeCanvas} />}
+      {<CanvasSection/>}
     </div>
   );
 }
