@@ -1,6 +1,6 @@
 package com.ssafy.alttab.config;
 
-import com.ssafy.alt_tab.drawing.service.RedisSubscriber;
+import com.ssafy.alttab.drawing.service.RedisSubscriber;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;

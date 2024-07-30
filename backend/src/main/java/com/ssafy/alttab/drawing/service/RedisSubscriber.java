@@ -1,7 +1,7 @@
-package com.ssafy.alt_tab.drawing.service;
+package com.ssafy.alttab.drawing.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ssafy.alt_tab.drawing.dto.DrawingRequestDto;
+import com.ssafy.alttab.drawing.dto.DrawingRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
