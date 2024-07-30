@@ -13,12 +13,11 @@ import lombok.Setter;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String username;
-    private String name;
+    private Long memberId;
+    private String memberKey;
+    private String memberName;
     private String email;
-    private String avatar_url;
-    private String html_url;
+    private String avatarUrl;
+    private String htmlUrl;
     private String role;
 }

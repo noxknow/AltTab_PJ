@@ -57,8 +57,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         //JWTFilter 추가
-        http
-                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+//        http
+//                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http

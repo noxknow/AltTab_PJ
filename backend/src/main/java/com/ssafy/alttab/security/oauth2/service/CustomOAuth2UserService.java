@@ -36,16 +36,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-        Member existData = memberRepository.findByUsername(username);
+        Member existData = memberRepository.findByMemberKey(username);
         System.out.println("exist Data: " + existData);
 
         if (existData == null) {
             Member member = new Member();
-            member.setUsername(username);
-            member.setName(oAuth2Response.getName());
+            member.setMemberKey(username);
+            member.setMemberName(oAuth2Response.getName());
             member.setEmail(oAuth2Response.getEmail());
-            member.setAvatar_url(oAuth2Response.getAvatarUrl());
-            member.setHtml_url(oAuth2Response.getHtmlUrl());
+            member.setAvatarUrl(oAuth2Response.getAvatarUrl());
+            member.setHtmlUrl(oAuth2Response.getHtmlUrl());
             member.setRole("ROLE_USER");
 
             memberRepository.save(member);
@@ -53,24 +53,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             MemberDto memberDto = new MemberDto();
             memberDto.setUsername(username);
             memberDto.setName(oAuth2Response.getName());
-//            memberDto.setAvatar_url(oAuth2Response.getAvatarUrl());
-//            memberDto.setHtml_url(oAuth2Response.getHtmlUrl());
             memberDto.setRole("ROLE_USER");
 
             return new CustomOAuth2User(memberDto);
         } else {
-            existData.setName(oAuth2Response.getName());
+            existData.setMemberName(oAuth2Response.getName());
             existData.setEmail(oAuth2Response.getEmail());
-            existData.setAvatar_url(oAuth2Response.getAvatarUrl());
-            existData.setHtml_url(oAuth2Response.getHtmlUrl());
+            existData.setAvatarUrl(oAuth2Response.getAvatarUrl());
+            existData.setHtmlUrl(oAuth2Response.getHtmlUrl());
 
             memberRepository.save(existData);
 
             MemberDto memberDto = new MemberDto();
-            memberDto.setUsername(existData.getUsername());
+            memberDto.setUsername(existData.getMemberKey());
             memberDto.setName(oAuth2Response.getName());
-//            memberDto.setAvatar_url(oAuth2Response.getAvatarUrl());
-//            memberDto.setHtml_url(oAuth2Response.getHtmlUrl());
             memberDto.setRole(existData.getRole());
 
             return new CustomOAuth2User(memberDto);
