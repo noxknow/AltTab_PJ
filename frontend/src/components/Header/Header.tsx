@@ -6,17 +6,13 @@ import GithubSVG from '@/assets/icons/github.svg?react';
 import UserSVG from '@/assets/icons/user.svg?react';
 import { Button } from '@/components/Button/Button';
 import { Alarm } from '@/components/Alarm/Alarm';
+import { URL } from '@/constants/url';
 
 import styles from './Header.module.scss';
 
 export function Header() {
   // TODO : 사용자 로그인 상태 처리
   const isLoggedIn: boolean = false;
-
-  // TODO :
-  function onClickLogin() {
-    console.log('login');
-  }
 
   return (
     <header className={styles.header}>
@@ -39,15 +35,12 @@ export function Header() {
         </div>
       ) : (
         <div className={`${styles.header_item} ${styles.right_item}`}>
-          <Button
-            color="black"
-            fill={false}
-            size="small"
-            onClick={onClickLogin}
-          >
-            <GithubSVG />
-            <div className={styles.login}>시작하기</div>
-          </Button>
+          <NavLink to={`${URL.LOGIN}/oauth2/authorization/github`}>
+            <Button color="black" fill={false} size="small">
+              <GithubSVG />
+              <div className={styles.login}>시작하기</div>
+            </Button>
+          </NavLink>
         </div>
       )}
     </header>
