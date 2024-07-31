@@ -24,11 +24,14 @@ export default function EditorBlock({
 }: EditorBlockProps) {
   const innerText = useRef<string>(text);
   const [innerOption, setInnerOption] = useState(option);
+  const [showBlock, setShowBlock] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showImageInput, setShowImageInput] = useState(false);
 
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
   };
+
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -43,7 +46,6 @@ export default function EditorBlock({
     } else if (e.key === '/') {
       e.preventDefault();
       setShowDropdown(true);
-      // setInnerOption('zz');
       return;
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -55,18 +57,67 @@ export default function EditorBlock({
       return;
     }
   };
+
   const handleOption = (dropdownOption: string) => {
+    if (dropdownOption === 'image') {
+      setShowBlock(false);
+      setShowImageInput(true);
+    }
     setInnerOption(dropdownOption);
+    setShowDropdown(false);
   };
+
+  const handleImageUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (reader.result) {
+        const imageUrl = reader.result as string;
+        innerText.current = `<img src="${imageUrl}" alt="image" />`;
+        setShowImageInput(false);
+        setShowBlock(true);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith('image/')) {
+        setShowBlock(false);
+        const file = items[i].getAsFile();
+        if (file) {
+          handleImageUpload(file);
+        }
+      }
+    }
+  };
+
   return (
-    <div>
-      <ContentEditable
-        className={`a${id} ${styles[innerOption]}`}
-        html={innerText.current}
-        onChange={handleChange}
-        onKeyDown={onKeyDownHandler}
-      />
+    <div onPaste={handlePaste}>
+      {showBlock && (
+        <ContentEditable
+          className={`a${id} ${styles[innerOption]}`}
+          html={innerText.current}
+          onChange={handleChange}
+          onKeyDown={onKeyDownHandler}
+        />
+      )}
       {showDropdown && <Dropdown handleOption={handleOption} />}
+      {showImageInput && (
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                handleImageUpload(file);
+              }
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export default function EditorPage() {
   const prevLengthRef = useRef(blocks.length);
 
   const addBlock = (id: string) => {
-    const newBlock: Block = { id: v4(), text: '', option: 'content' };
+    const newBlock: Block = { id: v4(), text: '', option: 'header' };
 
     setCaretId(newBlock.id);
 
@@ -78,7 +78,6 @@ export default function EditorPage() {
 
       prevLengthRef.current = blocks.length;
       blocksRef.current = blocks;
-      // console.log(newRange);
 
       if (selection) {
         selection.removeAllRanges();
@@ -107,7 +106,6 @@ export default function EditorPage() {
             : pos,
         );
       }
-      console.log(newRange);
       if (selection) {
         selection.removeAllRanges();
         selection.addRange(newRange);
@@ -135,7 +133,6 @@ export default function EditorPage() {
             : pos,
         );
       }
-      console.log(newRange);
       if (selection) {
         selection.removeAllRanges();
         selection.addRange(newRange);
