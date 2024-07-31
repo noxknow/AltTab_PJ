@@ -10,14 +10,14 @@ type Block = {
 };
 
 export default function EditorPage() {
-  const initialBlock = { id: v4(), text: '', option: 'default' };
+  const initialBlock = { id: v4(), text: '', option: 'header' };
   const [blocks, setBlocks] = useState<Block[]>([initialBlock]);
   const [caretId, setCaretId] = useState(initialBlock.id);
   const blocksRef = useRef(blocks);
   const prevLengthRef = useRef(blocks.length);
 
   const addBlock = (id: string) => {
-    const newBlock: Block = { id: v4(), text: '', option: 'default' };
+    const newBlock: Block = { id: v4(), text: '', option: 'content' };
 
     setCaretId(newBlock.id);
 

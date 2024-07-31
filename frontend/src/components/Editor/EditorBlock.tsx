@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import styles from './EditorBlock.module.scss';
+import Dropdown from './Dropdown';
 
 type EditorBlockProps = {
   id: string;
@@ -23,6 +24,8 @@ export default function EditorBlock({
 }: EditorBlockProps) {
   const innerText = useRef<string>(text);
   const [innerOption, setInnerOption] = useState(option);
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
   };
@@ -38,7 +41,9 @@ export default function EditorBlock({
         return;
       }
     } else if (e.key === '/') {
-      setInnerOption('zz');
+      e.preventDefault();
+      setShowDropdown(true);
+      // setInnerOption('zz');
       return;
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
@@ -50,12 +55,18 @@ export default function EditorBlock({
       return;
     }
   };
+  const handleOption = (dropdownOption: string) => {
+    setInnerOption(dropdownOption);
+  };
   return (
-    <ContentEditable
-      className={`a${id} ${styles[innerOption]}`}
-      html={innerText.current}
-      onChange={handleChange}
-      onKeyDown={onKeyDownHandler}
-    />
+    <div>
+      <ContentEditable
+        className={`a${id} ${styles[innerOption]}`}
+        html={innerText.current}
+        onChange={handleChange}
+        onKeyDown={onKeyDownHandler}
+      />
+      {showDropdown && <Dropdown handleOption={handleOption} />}
+    </div>
   );
 }
