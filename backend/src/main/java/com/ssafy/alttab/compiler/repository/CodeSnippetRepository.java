@@ -5,5 +5,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CodeSnippetRepository extends JpaRepository<CodeSnippet, Long> {
-    Optional<CodeSnippet> findById(Long id);
+    Optional<CodeSnippet> findByStudyGroupIdAndProblemIdAndProblemTab(Long studyGroupId, Long problemId, Long problemTab);
 }
