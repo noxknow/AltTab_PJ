@@ -25,23 +25,22 @@ public class CodeExecutorAspect {
     }
 
     private CodeExecutionResponseDto buildErrorResponse(Throwable ex, ProceedingJoinPoint joinPoint) {
-        Long id = extractIdFromArgs(joinPoint.getArgs());
+        CodeExecutionRequestDto request = extractRequestFromArgs(joinPoint.getArgs());
         return CodeExecutionResponseDto.builder()
-                .id(id)
+                .studyGroupId(request.getStudyGroupId())
+                .problemId(request.getProblemId())
+                .problemTab(request.getProblemTab())
                 .errorMessage(ex.getMessage())
                 .build();
     }
 
-    private Long extractIdFromArgs(Object[] args) {
+    private CodeExecutionRequestDto extractRequestFromArgs(Object[] args) {
         for (Object arg : args) {
             if (arg instanceof CodeExecutionRequestDto) {
-                return ((CodeExecutionRequestDto) arg).getId();
-            }
-
-            if(arg instanceof CompileException){
-                return ((CompileException) arg).getId();
+                return (CodeExecutionRequestDto) arg;
             }
         }
-        return null;
+
+        return new CodeExecutionRequestDto();
     }
 }
