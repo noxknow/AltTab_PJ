@@ -34,8 +34,8 @@ public class CompiledCodeExecutor {
         Path tempDir = createTempDirectory();
         try {
             Path mainJavaFile = writeCodeToFile(tempDir, request.getCode());
-            compileCode(mainJavaFile, request.getId());
-            return runCode(request.getId(), tempDir, request.getInput());
+            compileCode(mainJavaFile, request);
+            return runCode(request, tempDir, request.getInput());
         } finally {
             cleanupTempDirectory(tempDir);
         }
@@ -71,9 +71,9 @@ public class CompiledCodeExecutor {
      * @param mainJavaFile 컴파일할 Java 파일의 Path
      * @throws Exception 컴파일 실패 시 발생
      */
-    private void compileCode(Path mainJavaFile, Long id) throws Exception {
+    private void compileCode(Path mainJavaFile, CodeExecutionRequestDto request) throws Exception {
         log.info(LogMessage.COMPILE_STARTED.getMessage(), mainJavaFile);
-        codeCompiler.compileCode(mainJavaFile, id);
+        codeCompiler.compileCode(mainJavaFile, request);
     }
 
     /**
@@ -84,7 +84,7 @@ public class CompiledCodeExecutor {
      * @return 코드 실행 결과
      * @throws IOException 프로세스 실행 또는 입출력 오류 시 발생
      */
-    private CodeExecutionResponseDto runCode(Long id, Path tempDir, String input) throws IOException, TimeoutException, ExecutionException, InterruptedException {
+    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input) throws IOException, TimeoutException, ExecutionException, InterruptedException {
         log.info(LogMessage.EXECUTION_STARTED.getMessage(), input);
         ProcessBuilder runProcessBuilder = new ProcessBuilder("java", "-cp", tempDir.toString(), MAIN_CLASS_NAME);
         runProcessBuilder.redirectErrorStream(true);
@@ -92,8 +92,8 @@ public class CompiledCodeExecutor {
 
         provideInput(runProcess, input);
 
-        String output = executeWithTimeout(runProcess, id);
-        return handleProcessResult(id, runProcess, output);
+        String output = executeWithTimeout(runProcess, request);
+        return handleProcessResult(request, runProcess, output);
     }
 
     /**
@@ -121,7 +121,7 @@ public class CompiledCodeExecutor {
      * @throws ExecutionException 실행 중 예외가 발생한 경우
      * @throws InterruptedException 실행이 중단된 경우
      */
-    private String executeWithTimeout(Process process, Long id) throws ExecutionException, InterruptedException {
+    private String executeWithTimeout(Process process, CodeExecutionRequestDto request) throws ExecutionException, InterruptedException {
         StringBuilder output = new StringBuilder();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
@@ -129,7 +129,7 @@ public class CompiledCodeExecutor {
             future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
             return output.toString();
         } catch (TimeoutException e) {
-            throw new CodeExecutionException(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS), id);
+            throw new CodeExecutionException(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS), request);
         } finally {
             executor.shutdownNow();
         }
@@ -161,18 +161,22 @@ public class CompiledCodeExecutor {
      * @param output 프로세스의 출력 문자열
      * @return 코드 실행 결과를 담은 CodeExecutionResponseDto
      */
-    private CodeExecutionResponseDto handleProcessResult(Long id, Process process, String output) {
+    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process, String output) {
         if (process.exitValue() != 0) {
             log.error(LogMessage.EXECUTION_FAILED.getMessage(), ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()));
             return CodeExecutionResponseDto.builder()
-                    .id(id)
+                    .studyGroupId(request.getStudyGroupId())
+                    .problemId(request.getProblemId())
+                    .problemTab(request.getProblemTab())
                     .errorMessage(ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()))
                     .build();
         }
 
         log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage());
         return CodeExecutionResponseDto.builder()
-                .id(id)
+                .studyGroupId(request.getStudyGroupId())
+                .problemId(request.getProblemId())
+                .problemTab(request.getProblemTab())
                 .output(output)
                 .build();
     }
