@@ -2,7 +2,7 @@ import classNames from 'classnames';
 
 import CloseSVG from '@/assets/icons/close.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
-import { MODAL } from '@/constants/Modal';
+import { MODAL } from '@/constants/modal';
 
 import { ProblemModal } from './ProblemModal/ProblemModal';
 import { SolutionModal } from './SolutionModal/SolutionModal';
