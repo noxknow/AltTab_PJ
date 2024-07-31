@@ -5,6 +5,7 @@ import { MainPage } from '@/pages/Main/Main';
 import { NoStudy } from '@/pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
 import { NewStudy } from '@/pages/NewStudy/NewStudy';
+import { Study } from '@/pages/Study/Study';
 import { CompilerProvider } from '@/contexts/compiler';
 import { NotFound } from '@/pages/NotFound/NotFound';
 
@@ -24,7 +25,7 @@ export const useRouter = () =>
             </CompilerProvider>
           ),
         },
-        { path: 'study/:studyId', element: <NoStudy /> },
+        { path: 'study/:studyId', element: <Study /> },
         { path: 'noStudy', element: <NoStudy /> },
         { path: 'newStudy', element: <NewStudy /> },
       ],
