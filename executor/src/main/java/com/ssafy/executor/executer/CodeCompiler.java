@@ -3,6 +3,7 @@ package com.ssafy.executor.executer;
 import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
 import com.ssafy.executor.common.exception.CompileException;
+import com.ssafy.executor.dto.CodeExecutionRequestDto;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -31,16 +32,16 @@ public class CodeCompiler {
      * @param mainJavaFile
      * @throws Exception
      */
-    public void compileCode(Path mainJavaFile, Long id) throws Exception {
+    public void compileCode(Path mainJavaFile, CodeExecutionRequestDto request) throws Exception {
         checkForbiddenPattern(Files.readString(mainJavaFile));
 
         Process compileProcess = startCompileProcess(mainJavaFile);
         String output = captureProcessOutput(compileProcess);
 
-        boolean compilationSucceeded = waitForCompilation(compileProcess, id);
+        boolean compilationSucceeded = waitForCompilation(compileProcess, request);
 
         if (!compilationSucceeded) {
-            checkCompileResult(false, output, id);
+            checkCompileResult(false, output, request);
         }
 
         log.info(LogMessage.COMPILE_SUCCESSFUL.getMessage());
@@ -83,10 +84,10 @@ public class CodeCompiler {
      * @return 성공여부
      * @throws Exception
      */
-    private boolean waitForCompilation(Process compileProcess, Long id) throws Exception {
+    private boolean waitForCompilation(Process compileProcess, CodeExecutionRequestDto request) throws Exception {
         if (!compileProcess.waitFor(COMPILE_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
             compileProcess.destroy();
-            throw new CompileException(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS), id);
+            throw new CompileException(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS), request);
         }
         return compileProcess.exitValue() == 0;
     }
@@ -112,11 +113,11 @@ public class CodeCompiler {
      * @param output 컴파일 출력 정보
      * @throws CompileException 컴파일 실패 시 발생
      */
-    private void checkCompileResult(boolean success, String output, Long id) throws CompileException {
+    private void checkCompileResult(boolean success, String output, CodeExecutionRequestDto request) throws CompileException {
         if (!success) {
             String formattedErrors = formatCompileErrors(output);
             log.error(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors));
-            throw new CompileException(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors), id);
+            throw new CompileException(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors), request);
         }
     }
 
