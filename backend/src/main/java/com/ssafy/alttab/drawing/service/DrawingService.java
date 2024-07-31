@@ -14,10 +14,10 @@ public class DrawingService {
 
     private static final String DRAWING_KEY_PREFIX = "drawing:room:";
 
-    public void saveDrawing(Long roomId, String drawingData) {
-        String key = DRAWING_KEY_PREFIX + roomId;
+    public void saveDrawing(Long studyId, Long problemId, String drawingData) {
+        String key = DRAWING_KEY_PREFIX + studyId + "_" + problemId;
         redisTemplate.opsForValue().set(key, drawingData);
 
-        redisTemplate.convertAndSend("drawing:room:" + roomId, drawingData);
+        redisTemplate.convertAndSend("drawing:room:" + studyId + "_" + problemId, drawingData);
     }
 }

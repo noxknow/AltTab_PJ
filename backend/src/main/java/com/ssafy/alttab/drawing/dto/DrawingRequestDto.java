@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DrawingRequestDto {
 
-    private Long roomId;
+    private Long studyId;
+    private Long problemId;
     private String drawingData;
 }
