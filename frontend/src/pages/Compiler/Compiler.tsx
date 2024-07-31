@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 
-import styles from './Compiler.module.scss';
-import CanvasSection from '@/pages/Canvas/CanvasSection';
+import { CanvasSection } from '@/pages/Canvas/CanvasSection';
 import { Button } from '@/components/Button/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
 import { MODAL } from '@/constants/Modal';
 import { highlightCode } from '@/utils/highlightCode';
 
+import styles from './Compiler.module.scss';
 import { LineNumber } from './LineNumber';
 import { CompilerSidebar } from './CompilerSidebar';
 
@@ -81,7 +81,7 @@ export function Compiler() {
           </Button>
         </div>
       </div>
-      {<CanvasSection/>}
+      {canvasIsOpen && <CanvasSection closeCanvas={closeCanvas} />}
     </div>
   );
 }

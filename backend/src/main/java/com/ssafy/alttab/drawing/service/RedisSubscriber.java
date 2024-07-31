@@ -22,7 +22,7 @@ public class RedisSubscriber implements MessageListener {
         try {
             String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
             DrawingRequestDto drawingRequestDto = objectMapper.readValue(publishMessage, DrawingRequestDto.class);
-            messagingTemplate.convertAndSend("/sub/api/v1/rooms/" + drawingRequestDto.getRoomId(), drawingRequestDto);
+            messagingTemplate.convertAndSend("/sub/api/v1/rooms" + "/" + drawingRequestDto.getStudyId() + "/" + drawingRequestDto.getProblemId(), drawingRequestDto);
         } catch (Exception e) {
             e.printStackTrace();
         }
