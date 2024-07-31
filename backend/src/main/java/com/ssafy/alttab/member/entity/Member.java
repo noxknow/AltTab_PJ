@@ -1,6 +1,6 @@
 package com.ssafy.alttab.member.entity;
 
-import com.ssafy.alttab.joinTable.entity.MemberStudy;
+import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

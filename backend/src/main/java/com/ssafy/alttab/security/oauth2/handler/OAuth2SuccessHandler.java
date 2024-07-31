@@ -1,6 +1,6 @@
 package com.ssafy.alttab.security.oauth2.handler;
 
-import com.ssafy.alttab.config.UrlProperties;
+import com.ssafy.alttab.common.config.UrlProperties;
 import com.ssafy.alttab.security.jwt.JWTUtil;
 import com.ssafy.alttab.security.oauth2.dto.CustomOAuth2User;
 import jakarta.servlet.http.Cookie;

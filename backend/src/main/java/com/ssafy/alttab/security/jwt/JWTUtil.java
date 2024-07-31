@@ -1,6 +1,6 @@
 package com.ssafy.alttab.security.jwt;
 
-import com.ssafy.alttab.security.exception.TokenException;
+import com.ssafy.alttab.common.exception.TokenException;
 import com.ssafy.alttab.security.redis.entity.Token;
 import com.ssafy.alttab.security.redis.service.BlackListService;
 import com.ssafy.alttab.security.redis.service.TokenService;
@@ -27,8 +27,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ssafy.alttab.security.exception.ErrorCode.INVALID_JWT_SIGNATURE;
-import static com.ssafy.alttab.security.exception.ErrorCode.INVALID_TOKEN;
+import static com.ssafy.alttab.common.enums.ErrorCode.INVALID_JWT_SIGNATURE;
+import static com.ssafy.alttab.common.enums.ErrorCode.INVALID_TOKEN;
 import static com.ssafy.alttab.security.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_TIME;
 import static com.ssafy.alttab.security.jwt.TokenExpireTime.REFRESH_TOKEN_EXPIRE_TIME;
 

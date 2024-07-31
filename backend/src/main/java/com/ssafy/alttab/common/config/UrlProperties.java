@@ -1,4 +1,4 @@
-package com.ssafy.alttab.config;
+package com.ssafy.alttab.common.config;
 
 import lombok.Getter;
 import lombok.Setter;

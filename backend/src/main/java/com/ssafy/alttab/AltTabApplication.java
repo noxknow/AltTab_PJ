@@ -1,6 +1,6 @@
 package com.ssafy.alttab;
 
-import com.ssafy.alttab.config.UrlProperties;
+import com.ssafy.alttab.common.config.UrlProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

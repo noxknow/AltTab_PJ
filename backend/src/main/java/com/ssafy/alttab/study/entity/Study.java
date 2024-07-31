@@ -1,6 +1,6 @@
 package com.ssafy.alttab.study.entity;
 
-import com.ssafy.alttab.joinTable.entity.MemberStudy;
+import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import jakarta.persistence.*;
 
 import java.util.List;

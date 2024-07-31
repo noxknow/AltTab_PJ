@@ -1,4 +1,4 @@
-package com.ssafy.alttab.joinTable.entity;
+package com.ssafy.alttab.common.jointable.entity;
 
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.study.entity.Study;

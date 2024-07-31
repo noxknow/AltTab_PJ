@@ -1,4 +1,4 @@
-package com.ssafy.alttab.compiler.config;
+package com.ssafy.alttab.common.config;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;

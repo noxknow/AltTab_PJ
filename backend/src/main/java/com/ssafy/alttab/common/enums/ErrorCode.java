@@ -1,4 +1,4 @@
-package com.ssafy.alttab.security.exception;
+package com.ssafy.alttab.common.enums;
 
 import static org.springframework.http.HttpStatus.*;
 
