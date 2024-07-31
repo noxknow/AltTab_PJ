@@ -3,10 +3,10 @@ import { Tool } from '@/components/Tool/Tool';
 import { People } from '@/components/People/People';
 import { Info } from '@/components/Info/Info';
 
-import styles from './StudySetting.module.scss';
+import styles from './NewStudy.module.scss';
 import { Check } from '@/components/Check/Check';
 
-export function StudySetting() {
+export function NewStudy() {
   return (
     <div className={styles.main}>
       <div className={styles.title}>스터디 생성</div>
@@ -35,8 +35,8 @@ export function StudySetting() {
         </div>
       </div>
       <Button color="green" fill={true} size="long">
-          <Check />
-          <span>생성</span>
+        <Check />
+        <span>생성</span>
       </Button>
     </div>
   );

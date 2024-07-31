@@ -4,7 +4,7 @@ import { Layout } from '@/components/Layout/Layout';
 import { MainPage } from '@/pages/Main/Main';
 import { NoStudy } from '@/pages/NoStudy/NoStudy';
 import { Compiler } from '@/pages/Compiler/Compiler';
-import { StudySetting } from '@/pages/StudySetting/StudySetting';
+import { NewStudy } from '@/pages/NewStudy/NewStudy';
 import { CompilerProvider } from '@/contexts/compiler';
 import { NotFound } from '@/pages/NotFound/NotFound';
 
@@ -24,9 +24,9 @@ export const useRouter = () =>
             </CompilerProvider>
           ),
         },
-        { path: 'nostudy', element: <NoStudy /> },
-        { path: 'studysetting', element: <StudySetting /> },
+        { path: 'study/:studyId', element: <NoStudy /> },
+        { path: 'noStudy', element: <NoStudy /> },
+        { path: 'newStudy', element: <NewStudy /> },
       ],
     },
   ]);
-  
