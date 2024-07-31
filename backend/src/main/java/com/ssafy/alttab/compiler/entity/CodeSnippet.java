@@ -25,6 +25,8 @@ public class CodeSnippet {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "code_snippet_id")
     private Long id;
+
+    @Column(name = "language")
     private String language;
 
     @Lob
@@ -34,6 +36,15 @@ public class CodeSnippet {
     @Enumerated(EnumType.STRING)
     @Column(name = "execution_status")
     private ExecutionStatus executionStatus;
+
+    @Column(name = "study_group_id")
+    private Long studyGroupId;
+
+    @Column(name = "problem_id")
+    private Long problemId;
+
+    @Column(name = "problem_tab")
+    private Long problemTab;
 
     //==비즈니스 로직==//
 
