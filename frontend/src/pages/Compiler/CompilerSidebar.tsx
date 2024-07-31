@@ -6,7 +6,7 @@ import CodeSVG from '@/assets/icons/code.svg?react';
 import BookSVG from '@/assets/icons/book.svg?react';
 import BoardSVG from '@/assets/icons/board.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
-import { MODAL } from '@/constants/Modal';
+import { MODAL } from '@/constants/modal';
 
 import styles from './CompilerSidebar.module.scss';
 
