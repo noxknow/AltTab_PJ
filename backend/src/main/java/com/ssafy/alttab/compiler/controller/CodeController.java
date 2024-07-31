@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/compiler")
+@RequestMapping("/api/v1/executor")
 @RequiredArgsConstructor
 public class CodeController {
 
@@ -22,12 +22,14 @@ public class CodeController {
 
     @PostMapping("/execute")
     public ResponseEntity<CodeExecutionResponseDto> executeCode(@RequestBody CodeExecutionRequestDto request) {
-        Long codeId = codeService.saveCode(request.getCode(), request.getId());
-        return new ResponseEntity<>(codeService.executeCodeAsync(request, codeId), HttpStatus.OK);
+        return new ResponseEntity<>(codeService.executeCodeAsync(request), HttpStatus.OK);
     }
 
-    @GetMapping("/status/{id}")
-    public ResponseEntity<CodeExecutionResponseDto> getExecutionStatus(@PathVariable Long id) {
-        return new ResponseEntity<>(codeService.getExecutionResult(id), HttpStatus.OK);
+    @GetMapping("/status/{studyGroupId}/{problemId}/{problemTab}")
+    public ResponseEntity<CodeExecutionResponseDto> getExecutionStatus(
+            @PathVariable Long studyGroupId,
+            @PathVariable Long problemId,
+            @PathVariable Long problemTab) {
+        return new ResponseEntity<>(codeService.getExecutionResult(studyGroupId, problemId, problemTab), HttpStatus.OK);
     }
 }
