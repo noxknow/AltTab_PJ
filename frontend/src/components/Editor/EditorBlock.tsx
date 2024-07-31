@@ -2,6 +2,8 @@ import React, { useRef, useState } from 'react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import styles from './EditorBlock.module.scss';
 import Dropdown from './Dropdown';
+import TableInput from './TableInput';
+import ImageUploadInput from './ImageUploadInput';
 
 type EditorBlockProps = {
   id: string;
@@ -13,7 +15,7 @@ type EditorBlockProps = {
   moveDown: (id: string) => void;
 };
 
-export default function EditorBlock({
+const EditorBlock: React.FC<EditorBlockProps> = ({
   id,
   text,
   option,
@@ -21,40 +23,40 @@ export default function EditorBlock({
   deleteBlock,
   moveUp,
   moveDown,
-}: EditorBlockProps) {
+}) => {
   const innerText = useRef<string>(text);
   const [innerOption, setInnerOption] = useState(option);
   const [showBlock, setShowBlock] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showImageInput, setShowImageInput] = useState(false);
+  const [showTableInput, setShowTableInput] = useState(false);
 
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
   };
 
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
+    if (innerOption === 'table') {
+      return;
+    }
+
     if (e.key === 'Enter') {
       e.preventDefault();
       addBlock(id);
-      return;
     } else if (e.key === 'Backspace') {
       if (innerText.current === '') {
         e.preventDefault();
         deleteBlock(id);
-        return;
       }
     } else if (e.key === '/') {
       e.preventDefault();
       setShowDropdown(true);
-      return;
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       moveUp(id);
-      return;
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
       moveDown(id);
-      return;
     }
   };
 
@@ -62,6 +64,9 @@ export default function EditorBlock({
     if (dropdownOption === 'image') {
       setShowBlock(false);
       setShowImageInput(true);
+    } else if (dropdownOption === 'table') {
+      setShowBlock(false);
+      setShowTableInput(true);
     }
     setInnerOption(dropdownOption);
     setShowDropdown(false);
@@ -93,6 +98,21 @@ export default function EditorBlock({
     }
   };
 
+  const handleTableCreate = (rows: number, columns: number) => {
+    let tableHTML = '<table>';
+    for (let i = 0; i < rows; i++) {
+      tableHTML += '<tr>';
+      for (let j = 0; j < columns; j++) {
+        tableHTML += '<td>0</td>';
+      }
+      tableHTML += '</tr>';
+    }
+    tableHTML += '</table>';
+    innerText.current = tableHTML;
+    setShowTableInput(false);
+    setShowBlock(true);
+  };
+
   return (
     <div onPaste={handlePaste}>
       {showBlock && (
@@ -104,20 +124,18 @@ export default function EditorBlock({
         />
       )}
       {showDropdown && <Dropdown handleOption={handleOption} />}
-      {showImageInput && (
-        <div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                handleImageUpload(file);
-              }
-            }}
-          />
-        </div>
+      {showImageInput && <ImageUploadInput onImageUpload={handleImageUpload} />}
+      {showTableInput && (
+        <TableInput
+          onCreateTable={handleTableCreate}
+          onCancel={() => {
+            setShowTableInput(false);
+            setShowBlock(true);
+          }}
+        />
       )}
     </div>
   );
-}
+};
+
+export default EditorBlock;

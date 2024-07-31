@@ -60,6 +60,7 @@ export default function EditorPage() {
     const selection = window.getSelection();
     const newRange = document.createRange();
     const startContainer = document.querySelector(`.a${caretId}`);
+
     if (startContainer) {
       if (startContainer.childNodes.length === 0) {
         startContainer.appendChild(document.createTextNode(''));
@@ -93,11 +94,13 @@ export default function EditorPage() {
     if (index === 0) {
       return;
     }
+
     const startContainer = document.querySelector(
       `.a${blocksRef.current[index - 1].id}`,
     );
     if (startContainer && selection) {
       const pos = selection.anchorOffset;
+
       if (startContainer.childNodes[0].textContent !== null) {
         newRange.setStart(
           startContainer.childNodes[0],
@@ -120,6 +123,7 @@ export default function EditorPage() {
     if (index === blocksRef.current.length - 1) {
       return;
     }
+
     const startContainer = document.querySelector(
       `.a${blocksRef.current[index + 1].id}`,
     );
