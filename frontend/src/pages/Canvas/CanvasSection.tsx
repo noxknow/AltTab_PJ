@@ -6,6 +6,7 @@ import { fabric } from 'fabric';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import { Client } from '@stomp/stompjs';
 import { compressData, decompressData } from '@/utils/CompressUtil';
+import { baseURL } from '@/services/api';
 
 import Toolbar from './Toolbar';
 import styles from './CanvasSection.module.scss';
@@ -32,7 +33,7 @@ export function CanvasSection({ closeCanvas }: CanvasProps) {
   const connect = () => {
     if (stompClient.current && stompClient.current.connected) return;
 
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(`${baseURL}/ws`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
       reconnectDelay: 5000,
