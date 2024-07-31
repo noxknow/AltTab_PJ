@@ -1,13 +1,14 @@
 package com.ssafy.executor.common.exception;
 
+import com.ssafy.executor.dto.CodeExecutionRequestDto;
 import lombok.Getter;
 
 @Getter
 public class CompileException extends Exception {
-    private final Long id;
+    private final CodeExecutionRequestDto request;
 
-    public CompileException(String message, Long id) {
+    public CompileException(String message, CodeExecutionRequestDto request) {
         super(message);
-        this.id = id;
+        this.request = request;
     }
 }
