@@ -15,13 +15,15 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
-    private String memberKey;
+    private String username;
     private String memberName;
-    private String email;
-    private String avatarUrl;
-    private String htmlUrl;
+    private String memberEmail;
+    private String memberAvatarUrl;
+    private String memberHtmlUrl;
     private String role;
 
     @OneToMany(mappedBy = "member")
     private List<MemberStudy> memberStudies = new ArrayList<>();
+
+
 }

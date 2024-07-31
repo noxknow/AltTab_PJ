@@ -30,7 +30,7 @@ public class OAuth2Controller {
         return ResponseEntity.noContent().build();
     }
 
-    private void removeCookie(HttpServletResponse response) {
+    public static void removeCookie(HttpServletResponse response) {
 
         Cookie cookie = new Cookie("Access-Token", null);
         cookie.setMaxAge(0);
