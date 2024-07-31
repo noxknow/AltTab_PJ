@@ -32,8 +32,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         jwtUtil.generateRefreshToken(authentication, accessToken, username);
 
         response.addCookie(createCookie("Access-Token", accessToken));
-//        response.sendRedirect("http://localhost:3000/");
         response.sendRedirect(urlProperties.getFront());
+//        response.sendRedirect("http://localhost:3000");
     }
 
     static public Cookie createCookie(String key, String value) {
