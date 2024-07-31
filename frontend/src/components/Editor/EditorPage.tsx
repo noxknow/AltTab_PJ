@@ -13,6 +13,7 @@ export default function EditorPage() {
   const initialBlock = { id: v4(), text: '', option: 'default' };
   const [blocks, setBlocks] = useState<Block[]>([initialBlock]);
   const [caretId, setCaretId] = useState(initialBlock.id);
+  const blocksRef = useRef(blocks);
   const prevLengthRef = useRef(blocks.length);
 
   const addBlock = (id: string) => {
@@ -60,7 +61,9 @@ export default function EditorPage() {
     const newRange = document.createRange();
     const startContainer = document.querySelector(`.a${caretId}`);
     if (startContainer) {
-      startContainer.appendChild(document.createTextNode(''));
+      if (startContainer.childNodes.length === 0) {
+        startContainer.appendChild(document.createTextNode(''));
+      }
 
       if (blocks.length > prevLengthRef.current) {
         newRange.setStart(startContainer.childNodes[0], 0);
@@ -74,6 +77,8 @@ export default function EditorPage() {
       }
 
       prevLengthRef.current = blocks.length;
+      blocksRef.current = blocks;
+      // console.log(newRange);
 
       if (selection) {
         selection.removeAllRanges();
@@ -81,6 +86,62 @@ export default function EditorPage() {
       }
     }
   }, [blocks]);
+
+  const moveUp = (id: string) => {
+    const selection = document.getSelection();
+    const newRange = document.createRange();
+    const index = blocksRef.current.findIndex((block) => block.id === id);
+    if (index === 0) {
+      return;
+    }
+    const startContainer = document.querySelector(
+      `.a${blocksRef.current[index - 1].id}`,
+    );
+    if (startContainer && selection) {
+      const pos = selection.anchorOffset;
+      if (startContainer.childNodes[0].textContent !== null) {
+        newRange.setStart(
+          startContainer.childNodes[0],
+          pos > startContainer.childNodes[0].textContent.length
+            ? startContainer.childNodes[0].textContent.length
+            : pos,
+        );
+      }
+      console.log(newRange);
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      }
+    }
+  };
+
+  const moveDown = (id: string) => {
+    const selection = document.getSelection();
+    const newRange = document.createRange();
+    const index = blocksRef.current.findIndex((block) => block.id === id);
+    if (index === blocksRef.current.length - 1) {
+      return;
+    }
+    const startContainer = document.querySelector(
+      `.a${blocksRef.current[index + 1].id}`,
+    );
+    if (startContainer && selection) {
+      const pos = selection.anchorOffset;
+      if (startContainer.childNodes[0].textContent !== null) {
+        newRange.setStart(
+          startContainer.childNodes[0],
+          pos > startContainer.childNodes[0].textContent.length
+            ? startContainer.childNodes[0].textContent.length
+            : pos,
+        );
+      }
+      console.log(newRange);
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+      }
+    }
+  };
 
   return (
     <div className={styles.main}>
@@ -92,6 +153,8 @@ export default function EditorPage() {
           option={option}
           addBlock={addBlock}
           deleteBlock={deleteBlock}
+          moveUp={moveUp}
+          moveDown={moveDown}
         />
       ))}
     </div>

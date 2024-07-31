@@ -8,6 +8,8 @@ type EditorBlockProps = {
   option: string;
   addBlock: (id: string) => void;
   deleteBlock: (id: string) => void;
+  moveUp: (id: string) => void;
+  moveDown: (id: string) => void;
 };
 
 export default function EditorBlock({
@@ -16,6 +18,8 @@ export default function EditorBlock({
   option,
   addBlock,
   deleteBlock,
+  moveUp,
+  moveDown,
 }: EditorBlockProps) {
   const innerText = useRef<string>(text);
   const [innerOption, setInnerOption] = useState(option);
@@ -35,6 +39,14 @@ export default function EditorBlock({
       }
     } else if (e.key === '/') {
       setInnerOption('zz');
+      return;
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      moveUp(id);
+      return;
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      moveDown(id);
       return;
     }
   };
