@@ -4,10 +4,10 @@ import com.ssafy.executor.dto.CodeExecutionRequestDto;
 import lombok.Getter;
 
 @Getter
-public class CompileException extends Exception {
+public class CodeExecutionException extends RuntimeException {
     private final CodeExecutionRequestDto request;
 
-    public CompileException(String message, CodeExecutionRequestDto request) {
+    public CodeExecutionException(String message, CodeExecutionRequestDto request) {
         super(message);
         this.request = request;
     }

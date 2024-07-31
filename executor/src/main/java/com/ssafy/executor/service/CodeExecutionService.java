@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CodeExecutionService {
 
-    private final CodeCompiler codeCompiler;
     private final CompiledCodeExecutor codeExecutor;
 
     /**
@@ -29,9 +28,6 @@ public class CodeExecutionService {
     @RabbitListener(queues = "code-execution-request-queue")
     @SendTo("code-execution-response-queue")
     public CodeExecutionResponseDto executeCode(CodeExecutionRequestDto request) throws Throwable {
-        CodeExecutionResponseDto response = codeExecutor.executeCode(request.getCode(), request.getInput());
-        log.debug(LogMessage.EXECUTION_SUCCESSFUL.getMessage(), response.getOutput());
-
-        return response;
+        return codeExecutor.executeCode(request);
     }
 }
