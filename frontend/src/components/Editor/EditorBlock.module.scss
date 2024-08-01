@@ -18,8 +18,10 @@
   margin-top: 1rem;
 }
 
-div:empty:before {
-  content: '내용을 입력하세요';
+.block {
+  div:empty:before {
+    content: '내용을 입력하세요';
+  }
 }
 
 $table-border-color: #dddddd;

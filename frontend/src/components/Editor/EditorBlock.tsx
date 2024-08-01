@@ -114,10 +114,10 @@ const EditorBlock: React.FC<EditorBlockProps> = ({
   };
 
   return (
-    <div onPaste={handlePaste}>
+    <div onPaste={handlePaste} className={styles.block}>
       {showBlock && (
         <ContentEditable
-          className={`a${id} ${styles[innerOption]}`}
+          className={`a${id} ${styles[innerOption]} `}
           html={innerText.current}
           onChange={handleChange}
           onKeyDown={onKeyDownHandler}
