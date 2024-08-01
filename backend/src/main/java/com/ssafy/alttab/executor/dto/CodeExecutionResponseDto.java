@@ -1,5 +1,6 @@
-package com.ssafy.alttab.compiler.dto;
+package com.ssafy.alttab.executor.dto;
 
+import com.ssafy.alttab.executor.enums.ExecutionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,10 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CodeExecutionRequestDto {
+public class CodeExecutionResponseDto {
+
     private Long studyGroupId;
     private Long problemId;
     private Long problemTab;
-    private String input;
-    private String code;
+    private ExecutionStatus status;
+    private String output;
+    private String errorMessage;
 }

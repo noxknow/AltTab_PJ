@@ -1,6 +1,6 @@
-package com.ssafy.alttab.compiler.entity;
+package com.ssafy.alttab.executor.entity;
 
-import com.ssafy.alttab.compiler.enums.ExecutionStatus;
+import com.ssafy.alttab.executor.enums.ExecutionStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -1,6 +1,6 @@
-package com.ssafy.alttab.compiler.repository;
+package com.ssafy.alttab.executor.repository;
 
-import com.ssafy.alttab.compiler.entity.CodeSnippet;
+import com.ssafy.alttab.executor.entity.CodeSnippet;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

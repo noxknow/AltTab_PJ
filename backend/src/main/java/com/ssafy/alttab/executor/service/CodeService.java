@@ -1,10 +1,10 @@
-package com.ssafy.alttab.compiler.service;
+package com.ssafy.alttab.executor.service;
 
-import com.ssafy.alttab.compiler.dto.CodeExecutionRequestDto;
-import com.ssafy.alttab.compiler.dto.CodeExecutionResponseDto;
-import com.ssafy.alttab.compiler.entity.CodeSnippet;
-import com.ssafy.alttab.compiler.enums.ExecutionStatus;
-import com.ssafy.alttab.compiler.repository.CodeSnippetRepository;
+import com.ssafy.alttab.executor.dto.CodeExecutionRequestDto;
+import com.ssafy.alttab.executor.dto.CodeExecutionResponseDto;
+import com.ssafy.alttab.executor.entity.CodeSnippet;
+import com.ssafy.alttab.executor.enums.ExecutionStatus;
+import com.ssafy.alttab.executor.repository.CodeSnippetRepository;
 import jakarta.transaction.Transactional;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
