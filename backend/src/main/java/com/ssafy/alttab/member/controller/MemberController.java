@@ -3,6 +3,7 @@ package com.ssafy.alttab.member.controller;
 import com.ssafy.alttab.member.dto.MemberDto;
 import com.ssafy.alttab.member.service.MemberService;
 import com.ssafy.alttab.security.oauth2.service.OAuth2Service;
+import com.ssafy.alttab.study.entity.StudyInfo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
@@ -49,12 +51,10 @@ public class MemberController {
         }
     }
 
-//    @GetMapping("/studies")
-//    public ResponseEntity<List<StudyDto>> getMemberStudies(@PathVariable String username) {
-//        List<StudyDto> studies = memberService.getMemberStudiesByUsername(username);
-//        if (studies.isEmpty()) {
-//            return ResponseEntity.noContent().build(); // No content if the list is empty
-//        }
-//        return ResponseEntity.ok(studies);
-//    }
+    @GetMapping("/studies")
+    public ResponseEntity<List<StudyInfo>> getMemberStudies(@AuthenticationPrincipal UserDetails userDetails) {
+        List<StudyInfo> studies = memberService.getMemberStudies(userDetails.getUsername());
+        return ResponseEntity.ok(studies);
+    }
+
 }

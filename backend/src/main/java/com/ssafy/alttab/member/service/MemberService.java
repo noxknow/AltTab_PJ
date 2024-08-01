@@ -1,17 +1,24 @@
 package com.ssafy.alttab.member.service;
 
+import com.ssafy.alttab.common.jointable.entity.MemberStudy;
+import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
+import com.ssafy.alttab.study.entity.StudyInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
+    private final MemberStudyRepository memberStudyRepository;
 
     public MemberDto getMemberByUsername(String username) {
         Member member = findByUsernameOrThrow(username);
@@ -37,6 +44,14 @@ public class MemberService {
         if (member != null) {
             memberRepository.delete(member);
         }
+    }
+
+    public List<StudyInfo> getMemberStudies(String username) {
+        Member member = findByUsernameOrThrow(username);
+        List<MemberStudy> memberStudies = memberStudyRepository.findByMember(member);
+        return memberStudies.stream()
+                .map(MemberStudy::getStudyInfo)
+                .collect(Collectors.toList());
     }
 
     private Member findByUsernameOrThrow(String username) {
