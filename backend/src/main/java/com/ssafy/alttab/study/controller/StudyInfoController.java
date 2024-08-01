@@ -11,19 +11,20 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class StudyInfoController {
 
     private final StudyInfoService studyInfoService;
 
-    @PostMapping("/api/v2/study/{studyId}")
-    public ResponseEntity<String> createStudy(@PathVariable("studyId") Long studyId, @RequestBody StudyInfoRequestDto studyInfoRequestDto) {
+    @PostMapping("/study")
+    public ResponseEntity<String> createStudy(@RequestBody StudyInfoRequestDto studyInfoRequestDto) {
 
         return studyInfoService.createStudy(studyInfoRequestDto);
     }
 
-    @GetMapping("/api/v2/study/{studyId}/members")
+    @GetMapping("/study/{studyId}/members")
     public ResponseEntity<List<MemberDto>> getMembersByStudy(@PathVariable Long studyId) {
-        List<MemberDto> members = studyInfoService.getMembersByStudy(studyId);
-        return ResponseEntity.ok(members);
+
+        return studyInfoService.getMembersByStudy(studyId);
     }
 }

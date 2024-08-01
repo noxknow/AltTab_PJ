@@ -28,15 +28,18 @@ public class StudyInfoService {
         return ResponseEntity.ok().body("Study created successfully");
     }
 
-    public List<MemberDto> getMembersByStudy(Long studyId) {
+    public ResponseEntity<List<MemberDto>> getMembersByStudy(Long studyId) {
+
         StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
         List<MemberStudy> memberStudies = memberStudyRepository.findByStudyInfo(studyInfo);
-        return memberStudies.stream()
+
+        return ResponseEntity.ok().body(memberStudies.stream()
                 .map(memberStudy -> MemberDto.fromEntity(memberStudy.getMember()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     private StudyInfo findStudyByIdOrThrow(Long studyId) {
+
         return studyInfoRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("Study not found"));
     }
