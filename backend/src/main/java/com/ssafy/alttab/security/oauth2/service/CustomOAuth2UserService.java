@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -36,38 +38,48 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         //리소스 서버에서 발급 받은 정보로 사용자를 특정할 아이디값을 만듬
         String username = oAuth2Response.getProvider() + " " + oAuth2Response.getProviderId();
-        Member existData = memberRepository.findByMemberKey(username);
+        Optional<Member> existData = memberRepository.findByUsername(username);
         System.out.println("exist Data: " + existData);
 
-        if (existData == null) {
-            Member member = new Member();
-            member.setMemberKey(username);
+        if (existData.isPresent()) {
+            Member member = existData.get();
             member.setMemberName(oAuth2Response.getName());
-            member.setEmail(oAuth2Response.getEmail());
-            member.setAvatarUrl(oAuth2Response.getAvatarUrl());
-            member.setHtmlUrl(oAuth2Response.getHtmlUrl());
-            member.setRole("ROLE_USER");
+            member.setMemberEmail(oAuth2Response.getEmail());
+            member.setMemberAvatarUrl(oAuth2Response.getAvatarUrl());
+            member.setMemberHtmlUrl(oAuth2Response.getHtmlUrl());
 
             memberRepository.save(member);
 
-            MemberDto memberDto = new MemberDto();
-            memberDto.setUsername(username);
-            memberDto.setName(oAuth2Response.getName());
-            memberDto.setRole("ROLE_USER");
+            MemberDto memberDto = MemberDto.builder()
+                    .username(member.getUsername())
+                    .memberName(oAuth2Response.getName())
+                    .memberEmail(oAuth2Response.getEmail())
+                    .memberAvatarUrl(oAuth2Response.getAvatarUrl())
+                    .memberHtmlUrl(oAuth2Response.getHtmlUrl())
+                    .role("ROLE_USER")
+                    .build();
 
             return new CustomOAuth2User(memberDto);
         } else {
-            existData.setMemberName(oAuth2Response.getName());
-            existData.setEmail(oAuth2Response.getEmail());
-            existData.setAvatarUrl(oAuth2Response.getAvatarUrl());
-            existData.setHtmlUrl(oAuth2Response.getHtmlUrl());
+            Member member = Member.builder()
+                    .username(username)
+                    .memberName(oAuth2Response.getName())
+                    .memberEmail(oAuth2Response.getEmail())
+                    .memberAvatarUrl(oAuth2Response.getAvatarUrl())
+                    .memberHtmlUrl(oAuth2Response.getHtmlUrl())
+                    .role("ROLE_USER")
+                    .build();
 
-            memberRepository.save(existData);
+            memberRepository.save(member);
 
-            MemberDto memberDto = new MemberDto();
-            memberDto.setUsername(existData.getMemberKey());
-            memberDto.setName(oAuth2Response.getName());
-            memberDto.setRole(existData.getRole());
+            MemberDto memberDto = MemberDto.builder()
+                    .username(member.getUsername())
+                    .memberName(oAuth2Response.getName())
+                    .memberEmail(oAuth2Response.getEmail())
+                    .memberAvatarUrl(oAuth2Response.getAvatarUrl())
+                    .memberHtmlUrl(oAuth2Response.getHtmlUrl())
+                    .role("ROLE_USER")
+                    .build();
 
             return new CustomOAuth2User(memberDto);
         }

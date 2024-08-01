@@ -1,5 +1,6 @@
 package com.ssafy.alttab.common.config;
 
+import com.ssafy.alttab.security.jwt.JWTFilter;
 import com.ssafy.alttab.security.jwt.JWTUtil;
 import com.ssafy.alttab.security.oauth2.handler.OAuth2SuccessHandler;
 import com.ssafy.alttab.security.oauth2.service.CustomOAuth2UserService;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
