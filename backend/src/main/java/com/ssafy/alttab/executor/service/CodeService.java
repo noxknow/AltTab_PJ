@@ -172,6 +172,12 @@ public class CodeService {
             return response;
         }
 
+        if (response.getStatus() == ExecutionStatus.NOT_START) {
+            return CodeExecutionResponseDto.builder()
+                    .status(ExecutionStatus.NOT_START)
+                    .build();
+        }
+
         return null;
     }
 
