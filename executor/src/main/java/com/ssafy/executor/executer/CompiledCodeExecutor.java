@@ -84,7 +84,7 @@ public class CompiledCodeExecutor {
      * @return 코드 실행 결과
      * @throws IOException 프로세스 실행 또는 입출력 오류 시 발생
      */
-    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input) throws IOException, TimeoutException, ExecutionException, InterruptedException {
+    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input) throws Exception {
         log.info(LogMessage.EXECUTION_STARTED.getMessage(), input);
         ProcessBuilder runProcessBuilder = new ProcessBuilder("java", "-cp", tempDir.toString(), MAIN_CLASS_NAME);
         runProcessBuilder.redirectErrorStream(true);
@@ -161,19 +161,16 @@ public class CompiledCodeExecutor {
      * @param output 프로세스의 출력 문자열
      * @return 코드 실행 결과를 담은 CodeExecutionResponseDto
      */
-    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process, String output) {
-        try {
-            waitForProcessCompletion(process);
-            int exitValue = getProcessExitValue(process);
+    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process, String output)
+            throws InterruptedException {
+        waitForProcessCompletion(process);
+        int exitValue = getProcessExitValue(process);
 
-            if (exitValue != 0) {
-                return handleFailedExecution(request, exitValue);
-            }
-
-            return handleSuccessfulExecution(request, output);
-        } catch (InterruptedException e) {
-            return handleInterruptedException(request, e);
+        if (exitValue != 0) {
+            return handleFailedExecution(request, exitValue);
         }
+
+        return handleSuccessfulExecution(request, output);
     }
 
     /**
@@ -233,23 +230,6 @@ public class CompiledCodeExecutor {
                 .problemId(request.getProblemId())
                 .problemTab(request.getProblemTab())
                 .output(output)
-                .build();
-    }
-
-    /**
-     * 프로세스 인터럽트 발생 시 응답 처리
-     *
-     * @param request 코드 실행 요청 DTO
-     * @param e 발생한 InterruptedException
-     * @return 인터럽트에 대한 응답 DTO
-     */
-    private CodeExecutionResponseDto handleInterruptedException(CodeExecutionRequestDto request, InterruptedException e) {
-        log.error("Process was interrupted", e);
-        return CodeExecutionResponseDto.builder()
-                .studyGroupId(request.getStudyGroupId())
-                .problemId(request.getProblemId())
-                .problemTab(request.getProblemTab())
-                .errorMessage("Process was interrupted: " + e.getMessage())
                 .build();
     }
 
