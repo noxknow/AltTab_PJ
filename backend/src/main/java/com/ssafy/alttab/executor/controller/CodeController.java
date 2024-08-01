@@ -2,6 +2,7 @@ package com.ssafy.alttab.executor.controller;
 
 import com.ssafy.alttab.executor.dto.CodeExecutionRequestDto;
 import com.ssafy.alttab.executor.dto.CodeExecutionResponseDto;
+import com.ssafy.alttab.executor.dto.CodeResponseDto;
 import com.ssafy.alttab.executor.service.CodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,14 @@ public class CodeController {
     @PostMapping("/execute")
     public ResponseEntity<CodeExecutionResponseDto> executeCode(@RequestBody CodeExecutionRequestDto request) {
         return new ResponseEntity<>(codeService.executeCodeAsync(request), HttpStatus.OK);
+    }
+
+    @GetMapping("/{studyGroupId}/{problemId}/{problemTab}")
+    public ResponseEntity<CodeResponseDto> getCode(
+            @PathVariable Long studyGroupId,
+            @PathVariable Long problemId,
+            @PathVariable Long problemTab){
+        return new ResponseEntity<>(codeService.getCode(studyGroupId,problemId,problemTab), HttpStatus.OK);
     }
 
     @GetMapping("/status/{studyGroupId}/{problemId}/{problemTab}")

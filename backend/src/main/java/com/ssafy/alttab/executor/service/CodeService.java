@@ -1,11 +1,14 @@
 package com.ssafy.alttab.executor.service;
 
+import com.ssafy.alttab.common.exception.CodeNotFoundException;
 import com.ssafy.alttab.executor.dto.CodeExecutionRequestDto;
 import com.ssafy.alttab.executor.dto.CodeExecutionResponseDto;
+import com.ssafy.alttab.executor.dto.CodeResponseDto;
 import com.ssafy.alttab.executor.entity.CodeSnippet;
 import com.ssafy.alttab.executor.enums.ExecutionStatus;
 import com.ssafy.alttab.executor.repository.CodeSnippetRepository;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -21,6 +24,19 @@ public class CodeService {
     private final RabbitTemplate rabbitTemplate;
     private final CodeSnippetRepository codeSnippetRepository;
     private final CacheManager cacheManager;
+
+    @Transactional
+    public CodeResponseDto getCode(Long studyGroupId, Long problemId, Long problemTab){;
+        Optional<CodeSnippet> code = codeSnippetRepository.findByStudyGroupIdAndProblemIdAndProblemTab(
+                studyGroupId, problemId, problemTab);
+        if (code.isPresent()){
+            return CodeResponseDto.builder()
+                    .code(code.get().getCode())
+                    .build();
+        }
+
+        throw new CodeNotFoundException(studyGroupId, problemId, problemTab);
+    }
 
     /**
      * 코드와 실행 ID를 저장하거나 업데이트

@@ -84,7 +84,7 @@ public class CompiledCodeExecutor {
      * @return 코드 실행 결과
      * @throws IOException 프로세스 실행 또는 입출력 오류 시 발생
      */
-    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input) throws IOException, TimeoutException, ExecutionException, InterruptedException {
+    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input) throws Exception {
         log.info(LogMessage.EXECUTION_STARTED.getMessage(), input);
         ProcessBuilder runProcessBuilder = new ProcessBuilder("java", "-cp", tempDir.toString(), MAIN_CLASS_NAME);
         runProcessBuilder.redirectErrorStream(true);
@@ -161,17 +161,69 @@ public class CompiledCodeExecutor {
      * @param output 프로세스의 출력 문자열
      * @return 코드 실행 결과를 담은 CodeExecutionResponseDto
      */
-    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process, String output) {
-        if (process.exitValue() != 0) {
-            log.error(LogMessage.EXECUTION_FAILED.getMessage(), ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()));
-            return CodeExecutionResponseDto.builder()
-                    .studyGroupId(request.getStudyGroupId())
-                    .problemId(request.getProblemId())
-                    .problemTab(request.getProblemTab())
-                    .errorMessage(ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(process.exitValue()))
-                    .build();
+    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process, String output)
+            throws InterruptedException {
+        waitForProcessCompletion(process);
+        int exitValue = getProcessExitValue(process);
+
+        if (exitValue != 0) {
+            return handleFailedExecution(request, exitValue);
         }
 
+        return handleSuccessfulExecution(request, output);
+    }
+
+    /**
+     * 프로세스 완료를 대기
+     *
+     * @param process 대기할 프로세스
+     * @throws InterruptedException 대기 중 인터럽트 발생 시
+     */
+    private void waitForProcessCompletion(Process process) throws InterruptedException {
+        if (process.isAlive()) {
+            log.info("Process is still alive, waiting for 100ms");
+            process.waitFor(100, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    /**
+     * 프로세스의 종료 코드를 반환
+     *
+     * @param process 종료 코드를 확인할 프로세스
+     * @return 프로세스의 종료 코드
+     */
+    private int getProcessExitValue(Process process) {
+        int exitValue = process.exitValue();
+        log.info("Process exit value: {}", exitValue);
+        return exitValue;
+    }
+
+    /**
+     * 실행 실패 시 응답 처리
+     *
+     * @param request 코드 실행 요청 DTO
+     * @param exitValue 프로세스 종료 코드
+     * @return 실행 실패에 대한 응답 DTO
+     */
+    private CodeExecutionResponseDto handleFailedExecution(CodeExecutionRequestDto request, int exitValue) {
+        log.error(LogMessage.EXECUTION_FAILED.getMessage(),
+                ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(exitValue));
+        return CodeExecutionResponseDto.builder()
+                .studyGroupId(request.getStudyGroupId())
+                .problemId(request.getProblemId())
+                .problemTab(request.getProblemTab())
+                .errorMessage(ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(exitValue))
+                .build();
+    }
+
+    /**
+     * 실행 성공 시 응답 처리
+     *
+     * @param request 코드 실행 요청 DTO
+     * @param output 프로세스 실행 결과 출력
+     * @return 실행 성공에 대한 응답 DTO
+     */
+    private CodeExecutionResponseDto handleSuccessfulExecution(CodeExecutionRequestDto request, String output) {
         log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage());
         return CodeExecutionResponseDto.builder()
                 .studyGroupId(request.getStudyGroupId())
