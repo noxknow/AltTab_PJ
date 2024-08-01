@@ -1,13 +1,13 @@
 package com.ssafy.alttab.study.controller;
 
+import com.ssafy.alttab.member.dto.MemberDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.service.StudyInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,5 +19,11 @@ public class StudyInfoController {
     public ResponseEntity<String> createStudy(@PathVariable("studyId") Long studyId, @RequestBody StudyInfoRequestDto studyInfoRequestDto) {
 
         return studyInfoService.createStudy(studyInfoRequestDto);
+    }
+
+    @GetMapping("/api/v2/study/{studyId}/members")
+    public ResponseEntity<List<MemberDto>> getMembersByStudy(@PathVariable Long studyId) {
+        List<MemberDto> members = studyInfoService.getMembersByStudy(studyId);
+        return ResponseEntity.ok(members);
     }
 }
