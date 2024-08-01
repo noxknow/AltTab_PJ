@@ -34,7 +34,7 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
       input: inputText,
     };
     const { status } = await compiler.execute(form);
-    if (status === EXECUTOR.NOT_START || EXECUTOR.IN_PROGRESS) {
+    if (status === EXECUTOR.NOT_START || status === EXECUTOR.IN_PROGRESS) {
       setIsLoading(true);
     }
   };
@@ -45,7 +45,7 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
       problemId!,
       problemTab!,
     );
-    if (status === EXECUTOR.DONE || EXECUTOR.FAIL) {
+    if (status === EXECUTOR.DONE || status === EXECUTOR.FAIL) {
       setIsLoading(false);
       setOutputText(output !== null ? output : errorMessage);
     }
