@@ -2,30 +2,24 @@ package com.ssafy.alttab.member.controller;
 
 import com.ssafy.alttab.member.dto.MemberDto;
 import com.ssafy.alttab.member.service.MemberService;
-import com.ssafy.alttab.security.redis.service.BlackListService;
-import com.ssafy.alttab.security.redis.service.TokenService;
+import com.ssafy.alttab.security.oauth2.service.OAuth2Service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import static com.ssafy.alttab.security.jwt.JWTUtil.findCookie;
-import static com.ssafy.alttab.security.oauth2.controller.OAuth2Controller.removeCookie;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
     private final MemberService memberService;
-    private final BlackListService blackListService;
-    private final TokenService tokenService;
+    private final OAuth2Service oAuth2Service;
 
     @GetMapping
     public ResponseEntity<MemberDto> getMemberByUsername(@AuthenticationPrincipal UserDetails userDetails) {
@@ -33,31 +27,34 @@ public class MemberController {
     }
 
     @PutMapping
-    public ResponseEntity<MemberDto> updateMember(@AuthenticationPrincipal UserDetails userDetails, MemberDto memberDto) {
-//        return ResponseEntity.ok(memberService.updateMember(userDetails.getUsername(), memberDto));
-        System.out.println(memberDto);
+    public ResponseEntity<MemberDto> updateMember(@AuthenticationPrincipal UserDetails userDetails, @RequestBody MemberDto memberDto) {
+        System.out.println("memberDto = " + memberDto);
         if (memberService.updateMember(userDetails.getUsername(), memberDto)) {
-            return ResponseEntity.ok().build(); // HTTP 200 OK with no body
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.status(500).build(); // Should never reach here
         }
     }
-
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteMemberAndLogout(@AuthenticationPrincipal UserDetails userDetails,
-                                                      HttpServletRequest request,
-                                                      HttpServletResponse response) {
-
-        String accessToken = findCookie("Access-Token", request);
-
-        if (memberService.deleteMemberAndLogout(userDetails.getUsername(), accessToken)) {
-            removeCookie(response); // Remove cookie if necessary
-            blackListService.addToBlacklist(accessToken);
-            tokenService.deleteRefreshToken(userDetails.getUsername());
-            return ResponseEntity.noContent().build(); // HTTP 204 No Content
-        } else {
-            return ResponseEntity.status(500).build(); // Should never reach here
+    @Transactional
+    public ResponseEntity<Void> deleteMemberAndLogout(HttpServletRequest request, HttpServletResponse response, @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String username = userDetails.getUsername();
+            memberService.deleteMember(username);
+            oAuth2Service.logout(request, response, username);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+//    @GetMapping("/studies")
+//    public ResponseEntity<List<StudyDto>> getMemberStudies(@PathVariable String username) {
+//        List<StudyDto> studies = memberService.getMemberStudiesByUsername(username);
+//        if (studies.isEmpty()) {
+//            return ResponseEntity.noContent().build(); // No content if the list is empty
+//        }
+//        return ResponseEntity.ok(studies);
+//    }
 }
