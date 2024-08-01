@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { compiler } from '@/services/compiler';
 import { Button } from '@/components/Button/Button';
 import { requestCompiler } from '@/types/compiler';
+import { EXECUTOR } from '@/constants/executor';
 
 import styles from './RunCodeModal.module.scss';
 
@@ -11,21 +13,52 @@ type RunCodeModalProps = {
 };
 
 export function RunCodeModal({ code }: RunCodeModalProps) {
+  const { studyId, problemId } = useParams();
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState<string | null>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const polling = useRef<number | null>();
+  const problemTab = '1';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.currentTarget.value);
   };
 
   const runCode = async () => {
+    setOutputText('');
     const form: requestCompiler = {
+      studyGroupId: studyId!,
+      problemId: problemId!,
+      problemTab: '1',
       code,
       input: inputText,
     };
-    const { output, errorMessage } = await compiler.execute(form);
-    setOutputText(output !== null ? output : errorMessage);
+    const { status } = await compiler.execute(form);
+    if (status === EXECUTOR.NOT_START || EXECUTOR.IN_PROGRESS) {
+      setIsLoading(true);
+    }
   };
+
+  const getStatus = async () => {
+    const { status, output, errorMessage } = await compiler.status(
+      studyId!,
+      problemId!,
+      problemTab!,
+    );
+    if (status === EXECUTOR.DONE || EXECUTOR.FAIL) {
+      setIsLoading(false);
+      setOutputText(output !== null ? output : errorMessage);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoading) {
+      polling.current = setInterval(() => {
+        getStatus();
+      }, 500);
+    }
+    return () => clearInterval(polling.current!);
+  }, [isLoading]);
 
   return (
     <div className={styles.container}>
@@ -48,9 +81,21 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
           ></textarea>
         </div>
       </div>
-      <Button color="green" fill={true} size="small" onClick={runCode}>
-        Run
-      </Button>
+      {isLoading ? (
+        <Button color="black" fill={true} size="small" disabled>
+          Running
+        </Button>
+      ) : (
+        <Button
+          color="green"
+          fill={true}
+          size="small"
+          onClick={runCode}
+          disabled={isLoading}
+        >
+          Run
+        </Button>
+      )}
     </div>
   );
 }
