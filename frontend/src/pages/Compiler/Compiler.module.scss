@@ -89,5 +89,23 @@
 .code {
   width: 100%;
   height: 100%;
-  // overflow: hidden;
+}
+
+.tabContainer {
+  @include poppins-semibold;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  padding: 0 1.6rem;
+  font-size: 1.4rem;
+  gap: 1.2rem;
+}
+
+.tab {
+  padding: 1.6rem;
+}
+
+.selected {
+  background-color: $green;
+  color: $white;
 }
