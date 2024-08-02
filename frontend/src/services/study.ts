@@ -12,4 +12,12 @@ export const study = {
       form,
     );
   },
+
+  loadInfo: async (studyId: string): Promise<studyInfo> => {
+    const { data } = await API.get<studyInfo>(
+      `${study.endpoint.default}/${studyId}`
+    );
+
+    return data;
+  },
 };

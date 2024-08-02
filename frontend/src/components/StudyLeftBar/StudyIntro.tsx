@@ -1,15 +1,12 @@
+import { studyInfo } from '@/types/study.ts';
+
 import styles from './StudyIntro.module.scss';
 
-type StudyInfoProps = {
-  name: string;
-  intro: string;
-};
-
-export default function StudyIntro({ name, intro }: StudyInfoProps) {
+export default function StudyIntro({ studyName, studyDescription }: studyInfo) {
   return (
     <div className={styles.main}>
-      <div className={styles.name}>{name}</div>
-      <div className={styles.intro}>{intro}</div>
+      <div className={styles.name}>{studyName}</div>
+      <div className={styles.info}>{studyDescription}</div>
     </div>
   );
 }

@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,13 +18,14 @@ public class StudyInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long studyId;
+    @Column(name = "studyId")
+    private Long Id;
 
     @Column(columnDefinition = "varchar(100)", nullable = false)
     private String studyName;
 
     @Column(columnDefinition = "varchar(100)", nullable = false)
-    private String studyInfo;
+    private String studyDescription;
 
     @ElementCollection
     @CollectionTable(name = "study_emails", joinColumns = @JoinColumn(name = "study_id"))
@@ -36,7 +36,7 @@ public class StudyInfo {
 
         return StudyInfo.builder()
                 .studyName(studyInfoRequestDto.getStudyName())
-                .studyInfo(studyInfoRequestDto.getStudyInfo())
+                .studyDescription(studyInfoRequestDto.getStudyDescription())
                 .studyEmails(studyInfoRequestDto.getStudyEmails())
                 .build();
     }

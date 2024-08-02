@@ -14,7 +14,7 @@ import styles from './NewStudy.module.scss';
 export function NewStudy() {
   const [studyName, setStudyName] = useState('');
   const [studyEmails, setStudyEmails] = useState(['']);
-  const [studyInfo, setStudyInfo] = useState('');
+  const [studyDescription, setStudyDescription] = useState('');
 
   const handleEmailChange = (index: number, value: string) => {
     const newEmails = [...studyEmails];
@@ -29,9 +29,9 @@ export function NewStudy() {
   const createStudy = async () => {
     try {
       const form: studyInfo = {  
-        studyName: studyName!,
+        studyName,
         studyEmails: studyEmails.filter(email => email !== '')!,
-        studyInfo: studyInfo!,
+        studyDescription,
       }
       await study.create(form);
     } catch (error) {
@@ -80,8 +80,8 @@ export function NewStudy() {
             <Input 
               placeholder="스터디를 소개해 주세요" 
               maxLength={25}
-              value={studyInfo}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStudyInfo(e.target.value)}
+              value={studyDescription}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStudyDescription(e.target.value)}
             />
           </div>
         </div>
