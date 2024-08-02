@@ -1,26 +1,34 @@
 package com.ssafy.alttab.study.entity;
 
+import com.ssafy.alttab.common.entity.BaseTimeEntity;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.enums.ProblemStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudyInfo {
+public class StudyInfo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +40,12 @@ public class StudyInfo {
 
     @Column(columnDefinition = "varchar(100)", nullable = false)
     private String studyInfo;
+
+    @Column(name = "view")
+    private Long view;
+
+    @Column(name = "like")
+    private Long like;
 
     @Column(name = "member_study")
     @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
