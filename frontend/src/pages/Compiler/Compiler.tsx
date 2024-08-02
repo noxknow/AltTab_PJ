@@ -53,7 +53,7 @@ export function Compiler() {
 
   return (
     <div className={styles.container}>
-      {isModalOpen && <Modal code={codeText} />}
+      {isModalOpen && <Modal code={codeText} selected={selected} />}
       <div className={styles.compilerContainer}>
         <CompilerSidebar />
         <div className={styles.tabContainer}>
