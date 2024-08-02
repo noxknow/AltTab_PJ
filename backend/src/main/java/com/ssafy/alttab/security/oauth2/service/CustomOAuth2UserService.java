@@ -1,5 +1,6 @@
 package com.ssafy.alttab.security.oauth2.service;
 
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.security.oauth2.dto.CustomOAuth2User;
 import com.ssafy.alttab.security.oauth2.dto.GithubResponse;
 import com.ssafy.alttab.member.dto.MemberDto;
@@ -58,7 +59,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .memberEmail(oAuth2Response.getEmail())
                     .memberAvatarUrl(oAuth2Response.getAvatarUrl())
                     .memberHtmlUrl(oAuth2Response.getHtmlUrl())
-                    .role("ROLE_USER")
+                    .role(MemberRoleStatus.TEAM_MEMBER)
                     .build();
 
             return new CustomOAuth2User(memberDto);
@@ -69,7 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .memberEmail(oAuth2Response.getEmail())
                     .memberAvatarUrl(oAuth2Response.getAvatarUrl())
                     .memberHtmlUrl(oAuth2Response.getHtmlUrl())
-                    .role("ROLE_USER")
+                    .role(MemberRoleStatus.TEAM_MEMBER)
                     .build();
 
             memberRepository.save(member);
@@ -80,7 +81,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                     .memberEmail(oAuth2Response.getEmail())
                     .memberAvatarUrl(oAuth2Response.getAvatarUrl())
                     .memberHtmlUrl(oAuth2Response.getHtmlUrl())
-                    .role("ROLE_USER")
+                    .role(MemberRoleStatus.TEAM_MEMBER)
                     .build();
 
             return new CustomOAuth2User(memberDto);

@@ -1,6 +1,7 @@
 package com.ssafy.alttab.security.jwt;
 
 import com.ssafy.alttab.common.exception.TokenException;
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.security.redis.entity.Token;
 import com.ssafy.alttab.security.redis.service.BlackListService;
 import com.ssafy.alttab.security.redis.service.TokenService;
@@ -56,9 +57,9 @@ public class JWTUtil { // JWT 발급 & 검증
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("username", String.class);
     }
 
-    public String getRole(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+    public MemberRoleStatus getRole(String token) {
+        String roleString = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("role", String.class);
+        return MemberRoleStatus.valueOf(roleString);
     }
 
     public String generateAccessToken(Authentication authentication, String username) {
