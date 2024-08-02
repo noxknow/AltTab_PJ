@@ -19,7 +19,7 @@ public class StudyInfoController {
     private final StudyInfoService studyInfoService;
 
     @PostMapping("/study")
-    public ResponseEntity<String> createStudy(@RequestBody StudyInfoRequestDto studyInfoRequestDto) {
+    public ResponseEntity<Long> createStudy(@RequestBody StudyInfoRequestDto studyInfoRequestDto) {
 
         return studyInfoService.createStudy(studyInfoRequestDto);
     }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/Button/Button';
 import { Tool } from '@/components/Tool/Tool';
@@ -15,6 +16,7 @@ export function NewStudy() {
   const [studyName, setStudyName] = useState('');
   const [studyEmails, setStudyEmails] = useState(['']);
   const [studyDescription, setStudyDescription] = useState('');
+  const navigate = useNavigate();
 
   const handleEmailChange = (index: number, value: string) => {
     const newEmails = [...studyEmails];
@@ -27,13 +29,23 @@ export function NewStudy() {
   };
 
   const createStudy = async () => {
+      if (!studyName) {
+      alert("스터디 명을 입력해주세여")
+    }
+
+    if (!studyDescription) {
+      alert("스터디 설명을 입력해주세여")
+    }
+
     try {
       const form: studyInfo = {  
         studyName,
         studyEmails: studyEmails.filter(email => email !== '')!,
         studyDescription,
       }
-      await study.create(form);
+
+      const newStudyId = await study.create(form);
+      navigate(`/study/${newStudyId}`);
     } catch (error) {
       console.error('스터디 생성 실패:', error);
     }

@@ -26,7 +26,7 @@ public class StudyInfoService {
     private final MemberStudyRepository memberStudyRepository;
 
     @Transactional
-    public ResponseEntity<String> createStudy(StudyInfoRequestDto studyInfoRequestDto) {
+    public ResponseEntity<Long> createStudy(StudyInfoRequestDto studyInfoRequestDto) {
 
         StudyInfo studyInfo = StudyInfo.createStudy(studyInfoRequestDto);
         studyInfoRepository.save(studyInfo);
@@ -35,7 +35,7 @@ public class StudyInfoService {
 //            sendInvitationEmail(email, studyInfoRequestDto.getStudyName());
 //        }
 
-        return ResponseEntity.ok().body("Study created successfully");
+        return ResponseEntity.ok().body(studyInfo.getId());
     }
 
     private void sendInvitationEmail(String to, String studyName) {
@@ -57,7 +57,6 @@ public class StudyInfoService {
     public ResponseEntity<StudyInfo> loadStudyInfo(Long studyId) {
 
         StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
-        System.out.println(studyInfo.getStudyDescription());
         Hibernate.initialize(studyInfo.getStudyEmails());
 
         return ResponseEntity.ok().body(studyInfo);

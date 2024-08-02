@@ -1,11 +1,11 @@
 export type memberInfo = {
     memberId?: number;
-    username: string;
-    memberName: string;
+    username?: string;
+    memberName?: string;
     memberEmail?: string;
-    memberAvatarUrl: string;
-    memberHtmlUrl: string; 
-    role: string; 
+    memberAvatarUrl?: string;
+    memberHtmlUrl?: string; 
+    role?: string; 
 }
 
 export type studyInfo = {
