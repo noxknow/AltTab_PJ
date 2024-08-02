@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/Button/Button';
 import { Tool } from '@/components/Tool/Tool';
@@ -14,7 +15,8 @@ import styles from './NewStudy.module.scss';
 export function NewStudy() {
   const [studyName, setStudyName] = useState('');
   const [studyEmails, setStudyEmails] = useState(['']);
-  const [studyInfo, setStudyInfo] = useState('');
+  const [studyDescription, setStudyDescription] = useState('');
+  const navigate = useNavigate();
 
   const handleEmailChange = (index: number, value: string) => {
     const newEmails = [...studyEmails];
@@ -27,13 +29,23 @@ export function NewStudy() {
   };
 
   const createStudy = async () => {
+      if (!studyName) {
+      alert("스터디 명을 입력해주세여")
+    }
+
+    if (!studyDescription) {
+      alert("스터디 설명을 입력해주세여")
+    }
+
     try {
       const form: studyInfo = {  
-        studyName: studyName!,
+        studyName,
         studyEmails: studyEmails.filter(email => email !== '')!,
-        studyInfo: studyInfo!,
+        studyDescription,
       }
-      await study.create(form);
+
+      const newStudyId = await study.create(form);
+      navigate(`/study/${newStudyId}`);
     } catch (error) {
       console.error('스터디 생성 실패:', error);
     }
@@ -80,8 +92,8 @@ export function NewStudy() {
             <Input 
               placeholder="스터디를 소개해 주세요" 
               maxLength={25}
-              value={studyInfo}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStudyInfo(e.target.value)}
+              value={studyDescription}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStudyDescription(e.target.value)}
             />
           </div>
         </div>

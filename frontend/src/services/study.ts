@@ -7,9 +7,27 @@ export const study = {
   },
 
   create: async (form: studyInfo) => {
-    await API.post(
+    const { data } = await API.post(
       `${study.endpoint.default}`,
       form,
     );
+
+    return data;
+  },
+
+  loadInfo: async (studyId: string): Promise<studyInfo> => {
+    const { data } = await API.get<studyInfo>(
+      `${study.endpoint.default}/${studyId}`
+    );
+
+    return data;
+  },
+
+  lodaMember: async (studyId: string): Promise<studyInfo> => {
+    const { data } = await API.get<studyInfo>(
+      `${study.endpoint.default}/${studyId}`
+    );
+
+    return data;
   },
 };
