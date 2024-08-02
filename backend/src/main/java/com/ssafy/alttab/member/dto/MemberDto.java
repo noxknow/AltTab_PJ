@@ -1,6 +1,7 @@
 package com.ssafy.alttab.member.dto;
 
 import com.ssafy.alttab.member.entity.Member;
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import lombok.*;
 
 @Getter
@@ -15,7 +16,7 @@ public class MemberDto {
     private String memberEmail;
     private String memberAvatarUrl;
     private String memberHtmlUrl;
-    private String role;
+    private MemberRoleStatus role;
 
     public static MemberDto fromEntity(Member member) {
         return MemberDto.builder()

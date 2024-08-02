@@ -1,5 +1,6 @@
 package com.ssafy.alttab.security.jwt;
 
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.security.oauth2.dto.CustomOAuth2User;
 import com.ssafy.alttab.member.dto.MemberDto;
 import jakarta.servlet.FilterChain;
@@ -59,7 +60,7 @@ public class JWTFilter extends OncePerRequestFilter {
         //토큰에서 username & role 획득
         String username = jwtUtil.getUsername(accessToken);
         String name = jwtUtil.getName(accessToken);
-        String role = jwtUtil.getRole(accessToken);
+        MemberRoleStatus role = jwtUtil.getRole(accessToken);
 
         MemberDto memberDto = new MemberDto();
         memberDto.setMemberName(name);
