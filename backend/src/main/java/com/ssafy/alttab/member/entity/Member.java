@@ -38,6 +38,6 @@ public class Member {
     private String role;
 
     @OneToMany(mappedBy = "member")
-    private List<MemberStudy> memberStudies = new ArrayList<>();
+    private List<MemberStudy> memberStudies;
 
 }
