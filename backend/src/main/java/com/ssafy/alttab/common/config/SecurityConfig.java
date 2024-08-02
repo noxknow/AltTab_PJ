@@ -22,8 +22,8 @@ import java.util.Collections;
 @Configuration
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService CustomOAuth2UserService;
-    private final OAuth2SuccessHandler OAuth2SuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JWTUtil jwtUtil;
     private final UrlProperties urlProperties;
 
@@ -64,9 +64,18 @@ public class SecurityConfig {
         //oauth2
         http
                 .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(CustomOAuth2UserService))
-                        .successHandler(OAuth2SuccessHandler)
+//                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+//                                .userService(CustomOAuth2UserService))
+//                        .successHandler(OAuth2SuccessHandler)
+                                .redirectionEndpoint(redirectionEndpoint ->
+                                        redirectionEndpoint
+                                                .baseUri("/login/oauth2/code/*")
+                                )
+                                .userInfoEndpoint(userInfoEndpoint ->
+                                        userInfoEndpoint
+                                                .userService(customOAuth2UserService)
+                                )
+                                .successHandler(oAuth2SuccessHandler)
                 );
 
         //경로별 인가 작업
