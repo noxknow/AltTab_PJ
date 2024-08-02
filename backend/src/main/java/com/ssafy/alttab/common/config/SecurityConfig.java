@@ -80,6 +80,8 @@ public class SecurityConfig {
 
         //경로별 인가 작업
         http
+                .headers(headers -> headers
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests((auth) -> auth
                         .anyRequest().permitAll()); // 모든 요청을 허용
 //                        .requestMatchers("/").permitAll()
