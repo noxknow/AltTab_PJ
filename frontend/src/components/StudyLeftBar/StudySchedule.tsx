@@ -9,7 +9,7 @@ type StudyScheduleProps = {
 export default function StudySchedule({ date }: StudyScheduleProps) {
   return (
     <div className={styles.main}>
-      <div className={styles.top}>
+      <div className={styles.header}>
         <div>
           <CalendarIcon />
         </div>

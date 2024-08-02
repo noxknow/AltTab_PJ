@@ -1,0 +1,43 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.main {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 10rem;
+  width: 25rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 550;
+  width: 18rem;
+}
+
+.table {
+  width: 80rem;
+  height: 50rem;
+  text-align: center;
+  vertical-align: middle;
+  overflow-y: auto;
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid purple;
+    padding: 1rem;
+  }
+}
