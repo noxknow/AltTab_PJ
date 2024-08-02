@@ -12,9 +12,10 @@ import styles from './Modal.module.scss';
 
 type ModalProps = React.HTMLAttributes<HTMLDivElement> & {
   code: string;
+  selected?: number;
 };
 
-export function Modal({ code }: ModalProps) {
+export function Modal({ code, selected }: ModalProps) {
   const { setIsModalOpen, modal, isFill } = useCompilerModalState();
 
   const modalClass = classNames(styles.modalContainer, {
@@ -34,7 +35,9 @@ export function Modal({ code }: ModalProps) {
         {modal === MODAL.PROBLEM && <ProblemModal />}
         {modal === MODAL.SOLUTION && <SolutionModal />}
         {modal === MODAL.CANVAS && <CanvasModal />}
-        {modal === MODAL.RUN && <RunCodeModal code={code} />}
+        {modal === MODAL.RUN && (
+          <RunCodeModal code={code} problemTab={selected} />
+        )}
       </div>
     </>
   );

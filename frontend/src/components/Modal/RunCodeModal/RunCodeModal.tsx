@@ -10,15 +10,15 @@ import styles from './RunCodeModal.module.scss';
 
 type RunCodeModalProps = {
   code: string;
+  problemTab?: number;
 };
 
-export function RunCodeModal({ code }: RunCodeModalProps) {
+export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   const { studyId, problemId } = useParams();
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState<string | null>('');
   const [isLoading, setIsLoading] = useState(false);
   const polling = useRef<number | null>();
-  const problemTab = '1';
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.currentTarget.value);
@@ -29,7 +29,7 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
     const form: requestCompiler = {
       studyGroupId: studyId!,
       problemId: problemId!,
-      problemTab: '1',
+      problemTab: `${problemTab!}`,
       code,
       input: inputText,
     };
@@ -43,7 +43,7 @@ export function RunCodeModal({ code }: RunCodeModalProps) {
     const { status, output, errorMessage } = await compiler.status(
       studyId!,
       problemId!,
-      problemTab!,
+      `${problemTab!}`,
     );
     if (status === EXECUTOR.DONE || status === EXECUTOR.FAIL) {
       setIsLoading(false);
