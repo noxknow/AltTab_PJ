@@ -7,6 +7,7 @@ import com.ssafy.alttab.security.oauth2.dto.OAuth2Response;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
@@ -25,7 +27,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest oAuth2UserRequest) throws OAuth2AuthenticationException {
 
         OAuth2User oAuth2User = super.loadUser(oAuth2UserRequest);
-        System.out.println("oAuth2User = " + oAuth2User);
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@ 유저로드 oAuth2User = " + oAuth2User);
 
         String registrationId = oAuth2UserRequest.getClientRegistration().getRegistrationId();
 
