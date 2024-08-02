@@ -1,0 +1,47 @@
+@import '../../styles/theme.module.scss';
+@import '../../styles/font.module.scss';
+
+.main {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  max-width: 70rem;
+  padding: 7rem 0rem 7rem 0rem;
+  justify-content: space-between;
+  align-items: center;
+  height: 66rem;
+  margin: auto;
+}
+
+.main_mid {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.option {
+  height: 17rem;
+  width: 17rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  font-size: 4rem;
+  font-weight: 700;
+}
+
+.small_title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.content {
+  font-size: 1.4rem;
+  font-weight: 400;
+}

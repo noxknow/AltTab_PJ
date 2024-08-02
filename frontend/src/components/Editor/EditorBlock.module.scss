@@ -1,0 +1,58 @@
+.header {
+  background-color: gray;
+  border-width: 1rem;
+  font-size: 3rem;
+  margin-top: 1rem;
+}
+.content {
+  background-color: aqua;
+  border-width: 1rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.image {
+  background-color: aqua;
+  border-width: 1rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+}
+
+.block {
+  div:empty:before {
+    content: '내용을 입력하세요';
+  }
+}
+
+$table-border-color: #dddddd;
+$table-bg-color: #f9f9f9;
+$table-hover-color: #f1f1f1;
+$table-text-color: #333333;
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 2.5rem 0;
+  font-size: 3rem;
+  text-align: center;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2.5rem 0;
+    font-size: 3rem;
+    text-align: center;
+
+    tr,
+    th {
+      padding: 3rem 3rem;
+      border: 1px solid $table-border-color;
+      background-color: $table-bg-color;
+      color: $table-text-color;
+    }
+
+    tr:hover,
+    th:hover {
+      background-color: $table-hover-color;
+    }
+  }
+}

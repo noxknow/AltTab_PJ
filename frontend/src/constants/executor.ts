@@ -1,0 +1,6 @@
+export const EXECUTOR = {
+  NOT_START: 'NOT_START',
+  IN_PROGRESS: 'IN_PROGRESS',
+  DONE: 'DONE',
+  FAIL: 'FAIL',
+};

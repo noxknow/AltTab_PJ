@@ -3,6 +3,9 @@ package com.ssafy.executor.executer;
 import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
 import com.ssafy.executor.common.exception.CompileException;
+import com.ssafy.executor.dto.CodeExecutionRequestDto;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -29,16 +32,16 @@ public class CodeCompiler {
      * @param mainJavaFile
      * @throws Exception
      */
-    public void compileCode(Path mainJavaFile) throws Exception {
+    public void compileCode(Path mainJavaFile, CodeExecutionRequestDto request) throws Exception {
         checkForbiddenPattern(Files.readString(mainJavaFile));
 
         Process compileProcess = startCompileProcess(mainJavaFile);
         String output = captureProcessOutput(compileProcess);
 
-        boolean compilationSucceeded = waitForCompilation(compileProcess);
+        boolean compilationSucceeded = waitForCompilation(compileProcess, request);
 
         if (!compilationSucceeded) {
-            checkCompileResult(false, output);
+            checkCompileResult(false, output, request);
         }
 
         log.info(LogMessage.COMPILE_SUCCESSFUL.getMessage());
@@ -81,10 +84,10 @@ public class CodeCompiler {
      * @return 성공여부
      * @throws Exception
      */
-    private boolean waitForCompilation(Process compileProcess) throws Exception {
+    private boolean waitForCompilation(Process compileProcess, CodeExecutionRequestDto request) throws Exception {
         if (!compileProcess.waitFor(COMPILE_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
             compileProcess.destroy();
-            throw new CompileException(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS));
+            throw new CompileException(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS), request);
         }
         return compileProcess.exitValue() == 0;
     }
@@ -110,11 +113,11 @@ public class CodeCompiler {
      * @param output 컴파일 출력 정보
      * @throws CompileException 컴파일 실패 시 발생
      */
-    private void checkCompileResult(boolean success, String output) throws CompileException {
+    private void checkCompileResult(boolean success, String output, CodeExecutionRequestDto request) throws CompileException {
         if (!success) {
             String formattedErrors = formatCompileErrors(output);
             log.error(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors));
-            throw new CompileException(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors));
+            throw new CompileException(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors), request);
         }
     }
 
@@ -138,12 +141,18 @@ public class CodeCompiler {
      * @return 포맷된 에러 라인
      */
     private String formatErrorLine(String errorLine) {
-        String[] parts = errorLine.split(":");
-        if (parts.length >= 3) {
-            String lineNumber = parts[1].trim();
-            String errorMessage = String.join(":", Arrays.copyOfRange(parts, 3, parts.length)).trim();
-            return String.format("Line %s: %s", lineNumber, errorMessage);
+        // 정규표현식을 사용하여 필요한 정보만 추출
+        Pattern pattern = Pattern.compile(".*?([^\\\\/:]+\\.java):(\\d+):(?:\\d+:)? error: (.+)");
+        Matcher matcher = pattern.matcher(errorLine);
+
+        if (matcher.find()) {
+            String fileName = matcher.group(1);
+            String lineNumber = matcher.group(2);
+            String errorMessage = matcher.group(3);
+            return String.format("%s Line %s: %s", fileName, lineNumber, errorMessage);
         }
+
+        // 매치되지 않으면 원본 라인 반환
         return errorLine;
     }
 }

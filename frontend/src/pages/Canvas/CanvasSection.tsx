@@ -1,51 +1,58 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Client } from '@stomp/stompjs';
+import { useEffect, useState, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import SockJS from 'sockjs-client';
 import { fabric } from 'fabric';
+
+import CloseSVG from '@/assets/icons/close.svg?react';
+import { Client } from '@stomp/stompjs';
+import { compressData, decompressData } from '@/utils/CompressUtil';
+import { baseURL } from '@/services/api';
+
 import Toolbar from './Toolbar';
 import styles from './CanvasSection.module.scss';
-import CloseSVG from '@/assets/icons/close.svg?react';
-import { compressData, decompressData } from '@/utils/CompressUtil';
 
-function App() {
+type CanvasProps = {
+  closeCanvas?: () => void;
+};
+
+export function CanvasSection({ closeCanvas }: CanvasProps) {
+  const { studyId, problemId } = useParams();
   const stompClient = useRef<Client | null>(null);
-  const [roomId, setRoomId] = useState('');
-  const [connected, setConnected] = useState(false);
-  const [canvasVisible, setCanvasVisible] = useState(false);
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricCanvasRef = useRef<fabric.Canvas | null>(null);
   const [pendingDrawingData, setPendingDrawingData] = useState<any>(null);
-
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 5;
 
-  const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRoomId(event.target.value);
-  };
+  useEffect(() => {
+    connect();
+  }, []);
 
   const connect = () => {
     if (stompClient.current && stompClient.current.connected) return;
 
-    const socket = new SockJS('http://localhost:8080/ws');
+    const socket = new SockJS(`${baseURL}/ws`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000
+      heartbeatOutgoing: 4000,
     });
 
-    stompClient.current.onConnect = (frame) => {
+    stompClient.current.onConnect = () => {
       if (stompClient.current) {
-        stompClient.current.subscribe(`/sub/api/v1/rooms/${roomId}`, (message) => {
-          const newMessage = JSON.parse(message.body);
-          updateCanvas(newMessage);
-        });
+        stompClient.current.subscribe(
+          `/sub/api/v1/rooms/${studyId}/${problemId}`,
+          (message) => {
+            const newMessage = JSON.parse(message.body);
+            updateCanvas(newMessage);
+          },
+        );
       }
 
       reconnectAttemptsRef.current = 0;
-      setConnected(true);
     };
 
     stompClient.current.onStompError = (frame) => {
@@ -54,14 +61,16 @@ function App() {
     };
 
     stompClient.current.onWebSocketClose = () => {
-      setConnected(false);
       if (reconnectAttemptsRef.current < maxReconnectAttempts) {
         reconnectAttemptsRef.current += 1;
-        setTimeout(() => {
-          connect();
-        }, Math.min(5000 * reconnectAttemptsRef.current, 60000));
+        setTimeout(
+          () => {
+            connect();
+          },
+          Math.min(5000 * reconnectAttemptsRef.current, 60000),
+        );
       } else {
-        console.log("Max reconnect attempts reached.");
+        console.log('Max reconnect attempts reached.');
       }
     };
 
@@ -71,7 +80,6 @@ function App() {
   const disconnect = () => {
     if (stompClient.current) {
       stompClient.current.deactivate();
-      setConnected(false);
     }
   };
 
@@ -81,24 +89,17 @@ function App() {
     try {
       const compressedData = compressData(JSON.stringify(drawingData));
       const payload = {
-        roomId: roomId,
-        drawingData: compressedData
+        studyId,
+        problemId,
+        drawingData: compressedData,
       };
 
       stompClient.current.publish({
-        destination: `/pub/api/v1/rooms/${roomId}`,
-        body: JSON.stringify(payload)
+        destination: `/pub/api/v1/rooms/${studyId}/${problemId}`,
+        body: JSON.stringify(payload),
       });
     } catch (error) {
       console.error('Error compressing data:', error);
-    }
-  };
-
-  const handleConnectClick = () => {
-    if (roomId) {
-      connect();
-    } else {
-      alert("아이디를 입력해주세요.");
     }
   };
 
@@ -123,22 +124,22 @@ function App() {
         fabricCanvasRef.current!.clear();
         for (const obj of drawingData.objects) {
           await new Promise<void>((resolve) => {
-            fabric.util.enlivenObjects([obj], (enlivenedObjects: fabric.Object[]) => {
-              enlivenedObjects.forEach((enlivenedObj) => {
-                fabricCanvasRef.current!.add(enlivenedObj);
-              });
-              resolve();
-            }, 'fabric');
+            fabric.util.enlivenObjects(
+              [obj],
+              (enlivenedObjects: fabric.Object[]) => {
+                enlivenedObjects.forEach((enlivenedObj) => {
+                  fabricCanvasRef.current!.add(enlivenedObj);
+                });
+                resolve();
+              },
+              'fabric',
+            );
           });
         }
       }
     } catch (error) {
       console.error('Error updating canvas:', error);
     }
-  };
-
-  const toggleCanvasVisibility = () => {
-    setCanvasVisible(!canvasVisible);
   };
 
   useEffect(() => {
@@ -171,7 +172,7 @@ function App() {
       opt.e.stopPropagation();
     });
 
-    newCanvas.on('mouse:up', (e) => {
+    newCanvas.on('mouse:up', () => {
       sendDrawingData(newCanvas.toJSON(['data']));
     });
 
@@ -193,42 +194,17 @@ function App() {
       disconnect();
       fabricCanvasRef.current = null;
     };
-  }, [canvasVisible]);
-
-  useEffect(() => {
-    if (fabricCanvasRef.current && roomId) {
-      connect();
-    }
-    return () => {
-      disconnect();
-    };
-  }, [roomId]);
+  }, []);
 
   return (
     <div>
-      <div>
-        <input
-          type="text"
-          placeholder="방 ID 입력"
-          value={roomId}
-          onChange={handleIdChange}
-        />
-        <button onClick={handleConnectClick} disabled={connected}>연결</button>
-        <button onClick={toggleCanvasVisibility}>
-          {canvasVisible ? "캔버스 닫기" : "캔버스 열기"}
+      <div className={styles.canvas} ref={canvasContainerRef}>
+        <button className={styles.closeButton} onClick={closeCanvas}>
+          <CloseSVG width={24} height={24} stroke="#F24242" />
         </button>
+        <canvas ref={canvasRef} />
+        <Toolbar canvas={canvas} />
       </div>
-      {canvasVisible && (
-        <div className={styles.canvas} ref={canvasContainerRef}>
-          <button className={styles.closeButton} onClick={toggleCanvasVisibility}>
-            <CloseSVG width={24} height={24} stroke="#F24242" />
-          </button>
-          <canvas ref={canvasRef} />
-          <Toolbar canvas={canvas} />
-        </div>
-      )}
     </div>
   );
 }
-
-export default App;

@@ -1,0 +1,29 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 22rem;
+}
+
+.info {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.value {
+  color: $purple;
+  font-size: 4rem;
+  font-weight: 500;
+}
+
+.label {
+  font-size: 2rem;
+  font-weight: 500;
+}

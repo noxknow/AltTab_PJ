@@ -13,9 +13,9 @@ public class DrawingController {
 
     private final DrawingService drawingService;
 
-    @MessageMapping("/api/v1/rooms/{roomId}")
-    public void saveDrawing(@DestinationVariable("roomId") Long roomId, @Payload String drawingData) {
+    @MessageMapping("/api/v1/rooms/{studyId}/{problemId}")
+    public void saveDrawing(@DestinationVariable("studyId") Long studyId, @DestinationVariable("problemId") Long problemId, @Payload String drawingData) {
 
-        drawingService.saveDrawing(roomId, drawingData);
+        drawingService.saveDrawing(studyId, problemId, drawingData);
     }
 }

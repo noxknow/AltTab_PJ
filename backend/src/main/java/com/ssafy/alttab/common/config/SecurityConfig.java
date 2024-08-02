@@ -1,5 +1,6 @@
 package com.ssafy.alttab.common.config;
 
+import com.ssafy.alttab.security.jwt.JWTFilter;
 import com.ssafy.alttab.security.jwt.JWTUtil;
 import com.ssafy.alttab.security.oauth2.handler.OAuth2SuccessHandler;
 import com.ssafy.alttab.security.oauth2.service.CustomOAuth2UserService;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 
@@ -20,8 +22,8 @@ import java.util.Collections;
 @Configuration
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService CustomOAuth2UserService;
-    private final OAuth2SuccessHandler OAuth2SuccessHandler;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final JWTUtil jwtUtil;
     private final UrlProperties urlProperties;
 
@@ -33,7 +35,6 @@ public class SecurityConfig {
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(Collections.singletonList(urlProperties.getFront()));
-//                    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
                     configuration.setAllowedMethods(Collections.singletonList("*"));
                     configuration.setAllowCredentials(true);
                     configuration.setAllowedHeaders(Collections.singletonList("*"));
@@ -56,24 +57,33 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable);
 
         //JWTFilter 추가
-//        http
-//                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
+        http
+                .addFilterAfter(new JWTFilter(jwtUtil), OAuth2LoginAuthenticationFilter.class);
 //                .addFilterBefore(new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http
                 .oauth2Login((oauth2) -> oauth2
-                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
-                                .userService(CustomOAuth2UserService))
-                        .successHandler(OAuth2SuccessHandler)
+//                        .userInfoEndpoint((userInfoEndpointConfig) -> userInfoEndpointConfig
+//                                .userService(CustomOAuth2UserService))
+//                        .successHandler(OAuth2SuccessHandler)
+                                .redirectionEndpoint(redirectionEndpoint ->
+                                        redirectionEndpoint
+                                                .baseUri("/login/oauth2/code/*")
+                                )
+                                .userInfoEndpoint(userInfoEndpoint ->
+                                        userInfoEndpoint
+                                                .userService(customOAuth2UserService)
+                                )
+                                .successHandler(oAuth2SuccessHandler)
                 );
 
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .anyRequest().permitAll()); // 모든 요청을 허용
-//                        .requestMatchers("/").permitAll()
-//                        .anyRequest().authenticated());
+//                        .anyRequest().permitAll()); // 모든 요청을 허용
+                        .requestMatchers("/").permitAll()
+                        .anyRequest().authenticated());
 
         //세션 설정 : STATELESS
         http

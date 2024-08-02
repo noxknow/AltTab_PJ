@@ -1,0 +1,8 @@
+@import '../../styles/theme.module.scss';
+
+.container {
+  padding: 0.6rem;
+  border: 2px solid $green;
+  border-radius: 6px;
+  outline: none;
+}

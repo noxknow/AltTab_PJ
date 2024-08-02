@@ -7,6 +7,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import static com.ssafy.alttab.security.jwt.TokenExpireTime.ACCESS_TOKEN_EXPIRE_
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private final JWTUtil jwtUtil;
     private final UrlProperties urlProperties;
@@ -24,13 +26,14 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         CustomOAuth2User customOAuth2User = (CustomOAuth2User) authentication.getPrincipal();
-        System.out.println("customOAuth2User.getAttributes() = " + customOAuth2User.getAttributes());
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@ 인증 성공 customOAuth2User.getAttributes() = " + customOAuth2User.getAttributes());
 
         String username = customOAuth2User.getUsername();
 
         String accessToken = jwtUtil.generateAccessToken(authentication, username);
         jwtUtil.generateRefreshToken(authentication, accessToken, username);
 
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@ 토큰 발급 accessToken = " + accessToken);
         response.addCookie(createCookie("Access-Token", accessToken));
         response.sendRedirect(urlProperties.getFront());
 //        response.sendRedirect("http://localhost:3000");
