@@ -2,15 +2,25 @@ package com.ssafy.alttab.member.entity;
 
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
-import com.ssafy.alttab.study.entity.Problem;
 import com.ssafy.alttab.study.entity.StudyInfo;
-import com.ssafy.alttab.study.enums.ProblemStatus;
-import jakarta.persistence.*;
-import java.util.stream.Collectors;
-import lombok.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Builder
 @Entity
@@ -44,7 +54,7 @@ public class Member {
     private MemberRoleStatus role;
 
     @OneToMany(mappedBy = "member")
-    private List<MemberStudy> memberStudies;
+    private List<MemberStudy> memberStudies = new ArrayList<>();
 
     //==비즈니스 로직==//
 
