@@ -1,9 +1,9 @@
 package com.ssafy.alttab.security.oauth2.service;
 
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
+import com.ssafy.alttab.member.dto.MemberResponseDto;
 import com.ssafy.alttab.security.oauth2.dto.CustomOAuth2User;
 import com.ssafy.alttab.security.oauth2.dto.GithubResponse;
-import com.ssafy.alttab.member.dto.MemberDto;
 import com.ssafy.alttab.security.oauth2.dto.OAuth2Response;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
@@ -46,23 +46,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         if (existData.isPresent()) {
             Member member = existData.get();
-            member.setMemberName(oAuth2Response.getName());
-            member.setMemberEmail(oAuth2Response.getEmail());
-            member.setMemberAvatarUrl(oAuth2Response.getAvatarUrl());
-            member.setMemberHtmlUrl(oAuth2Response.getHtmlUrl());
-
+            member.fromOAuth2(oAuth2Response);
             memberRepository.save(member);
 
-            MemberDto memberDto = MemberDto.builder()
+            MemberResponseDto memberDto = MemberResponseDto.builder()
                     .username(member.getUsername())
                     .memberName(oAuth2Response.getName())
                     .memberEmail(oAuth2Response.getEmail())
                     .memberAvatarUrl(oAuth2Response.getAvatarUrl())
                     .memberHtmlUrl(oAuth2Response.getHtmlUrl())
-                    .role(MemberRoleStatus.TEAM_MEMBER)
+                    .role(String.valueOf(MemberRoleStatus.TEAM_MEMBER))
                     .build();
 
             return new CustomOAuth2User(memberDto);
+
         } else {
             Member member = Member.builder()
                     .username(username)
@@ -75,13 +72,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
             memberRepository.save(member);
 
-            MemberDto memberDto = MemberDto.builder()
+            MemberResponseDto memberDto = MemberResponseDto.builder()
                     .username(member.getUsername())
                     .memberName(oAuth2Response.getName())
                     .memberEmail(oAuth2Response.getEmail())
                     .memberAvatarUrl(oAuth2Response.getAvatarUrl())
                     .memberHtmlUrl(oAuth2Response.getHtmlUrl())
-                    .role(MemberRoleStatus.TEAM_MEMBER)
+                    .role(String.valueOf(MemberRoleStatus.TEAM_MEMBER))
                     .build();
 
             return new CustomOAuth2User(memberDto);

@@ -1,6 +1,6 @@
 package com.ssafy.alttab.security.oauth2.dto;
 
-import com.ssafy.alttab.member.dto.MemberDto;
+import com.ssafy.alttab.member.dto.MemberResponseDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class CustomOAuth2User implements OAuth2User, UserDetails { // OAuth2UserDetail
 
-    private final MemberDto memberDto;
+    private final MemberResponseDto memberDto;
 
-    public CustomOAuth2User(final MemberDto memberDto) {
+    public CustomOAuth2User(final MemberResponseDto memberDto) {
         this.memberDto = memberDto;
     }
 

@@ -2,9 +2,12 @@ package com.ssafy.alttab.study.entity;
 
 import com.ssafy.alttab.common.entity.BaseTimeEntity;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
+import com.ssafy.alttab.member.dto.MemberRequestDto;
+import com.ssafy.alttab.member.dto.MemberResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
+import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
 import com.ssafy.alttab.study.enums.ProblemStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -16,9 +19,11 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -48,16 +53,15 @@ public class StudyInfo extends BaseTimeEntity {
     @Column(name = "like_count")
     private Long like;
 
-    @Column(name = "member_study")
-    @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<MemberStudy> memberStudies = new ArrayList<>();
-
     @ElementCollection
     @CollectionTable(name = "study_emails", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "email")
     @Builder.Default
     private List<String> studyEmails = new ArrayList<>();
+
+    @Column(name = "member_study")
+    @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
+    private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
     @Builder.Default
@@ -65,7 +69,6 @@ public class StudyInfo extends BaseTimeEntity {
 
     //==비즈니스 로직==//
     public static StudyInfo createStudy(StudyInfoRequestDto studyInfoRequestDto) {
-
         return StudyInfo.builder()
                 .studyName(studyInfoRequestDto.getStudyName())
                 .studyDescription(studyInfoRequestDto.getStudyDescription())
@@ -78,8 +81,8 @@ public class StudyInfo extends BaseTimeEntity {
      *
      * @return 완료된 문제의 총 개수
      */
-    public Long totalSolve(){
-        return   problems.stream()
+    public Long totalSolve() {
+        return problems.stream()
                 .filter(problem -> problem.getProblemStatus() == ProblemStatus.DONE)
                 .count();
     }
@@ -90,7 +93,7 @@ public class StudyInfo extends BaseTimeEntity {
      * @return 스터디의 팔로워 수
      */
     public Long getFollowerCount() {
-        return  memberStudies.stream()
+        return memberStudies.stream()
                 .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
                 .count();
     }
@@ -105,5 +108,21 @@ public class StudyInfo extends BaseTimeEntity {
                 .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
                 .map(MemberStudy::getMember)
                 .collect(Collectors.toList());
+    }
+
+    public void fromDto(StudyInfoRequestDto studyInfoRequestDto) {
+//        this.id = studyInfoRequestDto.getStudyId();
+        this.studyName = studyInfoRequestDto.getStudyName();
+        this.studyEmails = studyInfoRequestDto.getStudyEmails();
+        this.studyDescription = studyInfoRequestDto.getStudyDescription();
+    }
+
+    public StudyInfoResponseDto toDto() {
+        return StudyInfoResponseDto.builder()
+                .studyId(this.id)
+                .studyName(this.studyName)
+                .studyDescription(this.studyDescription)
+                .studyEmails(this.studyEmails)
+                .build();
     }
 }
