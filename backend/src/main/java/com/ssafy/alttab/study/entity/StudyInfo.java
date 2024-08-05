@@ -16,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -41,23 +42,23 @@ public class StudyInfo extends BaseTimeEntity {
     @Column(columnDefinition = "varchar(100)", nullable = false)
     private String studyInfo;
 
-    @Column(name = "view")
+    @Column(name = "view_count")
     private Long view;
 
-    @Column(name = "like")
+    @Column(name = "like_count")
     private Long like;
 
     @Column(name = "member_study")
     @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
-    private List<MemberStudy> memberStudies;
+    private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @ElementCollection
     @CollectionTable(name = "study_emails", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "email")
-    private List<String> studyEmails;
+    private List<String> studyEmails = new ArrayList<>();
 
     @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
-    private List<Problem> problems;
+    private List<Problem> problems = new ArrayList<>();
 
     //==비즈니스 로직==//
     public static StudyInfo createStudy(StudyInfoRequestDto studyInfoRequestDto) {
@@ -74,8 +75,8 @@ public class StudyInfo extends BaseTimeEntity {
      *
      * @return 완료된 문제의 총 개수
      */
-    public int totalSolve(){
-        return (int) problems.stream()
+    public Long totalSolve(){
+        return   problems.stream()
                 .filter(problem -> problem.getProblemStatus() == ProblemStatus.DONE)
                 .count();
     }
@@ -85,8 +86,8 @@ public class StudyInfo extends BaseTimeEntity {
      *
      * @return 스터디의 팔로워 수
      */
-    public int getFollowerCount() {
-        return (int) memberStudies.stream()
+    public Long getFollowerCount() {
+        return  memberStudies.stream()
                 .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
                 .count();
     }
