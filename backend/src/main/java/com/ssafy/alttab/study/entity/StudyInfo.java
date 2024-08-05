@@ -52,6 +52,16 @@ public class StudyInfo extends BaseTimeEntity {
     @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
+    @Column(name = "view_count")
+    private Long view;
+
+    @Column(name = "like_count")
+    private Long like;
+
+    @Column(name = "member_study")
+    @OneToMany(mappedBy = "studyInfo", cascade = CascadeType.ALL)
+    private List<MemberStudy> memberStudies = new ArrayList<>();
+
     @ElementCollection
     @CollectionTable(name = "study_emails", joinColumns = @JoinColumn(name = "study_id"))
     @Column(name = "email")
