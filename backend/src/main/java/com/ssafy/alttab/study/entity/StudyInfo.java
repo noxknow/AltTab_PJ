@@ -24,8 +24,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import org.springframework.beans.factory.parsing.Problem;
-
 @Entity
 @Getter
 @Builder
