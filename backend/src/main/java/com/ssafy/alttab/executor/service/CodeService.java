@@ -16,6 +16,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,8 @@ public class CodeService {
     private final RabbitTemplate rabbitTemplate;
     private final CodeSnippetRepository codeSnippetRepository;
     private final CacheManager cacheManager;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     @Transactional
     public CodeResponseDto getCode(Long studyId, Long problemId, Long memberId) {
@@ -129,6 +132,15 @@ public class CodeService {
         codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(
                         response.getStudyId(), response.getProblemId(), response.getMemberId())
                 .ifPresent(snippet -> processExecutionResponse(snippet, response));
+
+        sendResponseWithSocket(response);
+    }
+
+    @Transactional
+    public void sendResponseWithSocket(CodeExecutionResponseDto response){
+        String destination = String.format("/sub/api/v1/executor/execute/%d/%d/%d",
+                response.getStudyId(), response.getProblemId(), response.getMemberId());
+        messagingTemplate.convertAndSend(destination, getExecutionResult(response.getStudyId(), response.getProblemId(), response.getMemberId()));
     }
 
     /**
