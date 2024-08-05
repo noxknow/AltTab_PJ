@@ -26,7 +26,13 @@ public class StudyInfoController {
 
     @GetMapping("/study/{studyId}")
     public ResponseEntity<StudyInfo> loadStudyInfo(@PathVariable Long studyId) {
-        System.out.println(studyId);
+
+        return studyInfoService.loadStudyInfo(studyId);
+    }
+
+    @GetMapping("/study/{studyId}/member")
+    public ResponseEntity<StudyInfo> loadStudyMember(@PathVariable Long studyId) {
+
         return studyInfoService.loadStudyInfo(studyId);
     }
 

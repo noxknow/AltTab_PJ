@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { studyInfo } from '@/types/study.ts';
+import { studyInfo, memberInfo } from '@/types/study.ts';
 import { study } from '@/services/study';
 
 import StudyIntro from './StudyIntro';
@@ -13,6 +13,7 @@ import styles from './StudyLeftBar.module.scss';
 export default function StudyLeftBar() {
   const { studyId } = useParams<{ studyId: string }>();
   const [studyInfo, setStudyInfo] = useState<studyInfo>({});
+  const [studyMember, setStudyMember] = useState<memberInfo>({});
 
   const loadStudyInfo = async () => {
     if (!studyId) return;
@@ -25,8 +26,20 @@ export default function StudyLeftBar() {
     }
   }
 
+  const loadStudyMember = async () => {
+    if (!studyId) return;
+
+    try {
+      const data = await study.lodaStudyMember(studyId);
+      setStudyMember(data);
+    } catch (error) {
+      console.error('스터디 멤버 로드 실패:', error);
+    }
+  }
+
   useEffect(() => {
     loadStudyInfo();
+    loadStudyMember();
   }, [studyId]);
 
   return (
@@ -36,7 +49,9 @@ export default function StudyLeftBar() {
         studyDescription={studyInfo.studyDescription} 
       />
       <StudySchedule date={new Date('2024-08-05 20:00:00')} />
-      <StudyMembers />
+      <StudyMembers
+        memberNames={studyMember.memberNames}
+      />
     </div>
   );
 }
