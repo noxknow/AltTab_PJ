@@ -1,30 +1,24 @@
 package com.ssafy.alttab.study.dto;
 
-import com.ssafy.alttab.study.entity.StudyInfo;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import com.ssafy.alttab.member.entity.Member;
+import com.ssafy.alttab.study.entity.Problem;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class StudyInfoResponseDto {
-
-    private Long id;
+    private Long studyId;
     private String studyName;
     private String studyDescription;
+    private Long view;
+    private Long like;
     private List<String> studyEmails;
-
-    public static StudyInfoResponseDto createStudyInfoResponse(StudyInfo studyInfo) {
-
-        return StudyInfoResponseDto.builder()
-                .studyName(studyInfo.getStudyName())
-                .studyDescription(studyInfo.getStudyDescription())
-                .studyEmails(studyInfo.getStudyEmails())
-                .build();
-    }
+    private List<Problem> problems;
+    private List<Member> studyMembers;
 }

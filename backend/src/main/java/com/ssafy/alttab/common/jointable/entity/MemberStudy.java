@@ -19,7 +19,7 @@ public class MemberStudy {
     @Id
     private long memberStudyId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -30,4 +30,16 @@ public class MemberStudy {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private MemberRoleStatus role;
+
+    //    public void changeRole(MemberRoleStatus newRole) {
+//        this.role = newRole;
+//    }
+    //==생성 메서드==//
+    public static MemberStudy createMemberStudy(Member member, StudyInfo studyInfo, MemberRoleStatus role) {
+        return MemberStudy.builder()
+                .member(member)
+                .studyInfo(studyInfo)
+                .role(role)
+                .build();
+    }
 }

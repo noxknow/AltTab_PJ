@@ -18,6 +18,7 @@ public class GlobalExceptionHandler {
     }
 
 
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<?> handleGeneralException(Exception ex) {
