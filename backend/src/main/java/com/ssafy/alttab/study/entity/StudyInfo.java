@@ -67,14 +67,34 @@ public class StudyInfo extends BaseTimeEntity {
     @Builder.Default
     private List<Problem> problems = new ArrayList<>();
 
+    //==생성 메서드==//
     //==비즈니스 로직==//
     public static StudyInfo createStudy(StudyInfoRequestDto studyInfoRequestDto) {
         return StudyInfo.builder()
                 .studyName(studyInfoRequestDto.getStudyName())
                 .studyDescription(studyInfoRequestDto.getStudyDescription())
+                .view(0L)
+                .like(0L)
                 .studyEmails(studyInfoRequestDto.getStudyEmails())
                 .build();
     }
+
+    public StudyInfoResponseDto toDto() {
+        List<Member> studyMembers = this.memberStudies.stream()
+                .map(MemberStudy::getMember)
+                .toList();
+
+        return StudyInfoResponseDto.builder()
+                .studyId(this.id)
+                .studyName(this.studyName)
+                .studyDescription(this.studyDescription)
+                .view(this.view)
+                .like(this.like)
+                .problems(this.problems)
+                .studyMembers(studyMembers)
+                .build();
+    }
+    //==비즈니스 로직==//
 
     /**
      * 스터디에서 완료된 문제의 총 개수를 반환합니다.
@@ -111,18 +131,8 @@ public class StudyInfo extends BaseTimeEntity {
     }
 
     public void fromDto(StudyInfoRequestDto studyInfoRequestDto) {
-//        this.id = studyInfoRequestDto.getStudyId();
         this.studyName = studyInfoRequestDto.getStudyName();
-        this.studyEmails = studyInfoRequestDto.getStudyEmails();
         this.studyDescription = studyInfoRequestDto.getStudyDescription();
     }
 
-    public StudyInfoResponseDto toDto() {
-        return StudyInfoResponseDto.builder()
-                .studyId(this.id)
-                .studyName(this.studyName)
-                .studyDescription(this.studyDescription)
-                .studyEmails(this.studyEmails)
-                .build();
-    }
 }

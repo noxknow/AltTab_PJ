@@ -9,5 +9,5 @@ import java.util.List;
 @Setter
 public class AddMembersToStudyDto {
     private Long studyId;
-    private List<Long> memberIds;
+    private List<String> MemberEmails;
 }

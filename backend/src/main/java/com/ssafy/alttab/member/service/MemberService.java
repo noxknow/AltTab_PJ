@@ -1,6 +1,5 @@
 package com.ssafy.alttab.member.service;
 
-import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberRequestDto;
 import com.ssafy.alttab.member.dto.MemberResponseDto;
 import com.ssafy.alttab.member.entity.Member;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final MemberStudyRepository memberStudyRepository;
     private final OAuth2Service oAuth2Service;
 
     public ResponseEntity<MemberResponseDto> getMemberByUsername(String username) {
@@ -62,7 +60,7 @@ public class MemberService {
     public ResponseEntity<List<StudyInfoResponseDto>> getMemberStudies(String username) {
         try {
             Member member = findByUsernameOrThrow(username);
-            List<StudyInfoResponseDto> studyInfoList = memberStudyRepository.findByMember(member).stream()
+            List<StudyInfoResponseDto> studyInfoList = member.getMemberStudies().stream()
                     .map(memberStudy -> {
                         StudyInfo studyInfo = memberStudy.getStudyInfo();
                         return StudyInfoResponseDto.builder()
@@ -79,8 +77,13 @@ public class MemberService {
         }
     }
 
-    private Member findByUsernameOrThrow(String username) {
+    public Member findByUsernameOrThrow(String username) {
         return memberRepository.findByUsername(username)
                 .orElseThrow(() -> new EntityNotFoundException("Member not found with username: " + username));
+    }
+
+    public Member findByMemberEmailOrElse(String email) {
+        return memberRepository.findByMemberEmail(email)
+                .orElse(null);
     }
 }

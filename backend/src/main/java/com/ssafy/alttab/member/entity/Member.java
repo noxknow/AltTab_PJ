@@ -52,22 +52,6 @@ public class Member {
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     //==생성 메서드==//
-
-    //==연관관계 메서드==//
-
-    //==비즈니스 로직==//
-    /**
-     * 맴버가 팔로우 한 스터디 목록 반환
-     *
-     * @return
-     */
-    public List<StudyInfo> getFollowedStudies() {
-        return memberStudies.stream()
-                .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
-                .map(MemberStudy::getStudyInfo)
-                .collect(Collectors.toList());
-    }
-
     public void fromDto(MemberRequestDto memberDto) {
         this.memberName = memberDto.getMemberName();
         this.memberEmail = memberDto.getMemberEmail();
@@ -92,4 +76,20 @@ public class Member {
                 .role(String.valueOf(this.role))
                 .build();
     }
+
+    //==연관관계 메서드==//
+
+    //==비즈니스 로직==//
+    /**
+     * 맴버가 팔로우 한 스터디 목록 반환
+     *
+     * @return
+     */
+    public List<StudyInfo> getFollowedStudies() {
+        return memberStudies.stream()
+                .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
+                .map(MemberStudy::getStudyInfo)
+                .collect(Collectors.toList());
+    }
+
 }
