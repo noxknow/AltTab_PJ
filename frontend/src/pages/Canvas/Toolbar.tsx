@@ -9,6 +9,7 @@ import useToolManager from '@/hooks/useToolManager';
 
 import ToolButton from './ToolButton';
 import ColorPanel from './ColorPanel';
+import usePenTool from '@/hooks/canvasTool/usePenTool';
 import styles from './Toolbar.module.scss';
 
 type ToolbarProps = {
@@ -23,6 +24,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData }) => {
     arraySize,
     handleTableSizeChange
   } = useToolManager(canvas, sendDrawingData);
+
+  const { penWidth, changePenWidth } = usePenTool(canvas);
 
   return (
     <div className={styles.toolbar}>
@@ -41,6 +44,8 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData }) => {
       <ColorPanel
         canvas={canvas}
         className={`${activeTool === 'pen' ? 'block' : 'hidden'}`}
+        penWidth={penWidth}
+        changePenWidth={changePenWidth}
       />
       <ToolButton
         icon={EraserIcon}

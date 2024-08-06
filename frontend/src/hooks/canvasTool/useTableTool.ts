@@ -1,6 +1,7 @@
 import { fabric } from 'fabric';
 
 const useTableTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void, arraySize: { rows: number, cols: number }) => {
+  
   const handleTable = () => {
     if (!canvas) return;
 

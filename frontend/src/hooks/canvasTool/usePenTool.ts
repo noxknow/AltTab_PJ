@@ -1,14 +1,24 @@
 import { fabric } from 'fabric';
+import { useState } from 'react';
 
 const usePenTool = (canvas: fabric.Canvas | null) => {
+  const [penWidth, setPenWidth] = useState(10);
+
   const handlePen = () => {
     if (!canvas) return;
 
     canvas.isDrawingMode = true;
-    canvas.freeDrawingBrush.width = 10;
+    canvas.freeDrawingBrush.width = penWidth;
   };
 
-  return { handlePen };
+  const changePenWidth = (width: number) => {
+    setPenWidth(width);
+    if (canvas) {
+      canvas.freeDrawingBrush.width = width;
+    }
+  };
+
+  return { handlePen, penWidth, changePenWidth };
 };
 
 export default usePenTool;

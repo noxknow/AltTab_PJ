@@ -1,11 +1,15 @@
-import CheckIcon from '@/assets/icons/check.svg?react';
 import { useEffect, useState } from 'react';
 import { fabric } from 'fabric';
+
+import CheckIcon from '@/assets/icons/check.svg?react';
+
 import styles from './ColorPanel.module.scss';
 
 type ColorPanelProps = {
   canvas: fabric.Canvas | null;
   className: string;
+  penWidth: number;
+  changePenWidth: (width: number) => void;
 };
 
 type PenColorTypes =
@@ -25,7 +29,7 @@ const COLOR_CODE = {
   black: '#000000',
 };
 
-const ColorPanel = ({ canvas, className }: ColorPanelProps) => {
+const ColorPanel = ({ canvas, className, penWidth, changePenWidth }: ColorPanelProps) => {
   const [penColor, setPenColor] = useState<PenColorTypes>('black');
 
   useEffect(() => {
@@ -34,75 +38,30 @@ const ColorPanel = ({ canvas, className }: ColorPanelProps) => {
   }, [penColor]);
 
   return (
-    <div className={`${className === 'hidden' ? styles.none : styles.block}`}>
-      <button
-        className={`${styles.red} ${styles.color}`}
-        type="button"
-        aria-label="빨간색 펜"
-        onClick={() => {
-          setPenColor('red');
-        }}
-      >
-        <CheckIcon className={`${penColor === 'red' ? '' : styles.hidden}`} />
-      </button>
-      <button
-        className={`${styles.yellow} ${styles.color}`}
-        type="button"
-        aria-label="노란색 펜"
-        onClick={() => {
-          setPenColor('yellow');
-        }}
-      >
-        <CheckIcon
-          className={`${penColor === 'yellow' ? '' : styles.hidden}`}
+    <div className={`${styles.colorPanel} ${className === 'hidden' ? styles.none : styles.block}`}>
+      <div className={styles.colorButtons}>
+        {Object.entries(COLOR_CODE).map(([color, code]) => (
+          <button
+            key={color}
+            className={`${styles.colorButton} ${styles[color]} ${penColor === color ? styles.active : ''}`}
+            type="button"
+            aria-label={`${color} 펜`}
+            onClick={() => setPenColor(color as PenColorTypes)}
+          >
+            <CheckIcon className={`${penColor === color ? '' : styles.hidden}`} />
+          </button>
+        ))}
+      </div>
+      <div className={styles.penWidthControl}>
+        <input
+          type="range"
+          min="1"
+          max="50"
+          value={penWidth}
+          onChange={(e) => changePenWidth(Number(e.target.value))}
         />
-      </button>
-      <button
-        className={`${styles.forsythia} ${styles.color}`}
-        type="button"
-        aria-label="개나리색 펜"
-        onClick={() => {
-          setPenColor('forsythia');
-        }}
-      >
-        <CheckIcon
-          className={`${penColor === 'forsythia' ? '' : styles.hidden}`}
-        />
-      </button>
-      <button
-        className={`${styles.lightGreen} ${styles.color}`}
-        type="button"
-        aria-label="연두색 펜"
-        onClick={() => {
-          setPenColor('lightGreen');
-        }}
-      >
-        <CheckIcon
-          className={`${penColor === 'lightGreen' ? '' : styles.hidden}`}
-        />
-      </button>
-      <button
-        className={`${styles.blue} ${styles.color}`}
-        type="button"
-        aria-label="파란색 펜"
-        onClick={() => {
-          setPenColor('blue');
-        }}
-      >
-        <CheckIcon className={`${penColor === 'blue' ? '' : styles.hidden}`} />
-      </button>
-      <button
-        className={`${styles.black} ${styles.color}`}
-        type="button"
-        aria-label="검은색 펜"
-        onClick={() => {
-          setPenColor('black');
-        }}
-      >
-        <CheckIcon
-          className={`${penColor === 'black' ? 'block' : styles.hidden}`}
-        />
-      </button>
+        <div className={styles.penWidthPreview} style={{ height: `${penWidth}px` }} />
+      </div>
     </div>
   );
 };
