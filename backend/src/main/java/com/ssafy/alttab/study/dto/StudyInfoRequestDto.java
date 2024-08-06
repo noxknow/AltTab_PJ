@@ -15,6 +15,6 @@ public class StudyInfoRequestDto {
 
     private Long studyId;
     private String studyName;
-    private List<String> studyEmails;
     private String studyDescription;
+    private List<String> studyEmails;
 }

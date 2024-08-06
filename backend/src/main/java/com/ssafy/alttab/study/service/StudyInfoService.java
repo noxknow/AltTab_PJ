@@ -3,6 +3,7 @@ package com.ssafy.alttab.study.service;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
+import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
 import com.ssafy.alttab.study.entity.StudyInfo;
 import com.ssafy.alttab.study.repository.StudyInfoRepository;
 import jakarta.mail.MessagingException;
@@ -54,19 +55,19 @@ public class StudyInfoService {
     }
 
     @Transactional
-    public ResponseEntity<StudyInfo> loadStudyInfo(Long studyId) {
+    public ResponseEntity<StudyInfoResponseDto> loadStudyInfo(Long studyId) {
 
         StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
         Hibernate.initialize(studyInfo.getStudyEmails());
+        StudyInfoResponseDto studyInfoResponseDto = StudyInfoResponseDto.createStudyInfoResponse(studyInfo);
 
-        return ResponseEntity.ok().body(studyInfo);
+        return ResponseEntity.ok().body(studyInfoResponseDto);
     }
 
     public ResponseEntity<List<MemberStudy>> loadMembersByStudy(Long studyId) {
 
         StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
         List<MemberStudy> memberStudies = memberStudyRepository.findByStudyInfo(studyInfo);
-
         return ResponseEntity.ok().body(memberStudies);
     }
 

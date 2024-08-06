@@ -1,30 +1,17 @@
+import { memberInfo } from '@/types/study.ts';
+
 import { MembersIcon } from '../MembersIcon/MembersIcon';
 import MemberProfile from './MemberProfile';
 import styles from './StudyMembers.module.scss';
 
-export default function StudyMembers() {
-  const data = [
-    {
-      url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
-      name: '이재영',
-      point: 1732,
-    },
-    {
-      url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
-      name: '이재영',
-      point: 1732,
-    },
-    {
-      url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
-      name: '이재영',
-      point: 1732,
-    },
-    {
-      url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
-      name: '이재영',
-      point: 1732,
-    },
-  ];
+export default function StudyMembers({ memberNames }: memberInfo) {
+  if (!memberNames) return null;
+  
+  const data = memberNames.map(name => ({
+    url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
+    name: name,
+    point: 1732,
+  }));
 
   return (
     <div className={styles.main}>
