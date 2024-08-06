@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { compiler } from '@/services/compiler';
 import { Button } from '@/components/Button/Button';
-import { requestCompiler } from '@/types/compiler';
+import { requestExecutor } from '@/types/executor';
 import { EXECUTOR } from '@/constants/executor';
+import { useExecuteQuery, useGetExecutorStatusQuery } from '@/queries/executor';
 
 import styles from './RunCodeModal.module.scss';
 
@@ -19,6 +19,12 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   const [outputText, setOutputText] = useState<string | null>('');
   const [isLoading, setIsLoading] = useState(false);
   const polling = useRef<number | null>();
+  const executeCode = useExecuteQuery();
+  const getExecutorStatus = useGetExecutorStatusQuery(
+    studyId!,
+    problemId!,
+    problemTab!.toString(),
+  );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.currentTarget.value);
@@ -26,25 +32,22 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
 
   const runCode = async () => {
     setOutputText('');
-    const form: requestCompiler = {
+    const form: requestExecutor = {
       studyGroupId: studyId!,
       problemId: problemId!,
-      problemTab: `${problemTab!}`,
+      problemTab: problemTab!.toString(),
       code,
       input: inputText,
     };
-    const { status } = await compiler.execute(form);
+    const { status } = await executeCode.mutateAsync(form);
     if (status === EXECUTOR.NOT_START || status === EXECUTOR.IN_PROGRESS) {
       setIsLoading(true);
     }
   };
 
   const getStatus = async () => {
-    const { status, output, errorMessage } = await compiler.status(
-      studyId!,
-      problemId!,
-      `${problemTab!}`,
-    );
+    const { data } = await getExecutorStatus.refetch();
+    const { status, output, errorMessage } = data;
     if (status === EXECUTOR.DONE || status === EXECUTOR.FAIL) {
       setIsLoading(false);
       setOutputText(output !== null ? output : errorMessage);
