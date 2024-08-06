@@ -6,7 +6,7 @@ import usePenTool from './canvasTool/usePenTool';
 import useEraserTool from './canvasTool/useEraserTool';
 import useHandTool from './canvasTool/useHandTool';
 import useTreeTool from './canvasTool/useTreeTool';
-import useArrayTool from './canvasTool/useArrayTool';
+import useTableTool from './canvasTool/useTableTool';
 
 const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void) => {
   const [activeTool, setActiveTool] = useState('pen');
@@ -17,7 +17,7 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
   const { handleEraser } = useEraserTool(canvas);
   const { handleHand } = useHandTool(canvas);
   const { handleTree } = useTreeTool(canvas, sendDrawingData);
-  const { handleArray } = useArrayTool(canvas, sendDrawingData, arraySize);
+  const { handleTable } = useTableTool(canvas, sendDrawingData, arraySize);
 
   useEffect(() => {
     if (!canvas) return;
@@ -43,13 +43,13 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
       case 'tree':
         handleTree();
         break;
-      case 'array':
-        handleArray();
+      case 'table':
+        handleTable();
         break;
     }
   }, [activeTool, arraySize, canvas]);
 
-  const handleArraySizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTableSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setArraySize(prev => ({ ...prev, [name]: parseInt(value) || 0 }));
   };
@@ -58,7 +58,7 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
     activeTool,
     setActiveTool,
     arraySize,
-    handleArraySizeChange,
+    handleTableSizeChange,
   };
 };
 

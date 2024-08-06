@@ -21,7 +21,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData }) => {
     activeTool,
     setActiveTool,
     arraySize,
-    handleArraySizeChange
+    handleTableSizeChange
   } = useToolManager(canvas, sendDrawingData);
 
   return (
@@ -62,17 +62,17 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData }) => {
       />
       <ToolButton
         icon={TableIcon}
-        onClick={() => setActiveTool('array')}
-        disabled={activeTool === 'array'}
-        title="Array Tool"
+        onClick={() => setActiveTool('table')}
+        disabled={activeTool === 'table'}
+        title="Table Tool"
       />
-      {activeTool === 'array' && (
+      {activeTool === 'table' && (
         <div className={styles.arraySizeInputs}>
           <input
             type="number"
             name="rows"
             value={arraySize.rows}
-            onChange={handleArraySizeChange}
+            onChange={handleTableSizeChange}
             min="1"
             max="10"
           />
@@ -81,7 +81,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData }) => {
             type="number"
             name="cols"
             value={arraySize.cols}
-            onChange={handleArraySizeChange}
+            onChange={handleTableSizeChange}
             min="1"
             max="10"
           />
