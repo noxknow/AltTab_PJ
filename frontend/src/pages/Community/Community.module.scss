@@ -1,0 +1,36 @@
+@import '../../styles/theme.module.scss';
+@import '../../styles/font.module.scss';
+
+.container {
+  @include poppins-bold;
+  margin: 0 auto;
+  font-size: 4rem;
+}
+
+.weeklyStudies {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 3rem;
+  gap: 2.4rem;
+}
+
+.topStudies {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4rem;
+}
+
+.cardContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 3.2rem;
+}
+
+.filterContainer {
+  display: flex;
+  gap: 3rem;
+
+  .filter {
+    font-size: 2.4rem;
+  }
+}
