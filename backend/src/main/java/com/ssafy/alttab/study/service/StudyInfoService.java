@@ -181,8 +181,8 @@ public class StudyInfoService {
     }
 
     private StudyInfo findStudyByIdOrThrow(Long studyId) {
+
         return studyInfoRepository.findById(studyId)
                 .orElseThrow(() -> new EntityNotFoundException("Study not found"));
     }
-
 }
