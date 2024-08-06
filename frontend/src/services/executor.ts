@@ -1,14 +1,14 @@
-import { requestCompiler } from '@/types/compiler';
+import { requestExecutor } from '@/types/executor';
 import { API } from './api';
 
-export const compiler = {
+export const executor = {
   endpoint: {
     default: '/executor',
   },
 
-  execute: async (form: requestCompiler) => {
+  execute: async (form: requestExecutor) => {
     const { data } = await API.post(
-      `${compiler.endpoint.default}/execute`,
+      `${executor.endpoint.default}/execute`,
       form,
     );
     return data;
@@ -16,7 +16,7 @@ export const compiler = {
 
   status: async (studyId: string, problemId: string, problemTab: string) => {
     const { data } = await API.get(
-      `${compiler.endpoint.default}/status/${studyId}/${problemId}/${problemTab}`,
+      `${executor.endpoint.default}/status/${studyId}/${problemId}/${problemTab}`,
     );
     return data;
   },
