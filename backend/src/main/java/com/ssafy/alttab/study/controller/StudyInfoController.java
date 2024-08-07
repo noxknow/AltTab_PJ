@@ -25,7 +25,7 @@ public class StudyInfoController {
     @PostMapping
     public ResponseEntity<Long> createStudy(@AuthenticationPrincipal UserDetails userDetails,
                                             @RequestBody StudyInfoRequestDto studyInfoRequestDto) {
-        return studyInfoService.createStudy(userDetails.getUsername(),studyInfoRequestDto);
+        return studyInfoService.createStudy(userDetails.getUsername(), studyInfoRequestDto);
     }
 
     @GetMapping("/{studyId}")
@@ -60,11 +60,11 @@ public class StudyInfoController {
 
     @GetMapping("/{studyId}/follow")
     public ResponseEntity<Void> followStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) {
-        return studyInfoService.followStudy(userDetails.getUsername(),studyId);
+        return studyInfoService.followStudy(userDetails.getUsername(), studyId);
     }
 
-    @GetMapping("/{studyId}/follow")
+    @GetMapping("/{studyId}/unfollow")
     public ResponseEntity<Void> unfollowStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) {
-        return studyInfoService.unfollowStudy(userDetails.getUsername(),studyId);
+        return studyInfoService.unfollowStudy(userDetails.getUsername(), studyId);
     }
 }

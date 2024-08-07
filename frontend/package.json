@@ -16,6 +16,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@stomp/stompjs": "^7.0.0",
+    "@tanstack/react-query": "^5.51.21",
     "@types/pako": "^2.0.3",
     "@types/uuid": "^10.0.0",
     "axios": "^1.7.2",

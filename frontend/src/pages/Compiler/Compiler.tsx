@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
 import { CanvasSection } from '@/pages/Canvas/CanvasSection';
 import { Button } from '@/components/Button/Button';
@@ -6,12 +7,14 @@ import { Modal } from '@/components/Modal/Modal';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
 import { MODAL } from '@/constants/modal';
 import { highlightCode } from '@/utils/highlightCode';
+import { useGetCodeQuery } from '@/queries/executor';
 
 import styles from './Compiler.module.scss';
 import { LineNumber } from './LineNumber';
 import { CompilerSidebar } from './CompilerSidebar';
 
 export function Compiler() {
+  const { studyId, problemId } = useParams();
   const [codeText, setCodeText] = useState('');
   const [highlightedCode, setHighlightedCode] = useState('');
   const [canvasIsOpen, setCanvasIsOpen] = useState(false);
@@ -27,11 +30,22 @@ export function Compiler() {
     '지종권',
   ]);
   const [selected, setSelected] = useState(0);
+  const { data, refetch } = useGetCodeQuery(
+    studyId!,
+    problemId!,
+    selected.toString(),
+  );
 
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newCodeText = event.target.value;
     setCodeText(newCodeText);
   };
+
+  useEffect(() => {
+    if (data) {
+      setCodeText(data.code);
+    }
+  }, [data]);
 
   useEffect(() => {
     setHighlightedCode(highlightCode(codeText, 'java'));
@@ -51,6 +65,16 @@ export function Compiler() {
     setIsModalOpen(true);
   };
 
+  const handleTabClick = async (selectedTab: number) => {
+    setSelected(selectedTab);
+    const { data } = await refetch();
+    if (data) {
+      setCodeText(data.code);
+    } else {
+      setCodeText('');
+    }
+  };
+
   return (
     <div className={styles.container}>
       {isModalOpen && <Modal code={codeText} selected={selected} />}
@@ -61,7 +85,7 @@ export function Compiler() {
             <div
               key={index}
               className={`${styles.tab} ${index === selected ? styles.selected : ''}`}
-              onClick={() => setSelected(index)}
+              onClick={() => handleTabClick(index)}
             >
               {member}
             </div>
@@ -78,6 +102,7 @@ export function Compiler() {
               <textarea
                 className={styles.textArea}
                 onChange={handleChange}
+                value={codeText}
               ></textarea>
               <pre className={styles.codeArea}>
                 <code

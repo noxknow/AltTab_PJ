@@ -1,4 +1,4 @@
-export type requestCompiler = {
+export type requestExecutor = {
   studyGroupId: string;
   problemId: string;
   problemTab: string;
@@ -6,7 +6,7 @@ export type requestCompiler = {
   input: string;
 };
 
-export type responseCompiler = {
+export type responseExecutor = {
   studyGroupId: number;
   problemId: number;
   problemTab: number;

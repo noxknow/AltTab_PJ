@@ -9,6 +9,7 @@ import { Study } from '@/pages/Study/Study';
 import { CompilerProvider } from '@/contexts/compiler';
 import { NotFound } from '@/pages/NotFound/NotFound';
 import { StudyProblems } from '@/pages/StudyProblems/StudyProblems';
+import { Community } from '@/pages/Community/Community';
 
 export const useRouter = () =>
   createBrowserRouter([
@@ -30,6 +31,7 @@ export const useRouter = () =>
         { path: 'problems/:studyId', element: <StudyProblems /> },
         { path: 'noStudy', element: <NoStudy /> },
         { path: 'newStudy', element: <NewStudy /> },
+        { path: 'community', element: <Community /> },
       ],
     },
   ]);
