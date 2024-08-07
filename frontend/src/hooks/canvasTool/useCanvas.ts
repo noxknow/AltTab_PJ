@@ -1,6 +1,7 @@
 import { fabric } from 'fabric';
 
 const useCanvas = (sendDrawingData: (drawingData: any) => void) => {
+  
   const initializeCanvas = (canvasElement: HTMLCanvasElement, container: HTMLDivElement) => {
     const newCanvas = new fabric.Canvas(canvasElement, {
       width: container.offsetWidth,

@@ -40,7 +40,7 @@ const ColorPanel = ({ canvas, className, penWidth, changePenWidth }: ColorPanelP
   return (
     <div className={`${styles.colorPanel} ${className === 'hidden' ? styles.none : styles.block}`}>
       <div className={styles.colorButtons}>
-        {Object.entries(COLOR_CODE).map(([color, code]) => (
+        {Object.entries(COLOR_CODE).map(([color]) => (
           <button
             key={color}
             className={`${styles.colorButton} ${styles[color]} ${penColor === color ? styles.active : ''}`}
