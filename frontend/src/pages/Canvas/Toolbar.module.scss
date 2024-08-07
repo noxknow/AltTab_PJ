@@ -8,3 +8,18 @@
   background-color: #e7e6e7;
   border-radius: 1rem;
 }
+
+.arraySizeInputs {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+
+  input {
+    width: 40px;
+    margin: 0 5px;
+  }
+
+  span {
+    margin: 0 5px;
+  }
+}

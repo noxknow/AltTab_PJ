@@ -28,7 +28,7 @@ public class Problem {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "problemStatus")
+    @Column(name = "problem_status")
     private ProblemStatus problemStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
