@@ -23,7 +23,7 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     private final JwtUtil jwtUtil;
     private final MemberService memberService;
 
-    @Value("${app.front.uri}")
+    @Value("${app.front.url}")
     private String redirectUri;
 
     @Override

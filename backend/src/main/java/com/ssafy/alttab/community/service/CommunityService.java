@@ -112,12 +112,7 @@ public class CommunityService {
      * @return TopFollowerDto 변환된 DTO 객체
      */
     private TopFollowerDto mapToTopFollowerDto(StudyInfo studyInfo) {
-        return TopFollowerDto.builder()
-                .name(studyInfo.getStudyName())
-                .like(studyInfo.getLike())
-                .totalFollower(studyInfo.getFollowerCount())  // 팔로워 수로 변경
-                .view(studyInfo.getView())
-                .build();
+        return TopFollowerDto.toDto(studyInfo);
     }
 
     /**
