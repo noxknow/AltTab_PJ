@@ -8,7 +8,7 @@ import { Info } from '@/components/Info/Info';
 import { Input } from '@/components/Input/Input';
 import { Check } from '@/components/Check/Check';
 import { studyInfo } from '@/types/study.ts';
-import { study } from '@/services/study';
+import { useCreateStudyQuery } from '@/queries/study';
 
 import styles from './NewStudy.module.scss';
 
@@ -17,6 +17,7 @@ export function NewStudy() {
   const [studyEmails, setStudyEmails] = useState(['']);
   const [studyDescription, setStudyDescription] = useState('');
   const navigate = useNavigate();
+  const createStudyQuery = useCreateStudyQuery();
 
   const handleEmailChange = (index: number, value: string) => {
     const newEmails = [...studyEmails];
@@ -29,22 +30,22 @@ export function NewStudy() {
   };
 
   const createStudy = async () => {
-      if (!studyName) {
-      alert("스터디 명을 입력해주세여")
+    if (!studyName) {
+      alert('스터디 명을 입력해주세여');
     }
 
     if (!studyDescription) {
-      alert("스터디 설명을 입력해주세여")
+      alert('스터디 설명을 입력해주세여');
     }
 
     try {
-      const form: studyInfo = {  
+      const form: studyInfo = {
         studyName,
-        studyEmails: studyEmails.filter(email => email !== '')!,
+        studyEmails: studyEmails.filter((email) => email !== '')!,
         studyDescription,
-      }
+      };
 
-      const newStudyId = await study.create(form);
+      const { newStudyId } = await createStudyQuery.mutateAsync(form);
       navigate(`/study/${newStudyId}`);
     } catch (error) {
       console.error('스터디 생성 실패:', error);
@@ -59,11 +60,13 @@ export function NewStudy() {
           <Tool />
           <div>
             <div className={styles.small_title}>팀명 생성</div>
-            <Input 
-              placeholder="팀명을 입력하세요" 
-              maxLength={15} 
+            <Input
+              placeholder="팀명을 입력하세요"
+              maxLength={15}
               value={studyName}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStudyName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStudyName(e.target.value)
+              }
             />
           </div>
         </div>
@@ -72,16 +75,25 @@ export function NewStudy() {
           <div>
             <div className={styles.small_title}>팀 초대</div>
             {studyEmails.map((email, index) => (
-              <Input 
+              <Input
                 key={index}
-                type="email" 
-                placeholder="팀원을 초대하세요" 
+                type="email"
+                placeholder="팀원을 초대하세요"
                 value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleEmailChange(index, e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  handleEmailChange(index, e.target.value)
+                }
               />
             ))}
             <div className={styles.addMemberButtonWrapper}>
-              <Button color="green" fill={false} size="small" onClick={addEmailField}>+ 팀원 추가</Button>
+              <Button
+                color="green"
+                fill={false}
+                size="small"
+                onClick={addEmailField}
+              >
+                + 팀원 추가
+              </Button>
             </div>
           </div>
         </div>
@@ -89,11 +101,13 @@ export function NewStudy() {
           <Info />
           <div>
             <div className={styles.small_title}>Info</div>
-            <Input 
-              placeholder="스터디를 소개해 주세요" 
+            <Input
+              placeholder="스터디를 소개해 주세요"
               maxLength={25}
               value={studyDescription}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setStudyDescription(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStudyDescription(e.target.value)
+              }
             />
           </div>
         </div>
