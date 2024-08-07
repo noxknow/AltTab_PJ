@@ -1,0 +1,33 @@
+@import '@/styles/theme.module.scss';
+@import '@/styles/font.module.scss';
+
+.button {
+  @include poppins-semibold;
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+  cursor: default;
+}
+
+.black {
+  color: $white;
+  background-color: $black;
+  border: 2px solid $black;
+}
+
+.green {
+  color: $white;
+  background-color: $green;
+  border: 2px solid $green;
+}
+
+.blue {
+  color: $white;
+  background-color: $blue;
+  border: 2px solid $blue;
+}
+
+.red {
+  color: $white;
+  background-color: $red;
+  border: 2px solid $red;
+}
