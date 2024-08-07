@@ -1,19 +1,12 @@
 package com.ssafy.alttab.member.service;
 
-import com.ssafy.alttab.member.dto.MemberRequestDto;
-import com.ssafy.alttab.member.dto.MemberResponseDto;
+import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
-import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
-import com.ssafy.alttab.study.entity.StudyInfo;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +28,20 @@ public class MemberService {
                         .avatarUrl(avatarUrl)
                         .role(MemberRoleStatus.MEMBER)
                         .build()));
+    }
+
+    @Transactional
+    public MemberInfoResponseDto getMemberInfo(String name) throws MemberNotFoundException{
+        Optional<Member> member = memberRepository.findByName(name);
+
+        if(member.isPresent()){
+            return MemberInfoResponseDto.builder()
+                    .name(member.get().getName())
+                    .avatarUrl(member.get().getAvatarUrl())
+                    .build();
+        }
+
+        throw new MemberNotFoundException(name);
     }
 
 //    public ResponseEntity<MemberResponseDto> getMember(String name) {
