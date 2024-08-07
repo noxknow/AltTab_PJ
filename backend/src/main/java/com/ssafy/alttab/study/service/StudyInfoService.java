@@ -45,7 +45,7 @@ public class StudyInfoService {
             List<MemberStudy> memberStudies = studyInfo.getMemberStudies();
             // 1. 회원들 이메일, 회원-스터디 추가
             for (String email : studyInfoRequestDto.getStudyEmails()) {
-                sendInvitationEmail(email, studyInfoRequestDto.getStudyName());
+//                sendInvitationEmail(email, studyInfoRequestDto.getStudyName());
                 Member teamMember = memberService.findByMemberEmailOrElse(email);
                 if (teamMember != null) {
                     MemberStudy memberStudy = createMemberStudy(teamMember, studyInfo, TEAM_MEMBER);

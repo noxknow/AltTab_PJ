@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,8 +46,8 @@ public class CommunityService {
      */
     @Transactional
     public List<WeeklyStudyDto> getWeeklyStudies() {
-        LocalDate startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY);
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
+        LocalDateTime startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay();
+        LocalDateTime endOfWeek = startOfWeek.plusDays(6);
 
         return studyInfoRepository.findByCreatedAtBetween(startOfWeek, endOfWeek)
                 .stream()
@@ -103,6 +104,7 @@ public class CommunityService {
     }
 
     //==map dto==//
+
     /**
      * StudyInfo 엔티티를 TopFollowerDto로 변환
      *
