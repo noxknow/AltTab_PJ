@@ -8,9 +8,9 @@ import UserSVG from '@/assets/icons/user.svg?react';
 import { Button } from '@/components/Button/Button';
 import { Alarm } from '@/components/Alarm/Alarm';
 import { HeaderSidebar } from '@/components/Header/HeaderSidebar';
-import { GITHUB_ID } from '@/constants/github';
 
 import styles from './Header.module.scss';
+import { baseURL } from '@/services/api';
 
 export function Header() {
   const [isVisible, setIsVisible] = useState(false);
@@ -23,6 +23,10 @@ export function Header() {
 
   const hideSidebar = () => {
     setIsVisible(false);
+  };
+
+  const handleLogin = () => {
+    window.location.href = `${baseURL}/oauth2/authorization/github`;
   };
 
   return (
@@ -52,14 +56,10 @@ export function Header() {
         </div>
       ) : (
         <div className={`${styles.header_item} ${styles.right_item}`}>
-          <NavLink
-            to={`https://github.com/login/oauth/authorize?client_id=${GITHUB_ID}`}
-          >
-            <Button color="black" fill={false} size="small">
-              <GithubSVG />
-              <div className={styles.login}>시작하기</div>
-            </Button>
-          </NavLink>
+          <Button color="black" fill={false} size="small" onClick={handleLogin}>
+            <GithubSVG />
+            <div className={styles.login}>시작하기</div>
+          </Button>
         </div>
       )}
     </header>
