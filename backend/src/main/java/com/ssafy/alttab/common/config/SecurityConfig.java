@@ -34,14 +34,14 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/loginSuccess", "/error", "/oauth2/**",
+                        .requestMatchers("/", "/login", "/error", "/oauth2/**",
                                 "/h2-console", "/swagger-ui/index.html").permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpoint ->
-                                authorizationEndpoint.baseUri("/oauth2/authorization"))
+                                authorizationEndpoint.baseUri("/api/oauth2/authorization"))
                         .redirectionEndpoint(redirectionEndpoint ->
-                                redirectionEndpoint.baseUri("/login/oauth2/code/*"))
+                                redirectionEndpoint.baseUri("/api/login/oauth2/code/*"))
                         .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .sessionManagement(session -> session
