@@ -1,0 +1,67 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 120rem;
+  margin-top: 3rem;
+  gap: 3rem;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+
+  button {
+    background: transparent;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 0.7rem;
+    cursor: pointer;
+
+    &.selected {
+      background-color: #e0e0e0; // Change to desired background color
+      border-color: #888; // Change to desired border color
+    }
+
+    &:hover {
+      border-color: #aaa; // Darken the border on hover for better UX
+    }
+
+    &:focus {
+      outline: none; // Remove default focus outline
+      border-color: #888; // Change border color on focus
+    }
+  }
+}
+
+.search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 30rem;
+
+  input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+
+    &:focus {
+      outline: none;
+      border-color: #888;
+    }
+  }
+}
+
+.searchButton {
+  background: transparent;
+  border: none;
+}

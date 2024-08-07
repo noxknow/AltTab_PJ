@@ -1,29 +1,25 @@
 @import '@/styles/font.module.scss';
 @import '@/styles/theme.module.scss';
-
 .main {
   @include poppins-regular;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 30rem;
-  width: 80rem;
-}
-
-.top {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 80rem;
+  height: 25rem;
 }
 
 .header {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.members {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  height: 20rem;
   justify-content: space-between;
-  align-items: center;
-  font-size: 2.5rem;
-  font-weight: 550;
-  gap: 0.5rem;
+}
+.member {
+  font-size: 1.5rem;
 }

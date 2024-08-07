@@ -10,6 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/common": "^5.11.5",
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/react": "^6.1.15",
     "@stomp/stompjs": "^7.0.0",
     "@types/pako": "^2.0.3",
     "@types/uuid": "^10.0.0",

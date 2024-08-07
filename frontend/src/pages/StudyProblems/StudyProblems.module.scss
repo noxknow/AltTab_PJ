@@ -1,0 +1,14 @@
+.main {
+  display: flex;
+  flex-direction: row;
+}
+
+.left {
+  flex: 0 0 auto;
+}
+
+.right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}

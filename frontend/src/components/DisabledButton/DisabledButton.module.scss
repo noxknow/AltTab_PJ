@@ -3,12 +3,9 @@
 
 .button {
   @include poppins-semibold;
-  display: flex;
-  align-items: center;
-  padding: 0.8rem;
+  padding: 0.2rem;
   border-radius: 0.5rem;
-  gap: 1rem;
-  justify-content: center;
+  cursor: default;
 }
 
 .black {
@@ -23,23 +20,14 @@
   border: 2px solid $green;
 }
 
-.empty {
-  color: #000;
-  background-color: #fff;
+.blue {
+  color: $white;
+  background-color: $blue;
+  border: 2px solid $blue;
 }
 
-.large {
-  height: auto;
-  font-size: 2.4rem;
-}
-
-.small {
-  height: 3.8rem;
-  font-size: 1.6rem;
-}
-
-.long {
-  height: auto;
-  width: 100%;
-  font-size: 1.6rem;
+.red {
+  color: $white;
+  background-color: $red;
+  border: 2px solid $red;
 }
