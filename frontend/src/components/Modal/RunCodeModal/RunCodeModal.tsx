@@ -47,7 +47,7 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
 
   const getStatus = async () => {
     const { data } = await getExecutorStatus.refetch();
-    const { status, output, errorMessage } = data;
+    const { status, output, errorMessage } = data!;
     if (status === EXECUTOR.DONE || status === EXECUTOR.FAIL) {
       setIsLoading(false);
       setOutputText(output !== null ? output : errorMessage);

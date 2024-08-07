@@ -6,6 +6,7 @@ import { requestExecutor } from '@/types/executor';
 const executorKeys = {
   execute: ['execute'],
   status: ['status'],
+  code: ['code'],
 };
 
 export const useExecuteQuery = () => {
@@ -33,7 +34,19 @@ export const useGetExecutorStatusQuery = (
 ) => {
   const { data, refetch } = useQuery({
     queryKey: [...executorKeys.status, studyId, problemId, problemTab],
-    queryFn: () => executor.status(studyId, problemId, problemTab),
+    queryFn: () => executor.getStatus(studyId, problemId, problemTab),
+  });
+  return { data, refetch };
+};
+
+export const useGetCodeQuery = (
+  studyId: string,
+  problemId: string,
+  problemTab: string,
+) => {
+  const { data, refetch } = useQuery({
+    queryKey: [...executorKeys.status, studyId, problemId, problemTab],
+    queryFn: () => executor.getCode(studyId, problemId, problemTab),
   });
   return { data, refetch };
 };
