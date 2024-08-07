@@ -1,0 +1,21 @@
+.main {
+  display: flex;
+  width: 80rem;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.fc {
+  width: 50rem;
+  height: 26rem;
+  text-align: center;
+}
+
+.fc-day-sun {
+  color: red;
+}
+
+.fc-day-sat {
+  color: blue;
+}
