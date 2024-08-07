@@ -7,8 +7,15 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 10rem;
-  width: 25rem;
+  height: 30rem;
+  width: 80rem;
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 80rem;
 }
 
 .header {
@@ -18,5 +25,5 @@
   align-items: center;
   font-size: 2.5rem;
   font-weight: 550;
-  width: 12rem;
+  gap: 0.5rem;
 }
