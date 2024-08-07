@@ -23,7 +23,7 @@ public class MemberService {
                 .orElseGet(() -> memberRepository.save(Member.builder()
                         .name(name)
                         .avatarUrl(avatarUrl)
-                        .role(MemberRoleStatus.TEAM_MEMBER)
+                        .role(MemberRoleStatus.MEMBER)
                         .build()));
     }
 }

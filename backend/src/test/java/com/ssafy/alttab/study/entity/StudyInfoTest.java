@@ -49,7 +49,7 @@ class StudyInfoTest {
     @Test
     void testGetFollowerCount() {
         when(memberStudy1.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
-        when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.TEAM_MEMBER);
+        when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.MEMBER);
         when(memberStudy3.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
 
         assertEquals(2, studyInfo.getFollowerCount());
@@ -58,7 +58,7 @@ class StudyInfoTest {
     @Test
     void testGetFollowers() {
         when(memberStudy1.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
-        when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.TEAM_MEMBER);
+        when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.MEMBER);
         when(memberStudy3.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
 
         when(memberStudy1.getMember()).thenReturn(member1);
