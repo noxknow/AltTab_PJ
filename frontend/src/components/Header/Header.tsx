@@ -26,7 +26,7 @@ export function Header() {
   };
 
   const handleLogin = () => {
-    window.location.href = `${baseURL}/oauth2/authorization/github`;
+    window.location.href = `${baseURL}/api/oauth2/authorization/github`;
   };
 
   return (

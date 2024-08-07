@@ -8,7 +8,7 @@ export const baseURL =
 export const socketURL =
   import.meta.env.MODE === 'development' ? URL.LOCAL_SOCKET : URL.SERVER_SOCKET;
 
-const apiVersion = '/v1';
+const apiVersion = '/api/v1';
 
 const headers = {
   'Content-Type': 'application/json',
