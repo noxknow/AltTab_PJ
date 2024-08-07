@@ -31,9 +31,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
                                         Authentication authentication) throws IOException, ServletException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
 
-        String name = oAuth2User.getAttribute("name");
+        String name = oAuth2User.getAttribute("login");
         String avatarUrl = oAuth2User.getAttribute("avatar_url");
-
         Member member = memberService.saveOrUpdateMember(name, avatarUrl);
 
         String token = jwtUtil.generateToken(member.getName());
