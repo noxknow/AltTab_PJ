@@ -1,5 +1,5 @@
 import styles from './PieChart.module.scss';
-import { Chart as ChartJS, ArcElement } from 'chart.js';
+import { Chart as ChartJS, ArcElement } from 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 
 type PieChartProps = {
