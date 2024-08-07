@@ -57,4 +57,14 @@ public class StudyInfoController {
     public ResponseEntity<StudyInfoResponseDto> addMembersToStudy(@RequestBody AddMembersToStudyDto dto) {
         return studyInfoService.addMembersToStudy(dto.getStudyId(), dto.getMemberEmails());
     }
+
+    @GetMapping("/{studyId}/follow")
+    public ResponseEntity<Void> followStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) {
+        return studyInfoService.followStudy(userDetails.getUsername(),studyId);
+    }
+
+    @GetMapping("/{studyId}/follow")
+    public ResponseEntity<Void> unfollowStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) {
+        return studyInfoService.unfollowStudy(userDetails.getUsername(),studyId);
+    }
 }
