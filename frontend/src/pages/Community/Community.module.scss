@@ -4,6 +4,8 @@
 .container {
   @include poppins-bold;
   margin: 0 auto;
+  padding: 8rem 4rem;
+  width: 93.4rem;
   font-size: 4rem;
 }
 
@@ -29,8 +31,14 @@
 .filterContainer {
   display: flex;
   gap: 3rem;
+}
 
-  .filter {
-    font-size: 2.4rem;
-  }
+.filter {
+  padding-bottom: 0.4rem;
+  font-size: 2.4rem;
+  border-bottom: 3px solid transparent;
+}
+
+.selected {
+  border-bottom: 3px solid $green;
 }
