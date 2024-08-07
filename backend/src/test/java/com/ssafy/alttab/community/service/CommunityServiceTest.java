@@ -112,8 +112,8 @@ class CommunityServiceTest {
     private List<MemberStudy> createMockMemberStudies(int totalMembers, int followers) {
         List<MemberStudy> memberStudies = new ArrayList<>();
         for (int i = 0; i < totalMembers; i++) {
-            Member member = Member.builder().memberId((long) i).build();
-            MemberRoleStatus role = i < followers ? MemberRoleStatus.FOLLOWER : MemberRoleStatus.TEAM_MEMBER;
+            Member member = Member.builder().id((long) i).build();
+            MemberRoleStatus role = i < followers ? MemberRoleStatus.FOLLOWER : MemberRoleStatus.MEMBER;
             MemberStudy memberStudy = MemberStudy.builder()
                     .member(member)
                     .role(role)

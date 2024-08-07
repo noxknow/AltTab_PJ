@@ -35,7 +35,7 @@ class MemberTest {
     @Test
     void testGetFollowedStudies() {
         when(memberStudy1.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
-        when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.TEAM_MEMBER);
+        when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.MEMBER);
         when(memberStudy3.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
 
         when(memberStudy1.getStudyInfo()).thenReturn(studyInfo1);
