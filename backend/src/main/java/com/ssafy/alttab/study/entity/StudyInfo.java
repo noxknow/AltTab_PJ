@@ -81,6 +81,7 @@ public class StudyInfo extends BaseTimeEntity {
 
     public StudyInfoResponseDto toDto() {
         List<Member> studyMembers = this.memberStudies.stream()
+                .filter(memberStudy -> !memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
                 .map(MemberStudy::getMember)
                 .toList();
 

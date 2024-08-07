@@ -16,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +23,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.ssafy.alttab.common.jointable.entity.MemberStudy.createMemberStudy;
-import static com.ssafy.alttab.member.enums.MemberRoleStatus.LEADER;
-import static com.ssafy.alttab.member.enums.MemberRoleStatus.TEAM_MEMBER;
+import static com.ssafy.alttab.member.enums.MemberRoleStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -100,6 +97,7 @@ public class StudyInfoService {
         try {
             StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
             List<MemberResponseDto> memberList = studyInfo.getMemberStudies().stream()
+                    .filter(memberStudy -> !memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
                     .map(MemberStudy::getMember)
                     .map(Member::toDto)
                     .collect(Collectors.toList());
@@ -112,13 +110,9 @@ public class StudyInfoService {
     @Transactional
     public ResponseEntity<Void> deleteStudy(String username, Long studyId) {
         try {
-            Member member = memberService.findByUsernameOrThrow(username);
-            StudyInfo studyInfo = studyInfoRepository.findById(studyId)
-                    .orElseThrow(() -> new EntityNotFoundException("Study not found with id: " + studyId));
-            MemberStudy memberStudy = memberStudyRepository.findByMemberAndStudyInfo(member, studyInfo)
-                    .orElseThrow(() -> new EntityNotFoundException("MemberStudy entry not found for the given member and study"));
+            MemberStudy memberStudy = findByUsernameAndStudyIdOrThrow(username, studyId);
             if (LEADER.equals(memberStudy.getRole())) {
-                studyInfoRepository.delete(studyInfo);
+                studyInfoRepository.deleteByStudyId(studyId);
                 return ResponseEntity.noContent().build();
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -130,14 +124,9 @@ public class StudyInfoService {
 
     public ResponseEntity<Void> deleteStudyMember(String username, Long studyId, Long memberId) {
         try {
-            Member member = memberRepository.findByUsername(username)
-                    .orElseThrow(() -> new EntityNotFoundException("Member not found with username: " + username));
-            StudyInfo studyInfo = studyInfoRepository.findById(studyId)
-                    .orElseThrow(() -> new EntityNotFoundException("Study not found with id: " + studyId));
-            MemberStudy memberStudy = memberStudyRepository.findByMemberAndStudyInfo(member, studyInfo)
-                    .orElseThrow(() -> new EntityNotFoundException("MemberStudy entry not found for the given member and study"));
+            MemberStudy memberStudy = findByUsernameAndStudyIdOrThrow(username, studyId);
             if (LEADER.equals(memberStudy.getRole())) {
-                memberStudyRepository.delete(memberStudy);
+                memberStudyRepository.delete(findByMemberIdAndStudyIdAndRoleOrThrow(memberId, studyId));
                 return ResponseEntity.noContent().build();
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -149,8 +138,7 @@ public class StudyInfoService {
 
     public ResponseEntity<Void> updateStudy(Long studyId, StudyInfoRequestDto studyInfoRequestDto) {
         try {
-            StudyInfo studyInfo = studyInfoRepository.findById(studyId)
-                    .orElseThrow(() -> new EntityNotFoundException("Study not found with id: " + studyId));
+            StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
             studyInfo.fromDto(studyInfoRequestDto);
             return ResponseEntity.noContent().build();
         } catch (EntityNotFoundException e) {
@@ -160,8 +148,7 @@ public class StudyInfoService {
 
     public ResponseEntity<StudyInfoResponseDto> addMembersToStudy(Long studyId, List<String> emails) {
         // 1. 스터디 찾기
-        StudyInfo studyInfo = studyInfoRepository.findById(studyId)
-                .orElseThrow(() -> new EntityNotFoundException("Study not found"));
+        StudyInfo studyInfo = findStudyByIdOrThrow(studyId);
         // 2. 이메일로 멤버리스트 찾기
         List<Member> membersToAdd = memberRepository.findAllByMemberEmailIn(emails);
         List<MemberStudy> memberStudies = studyInfo.getMemberStudies();
@@ -181,8 +168,41 @@ public class StudyInfoService {
     }
 
     private StudyInfo findStudyByIdOrThrow(Long studyId) {
-
         return studyInfoRepository.findById(studyId)
                 .orElseThrow(() -> new EntityNotFoundException("Study not found"));
+    }
+
+    private MemberStudy findByUsernameAndStudyIdOrThrow(String username, Long studyId) {
+        return memberStudyRepository.findByUsernameAndStudyId(username, studyId)
+                .orElseThrow(() -> new EntityNotFoundException("MemberStudy entry not found"));
+    }
+
+    private MemberStudy findByMemberIdAndStudyIdAndRoleOrThrow(Long memberId, Long studyId) {
+        return memberStudyRepository.findByMemberIdAndStudyIdAndRole(memberId, studyId, TEAM_MEMBER)
+                .orElseThrow(() -> new EntityNotFoundException("MemberStudy entry not found"));
+    }
+
+    public ResponseEntity<Void> followStudy(String username, Long studyId) {
+        try {
+            Member member = memberService.findByUsernameOrThrow(username);
+            MemberStudy memberStudy = createMemberStudy(member, findStudyByIdOrThrow(studyId), FOLLOWER);
+            // 1. memberStudy 관계 저장
+            memberStudyRepository.save(memberStudy);
+            // 2. memberStudy 에 저장
+            member.getMemberStudies().add(memberStudy);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    public ResponseEntity<Void> unfollowStudy(String username, Long studyId) {
+        try {
+            // 1. memberStudy 관계 삭제
+            memberStudyRepository.deleteByUsernameAndStudyId(username, studyId, FOLLOWER);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
