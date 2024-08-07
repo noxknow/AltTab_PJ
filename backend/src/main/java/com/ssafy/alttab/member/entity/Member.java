@@ -37,7 +37,7 @@ public class Member {
     @Column(nullable = false, length = 20, unique = true)
     private String name;
 
-    @Column
+    @Column(name = "avatar_url")
     private String avatarUrl;
 
     @Column(nullable = false)
@@ -48,7 +48,6 @@ public class Member {
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     //==비즈니스 로직==//
-
     /**
      * 맴버가 팔로우 한 스터디 목록 반환
      *
