@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { studyInfo, memberInfo } from '@/types/study.ts';
-import { study } from '@/services/study';
+import { useGetStudyInfoQuery, useGetStudyMemberQuery } from '@/queries/study';
 
 import StudyIntro from './StudyIntro';
 import StudyMembers from './StudyMembers';
@@ -19,23 +19,23 @@ export default function StudyLeftBar() {
     if (!studyId) return;
 
     try {
-      const data = await study.loadInfo(studyId);
-      setStudyInfo(data);
+      const { data } = useGetStudyInfoQuery(studyId);
+      setStudyInfo(data!);
     } catch (error) {
       console.error('스터디 정보 로드 실패:', error);
     }
-  }
+  };
 
   const loadStudyMember = async () => {
     if (!studyId) return;
 
     try {
-      const data = await study.lodaStudyMember(studyId);
-      setStudyMember(data);
+      const { data } = useGetStudyMemberQuery(studyId);
+      setStudyMember(data!);
     } catch (error) {
       console.error('스터디 멤버 로드 실패:', error);
     }
-  }
+  };
 
   useEffect(() => {
     loadStudyInfo();
@@ -44,14 +44,12 @@ export default function StudyLeftBar() {
 
   return (
     <div className={styles.main}>
-      <StudyIntro 
-        studyName={studyInfo.studyName} 
-        studyDescription={studyInfo.studyDescription} 
+      <StudyIntro
+        studyName={studyInfo.studyName}
+        studyDescription={studyInfo.studyDescription}
       />
       <StudySchedule date={new Date('2024-08-05 20:00:00')} />
-      <StudyMembers
-        memberNames={studyMember.memberNames}
-      />
+      <StudyMembers memberNames={studyMember.memberNames} />
     </div>
   );
 }
