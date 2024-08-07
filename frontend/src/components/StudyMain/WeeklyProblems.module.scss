@@ -7,8 +7,15 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  height: 10rem;
-  width: 25rem;
+  height: 25rem;
+  width: 80rem;
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .header {
@@ -18,26 +25,13 @@
   align-items: center;
   font-size: 2.5rem;
   font-weight: 550;
-  width: 18rem;
+  gap: 0.5rem;
 }
 
-.table {
-  width: 80rem;
-  height: 50rem;
-  text-align: center;
-  vertical-align: middle;
-  overflow-y: auto;
-
-  table {
-    table-layout: fixed;
-    width: 100%;
-    height: 100%;
-    border-collapse: collapse;
-  }
-
-  th,
-  td {
-    border: 1px solid purple;
-    padding: 1rem;
-  }
+.button {
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
 }

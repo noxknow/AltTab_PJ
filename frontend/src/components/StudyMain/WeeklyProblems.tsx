@@ -1,47 +1,26 @@
-import { ProblemIcon } from '../ProblemIcon/ProblemIcon';
+import { ProblemIcon } from '@/components/ProblemIcon/ProblemIcon';
+import { PlusIcon } from '@/components/PlusIcon/PlusIcon';
+import ProblemList from '../ProblemList/ProblemList';
 import styles from './WeeklyProblems.module.scss';
+import { useState } from 'react';
+import ProblemInputModal from '../ProblemInputModal/ProblemInputModal';
 
 export default function WeeklyProblems() {
+  const [isModal, setIsModal] = useState(false);
+
   return (
     <div className={styles.main}>
-      <div className={styles.header}>
-        <div>
+      <div className={styles.top}>
+        <div className={styles.header}>
           <ProblemIcon />
+          <div>이 주의 문제</div>
         </div>
-        <div>이 주의 문제</div>
+        <button className={styles.button} onClick={() => setIsModal(true)}>
+          <PlusIcon />
+        </button>
       </div>
-      <div className={styles.table}>
-        <table>
-          <thead>
-            <tr>
-              <th>문제 제목</th>
-              <th>담당자</th>
-              <th>난이도</th>
-              <th>Progress</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>구슬 탈출 2</td>
-              <td>이재영</td>
-              <td>G4</td>
-              <td>50</td>
-            </tr>
-            <tr>
-              <td>불</td>
-              <td>이치왕</td>
-              <td>G3</td>
-              <td>75</td>
-            </tr>
-            <tr>
-              <td>미세먼지 안녕!</td>
-              <td>이지원</td>
-              <td>G2</td>
-              <td>100</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ProblemList styleType="small" />
+      <ProblemInputModal open={isModal} onClose={() => setIsModal(false)} />
     </div>
   );
 }
