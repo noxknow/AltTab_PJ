@@ -16,6 +16,7 @@ import com.ssafy.alttab.study.entity.StudyInfo;
 import com.ssafy.alttab.study.enums.ProblemStatus;
 import com.ssafy.alttab.study.repository.StudyInfoRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +42,7 @@ class CommunityServiceTest {
     @Test
     void getCommunityMain() {
         // Arrange
-        when(studyInfoRepository.findByCreatedAtBetween(any(LocalDate.class), any(LocalDate.class)))
+        when(studyInfoRepository.findByCreatedAtBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(createMockStudyInfoList());
         when(studyInfoRepository.findAll()).thenReturn(createMockStudyInfoList());
 
@@ -57,7 +58,7 @@ class CommunityServiceTest {
     @Test
     void getWeeklyStudies() {
         // Arrange
-        when(studyInfoRepository.findByCreatedAtBetween(any(LocalDate.class), any(LocalDate.class)))
+        when(studyInfoRepository.findByCreatedAtBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(createMockStudyInfoList());
 
         // Act

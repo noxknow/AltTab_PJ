@@ -1,15 +1,20 @@
-# 베이스 이미지 설정
+# Use an official Python runtime as a parent image
 FROM python:3.9
 
-# 작업 디렉토리 설정
+# Set the working directory in the container
 WORKDIR /app
 
-# 필요 패키지 복사 및 설치
+# Copy the requirements file into the container
 COPY requirements.txt requirements.txt
+
+# Install any dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 애플리케이션 소스 코드 복사
+# Copy the current directory contents into the container
 COPY . .
 
-# Gunicorn으로 애플리케이션 실행
-CMD ["gunicorn", "-b", "0.0.0.0:8000", "app:app"]
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
+
+# Run app.py when the container launches
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
