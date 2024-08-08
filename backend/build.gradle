@@ -62,6 +62,9 @@ dependencies {
 
 	// client
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+	// MongoDB
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 }
 
 tasks.named('test') {

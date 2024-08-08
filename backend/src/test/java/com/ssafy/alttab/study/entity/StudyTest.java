@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class StudyInfoTest {
+class StudyTest {
 
     @Mock
     private Problem problem1, problem2, problem3;
@@ -26,12 +26,12 @@ class StudyInfoTest {
     @Mock
     private Member member1, member2, member3;
 
-    private StudyInfo studyInfo;
+    private Study study;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        studyInfo = StudyInfo.builder()
+        study = Study.builder()
                 .problems(Arrays.asList(problem1, problem2, problem3))
                 .memberStudies(Arrays.asList(memberStudy1, memberStudy2, memberStudy3))
                 .build();
@@ -43,7 +43,7 @@ class StudyInfoTest {
         when(problem2.getProblemStatus()).thenReturn(ProblemStatus.IN_PROGRESS);
         when(problem3.getProblemStatus()).thenReturn(ProblemStatus.DONE);
 
-        assertEquals(2, studyInfo.totalSolve());
+        assertEquals(2, study.totalSolve());
     }
 
     @Test
@@ -52,7 +52,7 @@ class StudyInfoTest {
         when(memberStudy2.getRole()).thenReturn(MemberRoleStatus.MEMBER);
         when(memberStudy3.getRole()).thenReturn(MemberRoleStatus.FOLLOWER);
 
-        assertEquals(2, studyInfo.getFollowerCount());
+        assertEquals(2, study.getFollowerCount());
     }
 
     @Test
@@ -64,7 +64,7 @@ class StudyInfoTest {
         when(memberStudy1.getMember()).thenReturn(member1);
         when(memberStudy3.getMember()).thenReturn(member3);
 
-        List<Member> followers = studyInfo.getFollowers();
+        List<Member> followers = study.getFollowers();
         assertEquals(2, followers.size());
         assertTrue(followers.contains(member1));
         assertTrue(followers.contains(member3));

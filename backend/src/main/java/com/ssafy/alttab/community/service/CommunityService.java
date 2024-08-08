@@ -4,8 +4,8 @@ import com.ssafy.alttab.community.dto.CommunityMainResponseDto;
 import com.ssafy.alttab.community.dto.TopFollowerDto;
 import com.ssafy.alttab.community.dto.TopSolverDto;
 import com.ssafy.alttab.community.dto.WeeklyStudyDto;
-import com.ssafy.alttab.study.entity.StudyInfo;
-import com.ssafy.alttab.study.repository.StudyInfoRepository;
+import com.ssafy.alttab.study.entity.Study;
+import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.Builder;
@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @Builder
 public class CommunityService {
 
-    private final StudyInfoRepository studyInfoRepository;
+    private final StudyRepository studyRepository;
     private static final int TOP_LIMIT = 10;
 
     /**
@@ -49,10 +49,10 @@ public class CommunityService {
         LocalDateTime startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusDays(6);
 
-        return studyInfoRepository.findByCreatedAtBetween(startOfWeek, endOfWeek)
+        return studyRepository.findByCreatedAtBetween(startOfWeek, endOfWeek)
                 .stream()
-                .sorted(Comparator.comparing(StudyInfo::getLike, Comparator.reverseOrder())
-                        .thenComparing(StudyInfo::getView, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Study::getLike, Comparator.reverseOrder())
+                        .thenComparing(Study::getView, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
                 .map(this::mapToWeeklyStudyDto)
                 .collect(Collectors.toList());
@@ -61,15 +61,15 @@ public class CommunityService {
     /**
      * StudyInfo 엔티티를 WeeklyStudyDto로 변환
      *
-     * @param studyInfo StudyInfo 엔티티
+     * @param study StudyInfo 엔티티
      * @return WeeklyStudyDto 변환된 DTO 객체
      */
-    private WeeklyStudyDto mapToWeeklyStudyDto(StudyInfo studyInfo) {
+    private WeeklyStudyDto mapToWeeklyStudyDto(Study study) {
         return WeeklyStudyDto.builder()
-                .name(studyInfo.getStudyName())
-                .like(studyInfo.getLike())
-                .follower(studyInfo.getFollowerCount())
-                .view(studyInfo.getView())
+                .name(study.getStudyName())
+                .like(study.getLike())
+                .follower(study.getFollowerCount())
+                .view(study.getView())
                 .build();
     }
 
@@ -80,9 +80,9 @@ public class CommunityService {
      */
     @Transactional
     public List<TopSolverDto> getTopSolvers() {
-        return studyInfoRepository.findAll()
+        return studyRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(StudyInfo::totalSolve, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Study::totalSolve, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
                 .map(this::mapToTopSolverDto)
                 .collect(Collectors.toList());
@@ -95,9 +95,9 @@ public class CommunityService {
      */
     @Transactional
     public List<TopFollowerDto> getTopFollowerStudys() {
-        return studyInfoRepository.findAll()
+        return studyRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(StudyInfo::getFollowerCount, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Study::getFollowerCount, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
                 .map(this::mapToTopFollowerDto)
                 .collect(Collectors.toList());
@@ -108,25 +108,25 @@ public class CommunityService {
     /**
      * StudyInfo 엔티티를 TopFollowerDto로 변환
      *
-     * @param studyInfo StudyInfo 엔티티
+     * @param study StudyInfo 엔티티
      * @return TopFollowerDto 변환된 DTO 객체
      */
-    private TopFollowerDto mapToTopFollowerDto(StudyInfo studyInfo) {
-        return TopFollowerDto.toDto(studyInfo);
+    private TopFollowerDto mapToTopFollowerDto(Study study) {
+        return TopFollowerDto.toDto(study);
     }
 
     /**
      * StudyInfo 엔티티를 TopSolverDto로 변환
      *
-     * @param studyInfo StudyInfo 엔티티
+     * @param study StudyInfo 엔티티
      * @return TopSolverDto 변환된 DTO 객체
      */
-    private TopSolverDto mapToTopSolverDto(StudyInfo studyInfo) {
+    private TopSolverDto mapToTopSolverDto(Study study) {
         return TopSolverDto.builder()
-                .name(studyInfo.getStudyName())
-                .like(studyInfo.getLike())
-                .totalSolve(studyInfo.totalSolve())
-                .view(studyInfo.getView())
+                .name(study.getStudyName())
+                .like(study.getLike())
+                .totalSolve(study.totalSolve())
+                .view(study.getView())
                 .build();
     }
 }

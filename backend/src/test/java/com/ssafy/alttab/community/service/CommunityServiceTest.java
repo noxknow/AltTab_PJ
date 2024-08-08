@@ -12,10 +12,10 @@ import com.ssafy.alttab.community.dto.WeeklyStudyDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.entity.Problem;
-import com.ssafy.alttab.study.entity.StudyInfo;
+import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.enums.ProblemStatus;
-import com.ssafy.alttab.study.repository.StudyInfoRepository;
-import java.time.LocalDate;
+import com.ssafy.alttab.study.repository.StudyRepository;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ class CommunityServiceTest {
     private CommunityService communityService;
 
     @Mock
-    private StudyInfoRepository studyInfoRepository;
+    private StudyRepository studyRepository;
 
     @BeforeEach
     void setUp() {
@@ -42,9 +42,9 @@ class CommunityServiceTest {
     @Test
     void getCommunityMain() {
         // Arrange
-        when(studyInfoRepository.findByCreatedAtBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
+        when(studyRepository.findByCreatedAtBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(createMockStudyInfoList());
-        when(studyInfoRepository.findAll()).thenReturn(createMockStudyInfoList());
+        when(studyRepository.findAll()).thenReturn(createMockStudyInfoList());
 
         // Act
         CommunityMainResponseDto result = communityService.getCommunityMain();
@@ -58,7 +58,7 @@ class CommunityServiceTest {
     @Test
     void getWeeklyStudies() {
         // Arrange
-        when(studyInfoRepository.findByCreatedAtBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
+        when(studyRepository.findByCreatedAtBetween(any(LocalDateTime.class), any(LocalDateTime.class)))
                 .thenReturn(createMockStudyInfoList());
 
         // Act
@@ -76,7 +76,7 @@ class CommunityServiceTest {
     @Test
     void getTopSolvers() {
         // Arrange
-        when(studyInfoRepository.findAll()).thenReturn(createMockStudyInfoList());
+        when(studyRepository.findAll()).thenReturn(createMockStudyInfoList());
 
         // Act
         List<TopSolverDto> result = communityService.getTopSolvers();
@@ -90,8 +90,8 @@ class CommunityServiceTest {
         assertEquals(1L, result.get(1).getTotalSolve());
     }
 
-    private List<StudyInfo> createMockStudyInfoList() {
-        StudyInfo study1 = StudyInfo.builder()
+    private List<Study> createMockStudyInfoList() {
+        Study study1 = Study.builder()
                 .studyName("Study1")
                 .like(10L)
                 .view(100L)
@@ -99,7 +99,7 @@ class CommunityServiceTest {
                 .problems(createMockProblems(3, 2))
                 .build();
 
-        StudyInfo study2 = StudyInfo.builder()
+        Study study2 = Study.builder()
                 .studyName("Study2")
                 .like(8L)
                 .view(80L)
