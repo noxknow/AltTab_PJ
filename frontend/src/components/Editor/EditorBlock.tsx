@@ -11,53 +11,86 @@ type EditorBlockProps = {
   option: string;
   addBlock: (id: string) => void;
   deleteBlock: (id: string) => void;
-  moveUp: (id: string) => void;
-  moveDown: (id: string) => void;
 };
 
-const EditorBlock: React.FC<EditorBlockProps> = ({
+export function EditorBlock({
   id,
   text,
   option,
   addBlock,
   deleteBlock,
-  moveUp,
-  moveDown,
-}) => {
+}: EditorBlockProps) {
   const innerText = useRef<string>(text);
   const [innerOption, setInnerOption] = useState(option);
   const [showBlock, setShowBlock] = useState(true);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showImageInput, setShowImageInput] = useState(false);
   const [showTableInput, setShowTableInput] = useState(false);
+  const [dropdownPosition, setDropdownPosition] = useState<{
+    top: number;
+    left: number;
+  } | null>(null);
 
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
+    if (
+      (innerText.current === '' && innerOption === 'image') ||
+      (innerText.current === '<br>' && innerOption === 'table')
+    ) {
+      deleteBlock(id);
+    }
   };
 
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
-    if (innerOption === 'table') {
-      return;
-    }
-
     if (e.key === 'Enter') {
+      setShowDropdown(false);
       e.preventDefault();
       addBlock(id);
+    } else if (innerOption === 'table' || innerOption === 'image') {
+      return;
     } else if (e.key === 'Backspace') {
+      setShowDropdown(false);
       if (innerText.current === '') {
         e.preventDefault();
         deleteBlock(id);
       }
     } else if (e.key === '/') {
       e.preventDefault();
-      setShowDropdown(true);
+      if (showDropdown) {
+        setShowDropdown(false);
+      } else {
+        setDropdownPosition(getCursorPosition());
+        setShowDropdown(true);
+      }
     } else if (e.key === 'ArrowUp') {
+      setShowDropdown(false);
       e.preventDefault();
-      moveUp(id);
+      move('up');
     } else if (e.key === 'ArrowDown') {
+      setShowDropdown(false);
       e.preventDefault();
-      moveDown(id);
+      move('down');
     }
+  };
+
+  const getCursorPosition = () => {
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0) return null;
+
+    const range = selection.getRangeAt(0);
+    let rect = range.getClientRects()[0];
+
+    if (!rect) {
+      const span = document.createElement('span');
+      range.insertNode(span);
+      rect = span.getClientRects()[0];
+      span.remove();
+    }
+
+    return {
+      top: rect.top - 55,
+      left: rect.left,
+    };
   };
 
   const handleOption = (dropdownOption: string) => {
@@ -113,17 +146,83 @@ const EditorBlock: React.FC<EditorBlockProps> = ({
     setShowBlock(true);
   };
 
+  const move = (direction: string) => {
+    const selection = document.getSelection();
+    const newRange = document.createRange();
+    const curNode = document.querySelector(`.a${id}`);
+
+    let index = 0;
+    while (
+      curNode !==
+      document.querySelector('.block')!.childNodes[index].childNodes[0]
+    ) {
+      index++;
+    }
+
+    if (direction === 'up' && index === 0) {
+      return;
+    }
+
+    if (
+      direction === 'down' &&
+      index === document.querySelector('.block')!.childNodes.length - 1
+    ) {
+      return;
+    }
+
+    let startContainer = null;
+
+    if (direction === 'up') {
+      startContainer =
+        document.querySelector('.block')!.childNodes[index - 1].childNodes[0];
+    } else {
+      startContainer =
+        document.querySelector('.block')!.childNodes[index + 1].childNodes[0];
+    }
+
+    if (startContainer && selection) {
+      const pos = selection.anchorOffset;
+
+      if (startContainer.textContent && startContainer.firstChild) {
+        if (startContainer.firstChild.nodeName === 'TABLE') {
+          newRange.setStart(startContainer.firstChild, 0);
+        } else {
+          newRange.setStart(
+            startContainer.firstChild,
+            pos > startContainer.textContent.length
+              ? startContainer.textContent.length
+              : pos,
+          );
+        }
+      } else {
+        newRange.setStart(startContainer, 0);
+      }
+
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+    }
+  };
+
   return (
     <div onPaste={handlePaste} className={styles.block}>
       {showBlock && (
         <ContentEditable
-          className={`a${id} ${styles[innerOption]} `}
+          className={`a${id} ${styles[innerOption]}`}
           html={innerText.current}
           onChange={handleChange}
           onKeyDown={onKeyDownHandler}
         />
       )}
-      {showDropdown && <Dropdown handleOption={handleOption} />}
+      {showDropdown && dropdownPosition && (
+        <Dropdown
+          handleOption={handleOption}
+          style={{
+            position: 'absolute',
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
+          }}
+        />
+      )}
       {showImageInput && <ImageUploadInput onImageUpload={handleImageUpload} />}
       {showTableInput && (
         <TableInput
@@ -136,6 +235,4 @@ const EditorBlock: React.FC<EditorBlockProps> = ({
       )}
     </div>
   );
-};
-
-export default EditorBlock;
+}

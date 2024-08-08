@@ -1,4 +1,4 @@
-import EditorPage from '@/components/Editor/EditorPage';
+import { EditorPage } from '@/components/Editor/EditorPage';
 
 export function SolutionModal() {
   return (

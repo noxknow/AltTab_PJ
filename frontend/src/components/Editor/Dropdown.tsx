@@ -1,12 +1,14 @@
+import React from 'react';
 import styles from './Dropdown.module.scss';
 
 type DropdownProps = {
   handleOption: (dropdownOption: string) => void;
+  style?: React.CSSProperties;
 };
 
-export default function Dropdown({ handleOption }: DropdownProps) {
+export default function Dropdown({ handleOption, style }: DropdownProps) {
   return (
-    <div className={styles.main}>
+    <div className={styles.main} style={style}>
       <div onClick={() => handleOption('header')}>Header</div>
       <div onClick={() => handleOption('content')}>Content</div>
       <div onClick={() => handleOption('table')}>Table</div>
