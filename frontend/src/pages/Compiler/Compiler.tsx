@@ -42,7 +42,7 @@ export function Compiler() {
   };
 
   useEffect(() => {
-    if (data) {
+    if (data && data.code) {
       setCodeText(data.code);
     }
   }, [data]);

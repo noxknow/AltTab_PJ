@@ -20,7 +20,7 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const polling = useRef<number | null>();
   const executeCode = useExecuteQuery();
-  const getExecutorStatus = useGetExecutorStatusQuery(
+  const { refetch } = useGetExecutorStatusQuery(
     studyId!,
     problemId!,
     problemTab!.toString(),
@@ -46,7 +46,7 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   };
 
   const getStatus = async () => {
-    const { data } = await getExecutorStatus.refetch();
+    const { data } = await refetch();
     const { status, output, errorMessage } = data!;
     if (status === EXECUTOR.DONE || status === EXECUTOR.FAIL) {
       setIsLoading(false);
