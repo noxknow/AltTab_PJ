@@ -70,6 +70,6 @@ public class JwtUtil {
     }
 
     private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).after(new Date());
+        return extractExpiration(token).after(new Date(System.currentTimeMillis()));
     }
 }
