@@ -1,0 +1,33 @@
+.card {
+    background-color: #2b7a78;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    margin: 10px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .cardHeader {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .cardBody {
+    margin-bottom: 10px;
+  }
+  
+  .cardScore {
+    background-color: orange;
+    padding: 5px 10px;
+    border-radius: 50%;
+  }
+  

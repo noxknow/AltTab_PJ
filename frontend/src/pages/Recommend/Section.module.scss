@@ -1,0 +1,18 @@
+.section {
+    margin-bottom: 20px;
+  }
+  
+  .section h2 {
+    background-color: rgb(108, 108, 83);
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .cards {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
