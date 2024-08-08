@@ -1,83 +1,95 @@
 import { fabric } from 'fabric';
-import { useState } from 'react';
+import { useCallback } from 'react';
 
-const useTreeTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void) => {
-  const [currentNode, setCurrentNode] = useState<fabric.Circle | null>(null);
-  const [isDrawingTree, setIsDrawingTree] = useState(false);
-  const [tempLine, setTempLine] = useState<fabric.Line | null>(null);
-
-  const handleTree = () => {
+const useTreeTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void, treeDepth: number) => {
+  
+  const drawTree = useCallback((options: fabric.IEvent) => {
     if (!canvas) return;
+    const pointer = canvas.getPointer(options.e);
+    const nodeRadius = 20;
+    const levelHeight = 80;
+    const group = new fabric.Group([], {
+      originX: 'center',
+      originY: 'top',
+      selectable: true,
+    });
+
+    const drawNode = (x: number, y: number, level: number) => {
+      const circle = new fabric.Circle({
+        left: x,
+        top: y,
+        radius: nodeRadius,
+        fill: 'white',
+        stroke: 'black',
+        strokeWidth: 2,
+        originX: 'center',
+        originY: 'center',
+      });
+
+      group.addWithUpdate(circle);
+
+      if (level < treeDepth) {
+        const leftChildX = x - Math.pow(2, treeDepth - level - 1) * nodeRadius * 2;
+        const rightChildX = x + Math.pow(2, treeDepth - level - 1) * nodeRadius * 2;
+        const childY = y + levelHeight;
+
+        const leftLine = new fabric.Line([
+          x, 
+          y + nodeRadius,
+          leftChildX, 
+          childY - nodeRadius
+        ], {
+          stroke: 'black',
+          strokeWidth: 2,
+          originX: 'center',
+          originY: 'center',
+        });
+        
+        const rightLine = new fabric.Line([
+          x, 
+          y + nodeRadius,
+          rightChildX, 
+          childY - nodeRadius
+        ], {
+          stroke: 'black',
+          strokeWidth: 2,
+          originX: 'center',
+          originY: 'center',
+        });
+        
+        group.addWithUpdate(leftLine);
+        group.addWithUpdate(rightLine);
+
+        drawNode(leftChildX, childY, level + 1);
+        drawNode(rightChildX, childY, level + 1);
+      }
+    };
+
+    drawNode(0, 0, 1);
+    const groupWidth = Math.pow(2, treeDepth - 1) * nodeRadius * 4;
+    const groupHeight = (treeDepth - 1) * levelHeight + nodeRadius * 2;
+
+    group.set({
+      left: pointer.x,
+      top: pointer.y,
+      width: groupWidth,
+      height: groupHeight,
+    });
+
+    canvas.add(group);
+    canvas.renderAll();
+    sendDrawingData(canvas.toJSON(['data']));
+  }, [canvas, treeDepth, sendDrawingData]);
+
+  const handleTree = useCallback(() => {
+    if (!canvas) return () => {};
 
     canvas.isDrawingMode = false;
     canvas.selection = false;
     canvas.defaultCursor = 'crosshair';
     canvas.forEachObject((object) => (object.selectable = false));
-
-    const startDrawingTree = (options: fabric.IEvent) => {
-      const pointer = canvas.getPointer(options.e);
-      const circle = new fabric.Circle({
-        left: pointer.x - 20,
-        top: pointer.y - 20,
-        radius: 20,
-        fill: 'white',
-        stroke: 'black',
-        strokeWidth: 2,
-      });
-      canvas.add(circle);
-      setCurrentNode(circle);
-      setIsDrawingTree(true);
-    };
-    
-    const drawTree = (options: fabric.IEvent) => {
-      if (!isDrawingTree || !currentNode) return;
-      const pointer = canvas.getPointer(options.e);
-      if (tempLine) {
-        canvas.remove(tempLine);
-      }
-      const line = new fabric.Line([
-        currentNode.left! + currentNode.radius!,
-        currentNode.top! + currentNode.radius!,
-        pointer.x,
-        pointer.y
-      ], {
-        stroke: 'black',
-        strokeWidth: 2,
-      });
-      canvas.add(line);
-      setTempLine(line);
-      canvas.renderAll();
-    };
-    
-    const endDrawingTree = (options: fabric.IEvent) => {
-      if (!isDrawingTree) return;
-      const pointer = canvas.getPointer(options.e);
-      const newNode = new fabric.Circle({
-        left: pointer.x - 20,
-        top: pointer.y - 20,
-        radius: 20,
-        fill: 'white',
-        stroke: 'black',
-        strokeWidth: 2,
-      });
-      canvas.add(newNode);
-      if (currentNode && tempLine) {
-        tempLine.set({
-          x2: newNode.left! + newNode.radius!,
-          y2: newNode.top! + newNode.radius!,
-        });
-      }
-      setIsDrawingTree(false);
-      setCurrentNode(null);
-      setTempLine(null);
-      canvas.renderAll();
-      sendDrawingData(canvas.toJSON(['data']));
-    };
-
-    canvas.on('mouse:down', startDrawingTree);
-    canvas.on('mouse:move', drawTree);
-    canvas.on('mouse:up', endDrawingTree);
-  };
+    canvas.on('mouse:down', drawTree);
+  }, [canvas, drawTree]);
 
   return { handleTree };
 };

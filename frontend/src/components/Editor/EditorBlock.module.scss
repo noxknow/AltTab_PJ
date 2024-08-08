@@ -1,26 +1,44 @@
+// 변수 정의
+$header-bg-color: #ffffff; // Notion 스타일의 연한 회색
+$header-border-color: #e0e0e0; // 테두리 색상
+$header-font-size: 3rem;
+$header-margin-top: 1rem;
+$header-padding: 1rem;
+
+$content-bg-color: #ffffff; // Notion 스타일의 흰색 배경
+$content-border-color: #e0e0e0; // 테두리 색상
+$content-font-size: 1.5rem;
+$content-margin-top: 1rem;
+$content-padding: 1rem;
+
+// Header 스타일
 .header {
-  background-color: gray;
-  border-width: 1rem;
-  font-size: 3rem;
-  margin-top: 1rem;
+  width: 80rem;
+  background-color: $header-bg-color;
+  border: 1px solid $header-border-color;
+  font-size: $header-font-size;
+  padding: $header-padding;
 }
+
+// Content 스타일
 .content {
-  background-color: aqua;
-  border-width: 1rem;
-  font-size: 1rem;
-  margin-top: 1rem;
+  width: 80rem;
+  background-color: $content-bg-color;
+  border: 1px solid $content-border-color;
+  font-size: $content-font-size;
+  padding: $content-padding;
 }
 
 .image {
-  background-color: aqua;
-  border-width: 1rem;
-  font-size: 1rem;
-  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  background-color: transparent;
+  width: auto;
 }
 
 .block {
   div:empty:before {
-    content: '내용을 입력하세요';
+    content: '내용을 입력하세요. "/"을 입력해 명령어 사용';
   }
 }
 

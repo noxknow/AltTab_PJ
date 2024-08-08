@@ -30,13 +30,12 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
     const socket = new SockJS(`${socketURL}`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      reconnectDelay: 1000,
+      heartbeatIncoming: 2000,
+      heartbeatOutgoing: 2000,
     });
 
     stompClient.current.onConnect = () => {
-      console.log("Socket Connect");
       if (stompClient.current) {
         stompClient.current.subscribe(
           `/sub/api/v1/rooms/${studyId}/${problemId}`,
@@ -83,7 +82,7 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
 
     try {
       const compressedData = compressData(JSON.stringify(drawingData));
-      console.log(compressedData)
+      
       const payload = {
         studyId,
         problemId,

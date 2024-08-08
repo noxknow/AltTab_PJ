@@ -3,7 +3,7 @@ import EraserCursor from '@/assets/icons/eraserMouseCursor.svg?react';
 
 const useEraserTool = (canvas: fabric.Canvas | null) => {
   const handleEraser = () => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
 
     canvas.isDrawingMode = false;
     canvas.selection = true;

@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { v4 } from 'uuid';
-import EditorBlock from './EditorBlock';
+import { EditorBlock } from './EditorBlock';
 import styles from './EditorPage.module.scss';
 
 type Block = {
@@ -9,143 +9,86 @@ type Block = {
   option: string;
 };
 
-export default function EditorPage() {
-  const initialBlock = { id: v4(), text: '', option: 'header' };
+export function EditorPage() {
+  const initialBlock = { id: v4(), text: '', option: 'content' };
   const [blocks, setBlocks] = useState<Block[]>([initialBlock]);
-  const [caretId, setCaretId] = useState(initialBlock.id);
-  const blocksRef = useRef(blocks);
-  const prevLengthRef = useRef(blocks.length);
+  const isAdd = useRef(true);
+  const index = useRef(-1);
 
   const addBlock = (id: string) => {
-    const newBlock: Block = { id: v4(), text: '', option: 'header' };
-
-    setCaretId(newBlock.id);
+    const newBlock: Block = { id: v4(), text: '', option: 'content' };
 
     setBlocks((prevBlocks) => {
-      const index = prevBlocks.findIndex((block) => block.id === id);
+      index.current = prevBlocks.findIndex((block) => block.id === id);
 
       const newBlocks = [
-        ...prevBlocks.slice(0, index + 1),
+        ...prevBlocks.slice(0, index.current + 1),
         newBlock,
-        ...prevBlocks.slice(index + 1),
+        ...prevBlocks.slice(index.current + 1),
       ];
 
       return newBlocks;
     });
+
+    isAdd.current = true;
   };
 
   const deleteBlock = (id: string) => {
     setBlocks((prevBlocks) => {
-      if (prevBlocks.length === 1) {
+      index.current = prevBlocks.findIndex((block) => block.id === id);
+
+      if (index.current == 0) {
         return prevBlocks;
       }
 
-      const index = prevBlocks.findIndex((block) => block.id === id);
-
       const newBlocks = [
-        ...prevBlocks.slice(0, index),
-        ...prevBlocks.slice(index + 1),
+        ...prevBlocks.slice(0, index.current),
+        ...prevBlocks.slice(index.current + 1),
       ];
-
-      if (index - 1 !== -1) {
-        setCaretId(newBlocks[index - 1].id);
-      } else {
-        setCaretId(newBlocks[0].id);
-      }
       return newBlocks;
     });
+    isAdd.current = false;
   };
 
   useEffect(() => {
     const selection = window.getSelection();
     const newRange = document.createRange();
-    const startContainer = document.querySelector(`.a${caretId}`);
 
-    if (startContainer) {
-      if (startContainer.childNodes.length === 0) {
-        startContainer.appendChild(document.createTextNode(''));
-      }
+    let startContainer = null;
 
-      if (blocks.length > prevLengthRef.current) {
-        newRange.setStart(startContainer.childNodes[0], 0);
-      } else {
-        if (startContainer.childNodes[0].textContent !== null) {
-          newRange.setStart(
-            startContainer.childNodes[0],
-            startContainer.childNodes[0].textContent.length,
-          );
+    if (isAdd.current) {
+      startContainer =
+        document.querySelector('.block')!.childNodes[index.current + 1]
+          .childNodes[0];
+    } else {
+      startContainer =
+        document.querySelector('.block')!.childNodes[index.current - 1]
+          .childNodes[0];
+    }
+
+    if (startContainer && selection) {
+      if (startContainer.textContent && startContainer.firstChild) {
+        if (!isAdd.current) {
+          if (startContainer.firstChild.nodeName === 'TABLE') {
+            newRange.setStart(startContainer.firstChild, 0);
+          } else {
+            newRange.setStart(
+              startContainer.firstChild,
+              startContainer.textContent.length,
+            );
+          }
         }
+      } else {
+        newRange.setStart(startContainer, 0);
       }
 
-      prevLengthRef.current = blocks.length;
-      blocksRef.current = blocks;
-
-      if (selection) {
-        selection.removeAllRanges();
-        selection.addRange(newRange);
-      }
+      selection.removeAllRanges();
+      selection.addRange(newRange);
     }
   }, [blocks]);
 
-  const moveUp = (id: string) => {
-    const selection = document.getSelection();
-    const newRange = document.createRange();
-    const index = blocksRef.current.findIndex((block) => block.id === id);
-    if (index === 0) {
-      return;
-    }
-
-    const startContainer = document.querySelector(
-      `.a${blocksRef.current[index - 1].id}`,
-    );
-    if (startContainer && selection) {
-      const pos = selection.anchorOffset;
-
-      if (startContainer.childNodes[0].textContent !== null) {
-        newRange.setStart(
-          startContainer.childNodes[0],
-          pos > startContainer.childNodes[0].textContent.length
-            ? startContainer.childNodes[0].textContent.length
-            : pos,
-        );
-      }
-      if (selection) {
-        selection.removeAllRanges();
-        selection.addRange(newRange);
-      }
-    }
-  };
-
-  const moveDown = (id: string) => {
-    const selection = document.getSelection();
-    const newRange = document.createRange();
-    const index = blocksRef.current.findIndex((block) => block.id === id);
-    if (index === blocksRef.current.length - 1) {
-      return;
-    }
-
-    const startContainer = document.querySelector(
-      `.a${blocksRef.current[index + 1].id}`,
-    );
-    if (startContainer && selection) {
-      const pos = selection.anchorOffset;
-      if (startContainer.childNodes[0].textContent !== null) {
-        newRange.setStart(
-          startContainer.childNodes[0],
-          pos > startContainer.childNodes[0].textContent.length
-            ? startContainer.childNodes[0].textContent.length
-            : pos,
-        );
-      }
-      if (selection) {
-        selection.removeAllRanges();
-        selection.addRange(newRange);
-      }
-    }
-  };
-
   return (
-    <div className={styles.main}>
+    <div className={`${styles.main} block`}>
       {blocks.map(({ id, text, option }) => (
         <EditorBlock
           key={id}
@@ -154,8 +97,6 @@ export default function EditorPage() {
           option={option}
           addBlock={addBlock}
           deleteBlock={deleteBlock}
-          moveUp={moveUp}
-          moveDown={moveDown}
         />
       ))}
     </div>

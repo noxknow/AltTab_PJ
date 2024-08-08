@@ -11,42 +11,67 @@ import useTableTool from './canvasTool/useTableTool';
 const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void) => {
   const [activeTool, setActiveTool] = useState('pen');
   const [arraySize, setArraySize] = useState({ rows: 2, cols: 3 });
+  const [treeDepth, setTreeDepth] = useState(3);
 
   const { handleSelect } = useSelectTool(canvas);
-  const { handlePen } = usePenTool(canvas);
+  const { handlePen } = usePenTool(canvas, activeTool === 'pen', sendDrawingData);
   const { handleEraser } = useEraserTool(canvas);
   const { handleHand } = useHandTool(canvas);
-  const { handleTree } = useTreeTool(canvas, sendDrawingData);
+  const { handleTree } = useTreeTool(canvas, sendDrawingData, treeDepth);
   const { handleTable } = useTableTool(canvas, sendDrawingData, arraySize);
 
+  const handleClose = () => {
+    if (!canvas) return () => {};
+
+    canvas.clear();
+  };
+
   useEffect(() => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
+
+    let cleanup: (() => void) | undefined;
 
     canvas.off('mouse:down');
     canvas.off('mouse:move');
     canvas.off('mouse:up');
     canvas.off('selection:created');
 
+    canvas.isDrawingMode = false;
+    canvas.selection = true;
+    canvas.defaultCursor = 'default';
+    canvas.forEachObject((object) => (object.selectable = true));
+
     switch (activeTool) {
       case 'select':
-        handleSelect();
+        cleanup = handleSelect();
         break;
       case 'pen':
-        handlePen();
+        canvas.isDrawingMode = true;
+        cleanup = handlePen();
         break;
       case 'eraser':
-        handleEraser();
+        cleanup = handleEraser();
         break;
       case 'hand':
-        handleHand();
+        cleanup = handleHand();
         break;
       case 'tree':
-        handleTree();
+        cleanup = handleTree();
         break;
       case 'table':
-        handleTable();
+        cleanup = handleTable();
+        break;
+      case 'close':
+        handleClose();
         break;
     }
+    
+    return () => {
+      canvas.off('mouse:down');
+      canvas.off('mouse:move');
+      canvas.off('mouse:up');
+      canvas.off('selection:created');
+    };
   }, [activeTool, arraySize, canvas]);
 
   const handleTableSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,10 +79,16 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
     setArraySize(prev => ({ ...prev, [name]: parseInt(value) || 0 }));
   };
 
+  const handleTreeDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTreeDepth(parseInt(e.target.value) || 1);
+  };
+
   return {
     activeTool,
     setActiveTool,
     arraySize,
+    treeDepth,
+    handleTreeDepthChange,
     handleTableSizeChange,
   };
 };

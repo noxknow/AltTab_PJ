@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 
 const useHandTool = (canvas: fabric.Canvas | null) => {
   const handleHand = () => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
 
     canvas.defaultCursor = 'move';
 
