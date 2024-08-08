@@ -19,11 +19,8 @@ def fetch_problems():
     problems_df = pd.DataFrame(problems, columns=['problem_id', 'title', 'tag', 'level'])
     return problems_df
 
-@app.route('/')
-def home():
-    return "AI 문제 추천 시스템이 실행 중입니다."
 
-@app.route('/recommend', methods=['POST'])
+@app.route('/flask', methods=['POST'])
 def recommend_route():
     content = request.json
     study_id = content['study_id']
