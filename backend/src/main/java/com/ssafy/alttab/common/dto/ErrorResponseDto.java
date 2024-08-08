@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 public class ErrorResponseDto {
     private final String message;
 
-    private ErrorResponseDto(Exception ex){
+    public ErrorResponseDto(Exception ex){
         this.message = ex.getMessage();
     }
 
