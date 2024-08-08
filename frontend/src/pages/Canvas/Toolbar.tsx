@@ -33,7 +33,7 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData, closeCanvas 
     handleTableSizeChange
   } = useToolManager(canvas, sendDrawingData);
 
-  const { penWidth, changePenWidth } = usePenTool(canvas);
+  const { penWidth, changePenWidth } = usePenTool(canvas, activeTool === 'pen');
   const { setIsModalOpen } = useCompilerModalState();
 
   const handleClose = () => {

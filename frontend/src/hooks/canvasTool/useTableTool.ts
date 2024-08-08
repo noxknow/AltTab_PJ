@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 const useTableTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void, arraySize: { rows: number, cols: number }) => {
   
   const handleTable = () => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
 
     canvas.isDrawingMode = false;
     canvas.selection = false;
@@ -11,7 +11,7 @@ const useTableTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingDat
     canvas.forEachObject((object) => (object.selectable = false));
 
     const drawArray = (options: fabric.IEvent) => {
-      if (!canvas) return;
+      if (!canvas) return () => {};
 
       const pointer = canvas.getPointer(options.e);
 

@@ -14,20 +14,24 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
   const [treeDepth, setTreeDepth] = useState(3);
 
   const { handleSelect } = useSelectTool(canvas);
-  const { handlePen } = usePenTool(canvas);
+  const { handlePen } = usePenTool(canvas, activeTool === 'pen');
   const { handleEraser } = useEraserTool(canvas);
   const { handleHand } = useHandTool(canvas);
   const { handleTree } = useTreeTool(canvas, sendDrawingData, treeDepth);
   const { handleTable } = useTableTool(canvas, sendDrawingData, arraySize);
 
   const handleClose = () => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
 
     canvas.clear();
   };
 
   useEffect(() => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
+
+    let cleanup: (() => void) | undefined;
+
+    console.log(activeTool);
 
     canvas.off('mouse:down');
     canvas.off('mouse:move');
@@ -36,22 +40,22 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
 
     switch (activeTool) {
       case 'select':
-        handleSelect();
+        cleanup = handleSelect();
         break;
       case 'pen':
-        handlePen();
+        cleanup = handlePen();
         break;
       case 'eraser':
-        handleEraser();
+        cleanup = handleEraser();
         break;
       case 'hand':
-        handleHand();
+        cleanup = handleHand();
         break;
       case 'tree':
-        handleTree();
+        cleanup = handleTree();
         break;
       case 'table':
-        handleTable();
+        cleanup = handleTable();
         break;
       case 'close':
         handleClose();

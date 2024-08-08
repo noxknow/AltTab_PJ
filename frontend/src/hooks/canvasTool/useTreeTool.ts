@@ -1,5 +1,5 @@
 import { fabric } from 'fabric';
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 
 const useTreeTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void, treeDepth: number) => {
   
@@ -82,23 +82,22 @@ const useTreeTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData
   }, [canvas, treeDepth, sendDrawingData]);
 
   const handleTree = useCallback(() => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
+
     canvas.isDrawingMode = false;
     canvas.selection = false;
     canvas.defaultCursor = 'crosshair';
     canvas.forEachObject((object) => (object.selectable = false));
-    canvas.off('mouse:down');
     canvas.on('mouse:down', drawTree);
-  }, [canvas, drawTree]);
 
-  useEffect(() => {
-    handleTree();
     return () => {
-      if (canvas) {
-        canvas.off('mouse:down');
-      }
+      canvas.isDrawingMode = true;
+      canvas.selection = true;
+      canvas.defaultCursor = 'default';
+      canvas.forEachObject((object) => (object.selectable = true));
+      canvas.off('mouse:down', drawTree);
     };
-  }, [canvas, treeDepth, handleTree]);
+  }, [canvas, drawTree]);
 
   return { handleTree };
 };

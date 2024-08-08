@@ -2,7 +2,7 @@ import { fabric } from 'fabric';
 
 const useSelectTool = (canvas: fabric.Canvas | null) => {
   const handleSelect = () => {
-    if (!canvas) return;
+    if (!canvas) return () => {};
 
     canvas.isDrawingMode = false;
     canvas.selection = true;
