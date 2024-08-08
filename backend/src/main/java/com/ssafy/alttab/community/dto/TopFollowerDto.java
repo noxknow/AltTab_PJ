@@ -1,6 +1,6 @@
 package com.ssafy.alttab.community.dto;
 
-import com.ssafy.alttab.study.entity.StudyInfo;
+import com.ssafy.alttab.study.entity.Study;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,12 +12,12 @@ public class TopFollowerDto {
     private Long totalFollower;
     private Long view;
 
-    public static TopFollowerDto toDto(StudyInfo studyInfo){
+    public static TopFollowerDto toDto(Study study){
         return TopFollowerDto.builder()
-                .name(studyInfo.getStudyName())
-                .like(studyInfo.getLike())
-                .totalFollower(studyInfo.getFollowerCount())  // 팔로워 수로 변경
-                .view(studyInfo.getView())
+                .name(study.getStudyName())
+                .like(study.getLike())
+                .totalFollower(study.getFollowerCount())  // 팔로워 수로 변경
+                .view(study.getView())
                 .build();
     }
 }

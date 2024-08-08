@@ -32,6 +32,6 @@ public class Problem {
     private ProblemStatus problemStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_info_id")
-    private StudyInfo studyInfo;
+    @JoinColumn(name = "study_id")
+    private Study study;
 }

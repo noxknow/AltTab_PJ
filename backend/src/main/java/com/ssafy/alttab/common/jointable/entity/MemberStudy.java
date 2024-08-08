@@ -2,7 +2,7 @@ package com.ssafy.alttab.common.jointable.entity;
 
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
-import com.ssafy.alttab.study.entity.StudyInfo;
+import com.ssafy.alttab.study.entity.Study;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +24,8 @@ public class MemberStudy {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "study_info_id")
-    private StudyInfo studyInfo;
+    @JoinColumn(name = "study_id")
+    private Study study;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -35,11 +35,17 @@ public class MemberStudy {
 //        this.role = newRole;
 //    }
     //==생성 메서드==//
-    public static MemberStudy createMemberStudy(Member member, StudyInfo studyInfo, MemberRoleStatus role) {
+    public static MemberStudy createMemberStudy(Member member, Study study, MemberRoleStatus role) {
         return MemberStudy.builder()
                 .member(member)
-                .studyInfo(studyInfo)
+                .study(study)
                 .role(role)
                 .build();
     }
+
+    //==연관 관계 메서드==//
+    public void changeMember(Member member) {
+        this.member = member;
+    }
+
 }
