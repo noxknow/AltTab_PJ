@@ -18,6 +18,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @GetMapping("/info")
     public ResponseEntity<?> getMemberInfo(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
         return new ResponseEntity<>(memberService.getMemberInfo(userDetails.getUsername()), HttpStatus.OK);
     }
