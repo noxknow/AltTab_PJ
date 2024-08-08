@@ -7,7 +7,6 @@ import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
-import com.ssafy.alttab.member.service.MemberService;
 import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.entity.Study;
@@ -30,7 +29,6 @@ public class StudyService {
     //    private final MemberStudyRepository memberStudyRepository;
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
-    private final MemberService memberService;
     private final MemberStudyRepository memberStudyRepository;
 
 //    private void sendInvitationEmail(String to, String studyName) {

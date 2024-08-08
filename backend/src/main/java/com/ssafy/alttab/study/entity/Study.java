@@ -57,6 +57,7 @@ public class Study extends BaseTimeEntity {
     private List<String> studyEmails = new ArrayList<>();
 
     @Column(name = "member_study")
+    @Builder.Default
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
@@ -64,7 +65,6 @@ public class Study extends BaseTimeEntity {
     @Builder.Default
     private List<Problem> problems = new ArrayList<>();
 
-    //==생성 메서드==//
     //==비즈니스 로직==//
 
     /**

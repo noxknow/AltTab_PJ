@@ -1,10 +1,11 @@
 package com.ssafy.alttab.solution.controller;
 
-
-import com.ssafy.alttab.solution.document.Solution;
+import com.ssafy.alttab.common.exception.DocumentNotFoundException;
 import com.ssafy.alttab.solution.dto.SolutionRequestDto;
 import com.ssafy.alttab.solution.service.SolutionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,18 +14,17 @@ import org.springframework.web.bind.annotation.*;
 public class SolutionController {
     private final SolutionService solutionService;
 
-    @GetMapping("/{studyId}/{solutionId}")
-    public Solution getSolution(@PathVariable String studyId,
-                                @PathVariable String solutionId) {
-        return solutionService.getSolution(studyId, solutionId);
+    @GetMapping("/{studyId}/{problemId}")
+    public ResponseEntity<?> getSolution(@PathVariable String studyId,
+                                         @PathVariable String problemId) throws DocumentNotFoundException {
+        return new ResponseEntity<>(solutionService.getSolution(studyId, problemId), HttpStatus.OK);
     }
 
-    @PostMapping("/{studyId}/{solutionId}")
-    public Solution saveSolution(@PathVariable String studyId,
-                                 @PathVariable String solutionId,
-                                 @RequestBody SolutionRequestDto dto) {
-        System.out.println("?????????????????");
-        return solutionService.saveSolution(studyId, solutionId, dto);
+    @PostMapping("/{studyId}/{problemId}")
+    public ResponseEntity<?> saveSolution(@PathVariable String studyId,
+                                          @PathVariable String problemId,
+                                          @RequestBody SolutionRequestDto dto) {
+        return new ResponseEntity<>(solutionService.saveOrUpdateSolution(studyId, problemId, dto), HttpStatus.OK);
     }
 
 }

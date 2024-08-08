@@ -31,9 +31,6 @@ public class MemberStudy {
     @Enumerated(EnumType.STRING)
     private MemberRoleStatus role;
 
-    //    public void changeRole(MemberRoleStatus newRole) {
-//        this.role = newRole;
-//    }
     //==생성 메서드==//
     public static MemberStudy createMemberStudy(Member member, Study study, MemberRoleStatus role) {
         return MemberStudy.builder()
@@ -44,8 +41,5 @@ public class MemberStudy {
     }
 
     //==연관 관계 메서드==//
-    public void changeMember(Member member) {
-        this.member = member;
-    }
 
 }
