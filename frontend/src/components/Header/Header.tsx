@@ -6,14 +6,15 @@ import HamburgerSVG from '@/assets/icons/hamburger.svg?react';
 import GithubSVG from '@/assets/icons/github.svg?react';
 import UserSVG from '@/assets/icons/user.svg?react';
 import { Button } from '@/components/Button/Button';
-import { Alarm } from '@/components/Alarm/Alarm';
 import { HeaderSidebar } from '@/components/Header/HeaderSidebar';
+import { ProfileModal } from '@/components/ProfileModal/ProfileModal';
+import { baseURL } from '@/services/api';
 
 import styles from './Header.module.scss';
-import { baseURL } from '@/services/api';
 
 export function Header() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isModal, setIsModal] = useState(false);
   // TODO : 사용자 로그인 상태 처리
   const isLoggedIn: boolean = false;
 
@@ -51,8 +52,13 @@ export function Header() {
       </div>
       {isLoggedIn ? (
         <div className={`${styles.profile} ${styles.header_item}`}>
-          <Alarm />
-          <UserSVG width={40} height={40} />
+          <button
+            className={styles.button}
+            onMouseEnter={() => setIsModal(true)}
+            onMouseLeave={() => setIsModal(false)}
+          >
+            <UserSVG width={40} height={40} />
+          </button>
         </div>
       ) : (
         <div className={`${styles.header_item} ${styles.right_item}`}>
@@ -62,6 +68,7 @@ export function Header() {
           </Button>
         </div>
       )}
+      <ProfileModal open={isModal} setIsModal={setIsModal} />
     </header>
   );
 }
