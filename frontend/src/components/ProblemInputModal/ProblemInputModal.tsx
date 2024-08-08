@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/Button/Button';
-import { SearchIcon } from '../SearchIcon/SearchIcon';
-import { PencilIcon } from '../PencilIcon/PencilIcon';
+import { SearchIcon } from '@/components/SearchIcon/SearchIcon';
+import { PencilIcon } from '@/components/PencilIcon/PencilIcon';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import styles from './ProblemInputModal.module.scss';
 
