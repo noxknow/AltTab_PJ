@@ -33,20 +33,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/error", "/oauth2/**",
-                                "/h2-console", "/swagger-ui/index.html").permitAll()
-                        .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
-                        .anyRequest().authenticated()
-                )
-                .oauth2Login(oauth2 -> oauth2
-                        .authorizationEndpoint(authorizationEndpoint ->
-                                authorizationEndpoint.baseUri("/api/oauth2/authorization"))
-                        .redirectionEndpoint(redirectionEndpoint ->
-                                redirectionEndpoint.baseUri("/api/login/oauth2/code/*"))
-                        .successHandler(oAuth2LoginSuccessHandler)
-                )
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll())
+//                        .requestMatchers("/", "/login", "/error", "/oauth2/**",
+//                                "/h2-console", "/swagger", "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**", "/api/v1/**").permitAll()
+//                        .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2Login(oauth2 -> oauth2
+//                        .authorizationEndpoint(authorizationEndpoint ->
+//                                authorizationEndpoint.baseUri("/api/oauth2/authorization"))
+//                        .redirectionEndpoint(redirectionEndpoint ->
+//                                redirectionEndpoint.baseUri("/api/login/oauth2/code/*"))
+//                        .successHandler(oAuth2LoginSuccessHandler)
+//                )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )

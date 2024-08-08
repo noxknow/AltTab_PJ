@@ -21,15 +21,13 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
   const { handleTable } = useTableTool(canvas, sendDrawingData, arraySize);
 
   const handleClose = () => {
-    if (!canvas) return () => {};
+    if (!canvas) return;
 
     canvas.clear();
   };
 
   useEffect(() => {
-    if (!canvas) return () => {};
-
-    let cleanup: (() => void) | undefined;
+    if (!canvas) return;
 
     canvas.off('mouse:down');
     canvas.off('mouse:move');
@@ -43,36 +41,36 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
 
     switch (activeTool) {
       case 'select':
-        cleanup = handleSelect();
+        handleSelect();
         break;
       case 'pen':
         canvas.isDrawingMode = true;
-        cleanup = handlePen();
+        handlePen();
         break;
       case 'eraser':
-        cleanup = handleEraser();
+        handleEraser();
         break;
       case 'hand':
-        cleanup = handleHand();
+        handleHand();
         break;
       case 'tree':
-        cleanup = handleTree();
+        handleTree();
         break;
       case 'table':
-        cleanup = handleTable();
+        handleTable();
         break;
       case 'close':
         handleClose();
         break;
     }
-    
+
     return () => {
       canvas.off('mouse:down');
       canvas.off('mouse:move');
       canvas.off('mouse:up');
       canvas.off('selection:created');
     };
-  }, [activeTool, arraySize, canvas]);
+  }, [activeTool, arraySize, treeDepth, canvas, handleSelect, handlePen, handleEraser, handleHand, handleTree, handleTable, handleClose]); // treeDepth 추가
 
   const handleTableSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
