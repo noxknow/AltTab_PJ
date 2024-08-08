@@ -8,7 +8,7 @@ import UserSVG from '@/assets/icons/user.svg?react';
 import { Button } from '@/components/Button/Button';
 import { HeaderSidebar } from '@/components/Header/HeaderSidebar';
 import { ProfileModal } from '@/components/ProfileModal/ProfileModal';
-import { baseURL } from '@/services/api';
+import { URL } from '@/constants/url';
 
 import styles from './Header.module.scss';
 
@@ -27,7 +27,7 @@ export function Header() {
   };
 
   const handleLogin = () => {
-    window.location.href = `${baseURL}/api/oauth2/authorization/github`;
+    window.location.href = `${URL.LOGIN}/oauth2/authorization/github`;
   };
 
   return (
