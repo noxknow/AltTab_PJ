@@ -2,6 +2,7 @@ package com.ssafy.alttab.common.config;
 
 import com.ssafy.alttab.common.security.JwtAuthenticationFilter;
 import com.ssafy.alttab.common.security.OAuth2LoginSuccessHandler;
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/login", "/error", "/oauth2/**",
                                 "/h2-console", "/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpoint ->
