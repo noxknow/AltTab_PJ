@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+dist/
+build/
+
+# 환경 변수 파일
+.env
+
+# MySQL
+*.sql
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# 기타
+.DS_Store
+*.log
