@@ -4,7 +4,7 @@ import styles from "./ToolButton.module.scss";
 type ToolButtonProps = {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   onClick: () => void;
-  disabled: boolean;
+  disabled?: boolean;
   title: string;
 };
 
@@ -12,12 +12,13 @@ const ToolButton: React.FC<ToolButtonProps> = ({ icon: Icon, onClick, disabled =
   return (
     <button
       type="button"
-      className={styles.toolbutton}
+      className={`${styles.toolbutton} ${disabled ? styles.disabledButton : ""}`}
       onClick={onClick}
       disabled={disabled}
+      aria-disabled={disabled}
       title={title}
     >
-      <Icon className={disabled ? styles.disabled : ""} />
+      <Icon className={`${styles.icon} ${disabled ? styles.disabledIcon : ""}`} />
     </button>
   );
 };
