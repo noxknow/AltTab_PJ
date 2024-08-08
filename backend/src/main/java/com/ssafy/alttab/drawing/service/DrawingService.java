@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 public class DrawingService {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private final SimpMessagingTemplate messagingTemplate;
 
     private static final String DRAWING_KEY_PREFIX = "drawing:room:";
 

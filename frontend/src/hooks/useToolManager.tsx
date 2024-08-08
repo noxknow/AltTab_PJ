@@ -11,13 +11,20 @@ import useTableTool from './canvasTool/useTableTool';
 const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData: any) => void) => {
   const [activeTool, setActiveTool] = useState('pen');
   const [arraySize, setArraySize] = useState({ rows: 2, cols: 3 });
+  const [treeDepth, setTreeDepth] = useState(3);
 
   const { handleSelect } = useSelectTool(canvas);
   const { handlePen } = usePenTool(canvas);
   const { handleEraser } = useEraserTool(canvas);
   const { handleHand } = useHandTool(canvas);
-  const { handleTree } = useTreeTool(canvas, sendDrawingData);
+  const { handleTree } = useTreeTool(canvas, sendDrawingData, treeDepth);
   const { handleTable } = useTableTool(canvas, sendDrawingData, arraySize);
+
+  const handleClose = () => {
+    if (!canvas) return;
+
+    canvas.clear();
+  };
 
   useEffect(() => {
     if (!canvas) return;
@@ -46,6 +53,9 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
       case 'table':
         handleTable();
         break;
+      case 'close':
+        handleClose();
+        break;
     }
   }, [activeTool, arraySize, canvas]);
 
@@ -54,10 +64,16 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
     setArraySize(prev => ({ ...prev, [name]: parseInt(value) || 0 }));
   };
 
+  const handleTreeDepthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTreeDepth(parseInt(e.target.value) || 1);
+  };
+
   return {
     activeTool,
     setActiveTool,
     arraySize,
+    treeDepth,
+    handleTreeDepthChange,
     handleTableSizeChange,
   };
 };

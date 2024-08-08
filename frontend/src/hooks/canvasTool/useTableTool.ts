@@ -17,10 +17,9 @@ const useTableTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingDat
 
       const cellWidth = 55;
       const cellHeight = 55;
-      const padding = 5;
 
-      const totalWidth = arraySize.cols * (cellWidth + padding) - padding;
-      const totalHeight = arraySize.rows * (cellHeight + padding) - padding;
+      const totalWidth = arraySize.cols * cellWidth;
+      const totalHeight = arraySize.rows * cellHeight
 
       const group = new fabric.Group([], {
         originX: 'center',
@@ -31,8 +30,8 @@ const useTableTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingDat
       for (let i = 0; i < arraySize.rows; i++) {
         for (let j = 0; j < arraySize.cols; j++) {
           const rect = new fabric.Rect({
-            left: j * (cellWidth + padding) - totalWidth / 2,
-            top: i * (cellHeight + padding) - totalHeight / 2,
+            left: j * cellWidth - totalWidth / 2,
+            top: i * cellHeight - totalHeight / 2,
             width: cellWidth,
             height: cellHeight,
             fill: 'white',
@@ -40,18 +39,8 @@ const useTableTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingDat
             strokeWidth: 1,
             selectable: false,
           });
-
-          const text = new fabric.Text(`[${i}][${j}]`, {
-            left: j * (cellWidth + padding) - totalWidth / 2 + cellWidth / 2,
-            top: i * (cellHeight + padding) - totalHeight / 2 + cellHeight / 2,
-            fontSize: 14,
-            originX: 'center',
-            originY: 'center',
-            selectable: false,
-          });
-
+          
           group.addWithUpdate(rect);
-          group.addWithUpdate(text);
         }
       }
 

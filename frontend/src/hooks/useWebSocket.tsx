@@ -30,9 +30,9 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
     const socket = new SockJS(`${socketURL}`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
-      reconnectDelay: 5000,
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
+      reconnectDelay: 1000,
+      heartbeatIncoming: 2000,
+      heartbeatOutgoing: 2000,
     });
 
     stompClient.current.onConnect = () => {

@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 
-import CloseSVG from '@/assets/icons/close.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
 import { MODAL } from '@/constants/modal';
 
@@ -16,22 +15,15 @@ type ModalProps = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 export function Modal({ code, selected }: ModalProps) {
-  const { setIsModalOpen, modal, isFill } = useCompilerModalState();
+  const { modal, isFill } = useCompilerModalState();
 
   const modalClass = classNames(styles.modalContainer, {
     [styles.fill]: isFill,
   });
 
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <>
       <div className={modalClass}>
-        <button className={styles.closeButton} onClick={handleModalClose}>
-          <CloseSVG width={24} height={24} stroke="#F24242" />
-        </button>
         {modal === MODAL.PROBLEM && <ProblemModal />}
         {modal === MODAL.SOLUTION && <SolutionModal />}
         {modal === MODAL.CANVAS && <CanvasModal />}
