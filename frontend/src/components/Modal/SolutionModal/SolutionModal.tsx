@@ -1,6 +1,5 @@
 import CloseSVG from '@/assets/icons/close.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
-import EditorPage from '@/components/Editor/EditorPage';
 import { EditorPage } from '@/components/Editor/EditorPage';
 
 import styles from '../Modal.module.scss';
