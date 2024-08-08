@@ -89,14 +89,6 @@ const useTreeTool = (canvas: fabric.Canvas | null, sendDrawingData: (drawingData
     canvas.defaultCursor = 'crosshair';
     canvas.forEachObject((object) => (object.selectable = false));
     canvas.on('mouse:down', drawTree);
-
-    return () => {
-      canvas.isDrawingMode = true;
-      canvas.selection = true;
-      canvas.defaultCursor = 'default';
-      canvas.forEachObject((object) => (object.selectable = true));
-      canvas.off('mouse:down', drawTree);
-    };
   }, [canvas, drawTree]);
 
   return { handleTree };

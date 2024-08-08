@@ -36,7 +36,6 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
     });
 
     stompClient.current.onConnect = () => {
-      console.log("Socket Connect");
       if (stompClient.current) {
         stompClient.current.subscribe(
           `/sub/api/v1/rooms/${studyId}/${problemId}`,
@@ -83,7 +82,7 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
 
     try {
       const compressedData = compressData(JSON.stringify(drawingData));
-      console.log(compressedData)
+      
       const payload = {
         studyId,
         problemId,

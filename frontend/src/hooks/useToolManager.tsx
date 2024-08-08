@@ -14,7 +14,7 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
   const [treeDepth, setTreeDepth] = useState(3);
 
   const { handleSelect } = useSelectTool(canvas);
-  const { handlePen } = usePenTool(canvas, activeTool === 'pen');
+  const { handlePen } = usePenTool(canvas, activeTool === 'pen', sendDrawingData);
   const { handleEraser } = useEraserTool(canvas);
   const { handleHand } = useHandTool(canvas);
   const { handleTree } = useTreeTool(canvas, sendDrawingData, treeDepth);
@@ -31,18 +31,22 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
 
     let cleanup: (() => void) | undefined;
 
-    console.log(activeTool);
-
     canvas.off('mouse:down');
     canvas.off('mouse:move');
     canvas.off('mouse:up');
     canvas.off('selection:created');
+
+    canvas.isDrawingMode = false;
+    canvas.selection = true;
+    canvas.defaultCursor = 'default';
+    canvas.forEachObject((object) => (object.selectable = true));
 
     switch (activeTool) {
       case 'select':
         cleanup = handleSelect();
         break;
       case 'pen':
+        canvas.isDrawingMode = true;
         cleanup = handlePen();
         break;
       case 'eraser':
@@ -61,6 +65,13 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
         handleClose();
         break;
     }
+    
+    return () => {
+      canvas.off('mouse:down');
+      canvas.off('mouse:move');
+      canvas.off('mouse:up');
+      canvas.off('selection:created');
+    };
   }, [activeTool, arraySize, canvas]);
 
   const handleTableSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
