@@ -1,0 +1,32 @@
+.section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* 수직 정렬 */
+}
+
+
+
+.section h2 {
+  background: linear-gradient(135deg, #74ebd5, #acb6e5); /* 시원한 그라데이션 배경 */
+  padding: 20px 40px; /* 충분한 패딩 */
+  border-radius: 25px; /* 부드러운 모서리 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  font-family: 'Roboto', sans-serif; /* 모던한 폰트 적용 */
+  font-size: 30px; /* 더 큰 폰트 크기 */
+  color: #ffffff; /* 흰색 글씨 */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* 부드러운 그림자 */
+  transition: transform 0.3s, box-shadow 0.3s; /* 애니메이션 추가 */
+  position: relative;
+  overflow: hidden;
+}
+
+
+.cards {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  width: 100%; /* 카드를 가로로 채우기 위해 부모의 너비를 설정 */
+}

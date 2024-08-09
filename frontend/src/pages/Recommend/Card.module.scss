@@ -1,0 +1,75 @@
+@import '../../styles/font.module.scss';
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 15px;
+  color: white;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.bronze {
+  background: linear-gradient(135deg, #cc5500, #d78a52);
+}
+
+.silver {
+  background: linear-gradient(135deg, #c0c0c0, #d3d3d3);
+}
+
+.gold {
+  background: linear-gradient(135deg, #f1c40f, #e67e22); /* 골드 색상 수정 */
+}
+
+.platinum {
+  background: linear-gradient(135deg, #3a8d97, #4bb3c1); /* 플래티넘 색상 수정 */
+}
+
+.diamond {
+  background: linear-gradient(135deg, #0ab6ff, #0040ff);
+}
+
+.ruby {
+  background: linear-gradient(135deg, #ff007f, #800000);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white; 
+}
+
+.cardHeader {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.cardBody {
+  font-size: 1rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.cardButton {
+  background-color: #fff;
+  color: #004f8c;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+
+  &:hover {
+    background-color: #004f8c;
+    color: white;
+  }
+}

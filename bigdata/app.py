@@ -1,24 +1,34 @@
 from flask import Flask, request, jsonify
-import sqlite3
+import mysql.connector
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics.pairwise import cosine_similarity
+from dotenv import load_dotenv
+import os
+
+# .env 파일에서 환경 변수 로드
+load_dotenv()
 
 app = Flask(__name__)
 
 def get_db_connection():
-    conn = sqlite3.connect('alttab_db.db')
-    conn.row_factory = sqlite3.Row
+    conn = mysql.connector.connect(
+        host=os.getenv('DB_HOST'),         # MySQL 서버 호스트명
+        user=os.getenv('DB_USER'),         # MySQL 사용자 이름
+        password=os.getenv('DB_PASSWORD'), # MySQL 사용자 비밀번호
+        database=os.getenv('DB_NAME')      # MySQL 데이터베이스 이름
+    )
     return conn
 
 def fetch_problems():
     conn = get_db_connection()
-    problems = conn.execute('SELECT * FROM problem').fetchall()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT * FROM problem')
+    problems = cursor.fetchall()
     conn.close()
-    problems_df = pd.DataFrame(problems, columns=['problem_id', 'title', 'tag', 'level'])
+    problems_df = pd.DataFrame(problems)
     return problems_df
-
 
 @app.route('/flask', methods=['POST'])
 def recommend_route():
@@ -26,12 +36,14 @@ def recommend_route():
     study_id = content['study_id']
     
     conn = get_db_connection()
-    problem_counts = conn.execute('''
-        SELECT tag, COUNT(*) as count FROM problem_solution
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('''
+        SELECT problem.tag, COUNT(*) as count FROM problem_solution
         JOIN problem ON problem_solution.problem_id = problem.problem_id
-        WHERE study_id = ?
-        GROUP BY tag
-    ''', (study_id,)).fetchall()
+        WHERE problem_solution.study_id = %s
+        GROUP BY problem.tag
+    ''', (study_id,))
+    problem_counts = cursor.fetchall()
     conn.close()
     
     if not problem_counts:
@@ -41,14 +53,14 @@ def recommend_route():
             'collaborative': []
         }), 200
     
-    tag_counts = pd.DataFrame(problem_counts, columns=['tag', 'count'])
+    tag_counts = pd.DataFrame(problem_counts)
     
     most_common_tag = tag_counts.loc[tag_counts['count'].idxmax()]['tag']
     least_common_tag = tag_counts.loc[tag_counts['count'].idxmin()]['tag']
     
     df_problems = fetch_problems()
     
-    vectorizer = TfidfVectorizer()
+    vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
     X = vectorizer.fit_transform(df_problems['tag'])
     model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
     
@@ -65,10 +77,12 @@ def recommend_route():
     
     # 3. 유사한 스터디 그룹이 푼 문제 중 현재 스터디가 풀지 않은 문제 5가지
     conn = get_db_connection()
-    solutions = conn.execute('SELECT study_id, problem_id FROM problem_solution').fetchall()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('SELECT study_id, problem_id FROM problem_solution')
+    solutions = cursor.fetchall()
     conn.close()
     
-    df_solutions = pd.DataFrame(solutions, columns=['study_id', 'problem_id'])
+    df_solutions = pd.DataFrame(solutions)
     study_problem_matrix = pd.pivot_table(df_solutions, index='study_id', columns='problem_id', aggfunc='size', fill_value=0)
     
     cosine_sim = cosine_similarity(study_problem_matrix)
@@ -89,12 +103,15 @@ def recommend_route():
     
     if recommendations_collaborative:
         conn = get_db_connection()
-        recommended_problems = conn.execute(f'''
-            SELECT * FROM problem WHERE problem_id IN ({','.join('?' for _ in recommendations_collaborative)})
-        ''', recommendations_collaborative).fetchall()
+        cursor = conn.cursor(dictionary=True)
+        format_strings = ','.join(['%s'] * len(recommendations_collaborative))
+        cursor.execute(f'''
+            SELECT * FROM problem WHERE problem_id IN ({format_strings})
+        ''', tuple(recommendations_collaborative))
+        recommended_problems = cursor.fetchall()
         conn.close()
         
-        recommendations_collaborative = pd.DataFrame(recommended_problems, columns=['problem_id', 'title', 'tag', 'level']).to_dict(orient='records')
+        recommendations_collaborative = pd.DataFrame(recommended_problems).to_dict(orient='records')
     else:
         recommendations_collaborative = []
     
@@ -106,8 +123,6 @@ def recommend_route():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
 
 
 
