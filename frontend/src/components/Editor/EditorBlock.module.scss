@@ -29,6 +29,16 @@ $content-padding: 1rem;
   padding: $content-padding;
 }
 
+.main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.svg {
+  width: 1.5rem;
+  height: max-content;
+}
+
 .image {
   display: flex;
   justify-content: center;
