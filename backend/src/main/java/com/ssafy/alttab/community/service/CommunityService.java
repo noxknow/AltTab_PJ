@@ -66,6 +66,7 @@ public class CommunityService {
     private WeeklyStudyDto mapToWeeklyStudyDto(Study study) {
         return WeeklyStudyDto.builder()
                 .name(study.getStudyName())
+                .studyId(study.getId())
                 .like(study.getLike())
                 .follower(study.getFollowerCount())
                 .view(study.getView())
@@ -123,6 +124,7 @@ public class CommunityService {
     private TopSolverDto mapToTopSolverDto(Study study) {
         return TopSolverDto.builder()
                 .name(study.getStudyName())
+                .studyId(study.getId())
                 .like(study.getLike())
                 .totalSolve(study.totalSolve())
                 .view(study.getView())
