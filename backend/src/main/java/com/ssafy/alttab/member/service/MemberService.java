@@ -1,21 +1,19 @@
 package com.ssafy.alttab.member.service;
 
+import static com.ssafy.alttab.member.entity.Member.createMember;
+
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.dto.MemberJoinedStudiesResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
-
-import java.util.stream.Collectors;
-
 import com.ssafy.alttab.study.dto.JoinedStudyResponseDto;
 import com.ssafy.alttab.study.entity.Study;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static com.ssafy.alttab.member.entity.Member.createMember;
 
 @Service
 @RequiredArgsConstructor

@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class CodeExecutionRequestDto {
-    private Long studyGroupId;
+    private Long studyId;
     private Long problemId;
-    private Long problemTab;
+    private Long memberId;
     private String input;
     private String code;
 }

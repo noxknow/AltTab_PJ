@@ -1,5 +1,7 @@
 package com.ssafy.alttab.drawing.service;
 
+import static com.ssafy.alttab.common.enums.ErrorCode.CONNECTION_REFUSED;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.alttab.common.exception.AppException;
 import com.ssafy.alttab.drawing.dto.DrawingRequestDto;
@@ -9,8 +11,6 @@ import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
-
-import static com.ssafy.alttab.common.enums.ErrorCode.CONNECTION_REFUSED;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +23,11 @@ public class RedisSubscriber implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            String publishMessage = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
+            String publishMessage = redisTemplate.getStringSerializer().deserialize(message.getBody());
             DrawingRequestDto drawingRequestDto = objectMapper.readValue(publishMessage, DrawingRequestDto.class);
-            messagingTemplate.convertAndSend("/sub/api/v1/rooms" + "/" + drawingRequestDto.getStudyId() + "/" + drawingRequestDto.getProblemId(), drawingRequestDto);
+            messagingTemplate.convertAndSend(
+                    "/sub/api/v1/rooms" + "/" + drawingRequestDto.getStudyId() + "/" + drawingRequestDto.getProblemId(),
+                    drawingRequestDto);
         } catch (Exception e) {
             throw new AppException(CONNECTION_REFUSED);
         }

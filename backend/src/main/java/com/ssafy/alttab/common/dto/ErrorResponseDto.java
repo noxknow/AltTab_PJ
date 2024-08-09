@@ -9,16 +9,16 @@ import org.springframework.http.ResponseEntity;
 public class ErrorResponseDto {
     private final String message;
 
-    public ErrorResponseDto(Exception ex){
+    public ErrorResponseDto(Exception ex) {
         this.message = ex.getMessage();
     }
 
-    public static ResponseEntity<?> toResponse(CodeNotFoundException ex){
+    public static ResponseEntity<?> toResponse(CodeNotFoundException ex) {
         ErrorResponseDto response = new ErrorResponseDto(ex);
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-    public static ResponseEntity<?> toResponse(Exception ex){
+    public static ResponseEntity<?> toResponse(Exception ex) {
         ErrorResponseDto response = new ErrorResponseDto(ex);
         return new ResponseEntity<>(response, HttpStatus.SEE_OTHER);
     }

@@ -56,6 +56,7 @@ public class Member {
     }
 
     //==비즈니스 로직==//
+
     /**
      * 맴버가 팔로우 한 스터디 목록 반환
      *
@@ -68,7 +69,7 @@ public class Member {
                 .collect(Collectors.toList());
     }
 
-    public void changeAvatarUrl(String avatarUrl){
+    public void changeAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
     }
 

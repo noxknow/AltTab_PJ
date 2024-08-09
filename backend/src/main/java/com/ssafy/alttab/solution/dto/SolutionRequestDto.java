@@ -1,9 +1,8 @@
 package com.ssafy.alttab.solution.dto;
 
 import com.ssafy.alttab.solution.document.Block;
-import lombok.Getter;
-
 import java.util.List;
+import lombok.Getter;
 
 @Getter
 public class SolutionRequestDto {

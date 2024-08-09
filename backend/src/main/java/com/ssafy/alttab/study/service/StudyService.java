@@ -1,5 +1,7 @@
 package com.ssafy.alttab.study.service;
 
+import static com.ssafy.alttab.member.enums.MemberRoleStatus.FOLLOWER;
+
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
@@ -7,19 +9,16 @@ import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
-import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
+import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
 import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.ssafy.alttab.member.enums.MemberRoleStatus.FOLLOWER;
 
 @Service
 @RequiredArgsConstructor
@@ -87,7 +86,9 @@ public class StudyService {
 
     public Void unfollowStudy(String name, Long studyId) throws EntityNotFoundException {
         MemberStudy memberStudy = memberStudyRepository.findByMember_NameAndStudy_IdAndRole(name, studyId, FOLLOWER)
-                .orElseThrow(() -> new EntityNotFoundException("MemberStudy not found for member name: " + name + ", study id: " + studyId + ", and role: FOLLOWER"));
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "MemberStudy not found for member name: " + name + ", study id: " + studyId
+                                + ", and role: FOLLOWER"));
         memberStudy.getMember().removeMemberStudy(memberStudy);
         memberStudyRepository.delete(memberStudy);
         return null;

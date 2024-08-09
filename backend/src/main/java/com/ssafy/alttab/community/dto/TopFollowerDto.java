@@ -12,7 +12,7 @@ public class TopFollowerDto {
     private Long totalFollower;
     private Long view;
 
-    public static TopFollowerDto toDto(Study study){
+    public static TopFollowerDto toDto(Study study) {
         return TopFollowerDto.builder()
                 .name(study.getStudyName())
                 .like(study.getLike())

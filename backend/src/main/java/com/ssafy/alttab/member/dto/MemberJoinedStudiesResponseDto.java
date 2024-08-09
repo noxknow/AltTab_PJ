@@ -1,10 +1,9 @@
 package com.ssafy.alttab.member.dto;
 
 import com.ssafy.alttab.study.dto.JoinedStudyResponseDto;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-
-import java.util.List;
 
 @Getter
 @Builder

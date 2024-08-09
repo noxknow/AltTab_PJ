@@ -5,6 +5,7 @@ import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -13,8 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +26,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     private String redirectUri;
 
     /**
-     *
      * @param request
      * @param response
      * @param authentication
@@ -50,7 +48,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     }
 
     /**
-     *
      * @param oAuth2User
      * @return
      */
@@ -63,7 +60,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     //== build ==//
 
     /**
-     *
      * @param response
      * @param accessToken
      * @param refreshToken
@@ -79,7 +75,6 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     }
 
     /**
-     *
      * @param name
      * @param value
      * @param maxAge

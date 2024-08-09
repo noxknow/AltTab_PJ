@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CodeExecutionResponseDto {
 
-    private Long studyGroupId;
+    private Long studyId;
     private Long problemId;
-    private Long problemTab;
+    private Long memberId;
     private ExecutionStatus status;
     private String output;
     private String errorMessage;
