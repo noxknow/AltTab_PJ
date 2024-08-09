@@ -5,6 +5,8 @@ import { Button } from '@/components/Button/Button';
 import { requestExecutor } from '@/types/executor';
 import { EXECUTOR } from '@/constants/executor';
 import { useExecuteQuery, useGetExecutorStatusQuery } from '@/queries/executor';
+import CloseSVG from '@/assets/icons/close.svg?react';
+import { useCompilerModalState } from '@/hooks/useCompilerState';
 
 import styles from './RunCodeModal.module.scss';
 
@@ -20,11 +22,16 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const polling = useRef<number | null>();
   const executeCode = useExecuteQuery();
-  const getExecutorStatus = useGetExecutorStatusQuery(
+  const { refetch } = useGetExecutorStatusQuery(
     studyId!,
     problemId!,
     problemTab!.toString(),
   );
+  const { setIsModalOpen } = useCompilerModalState();
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.currentTarget.value);
@@ -46,7 +53,7 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   };
 
   const getStatus = async () => {
-    const { data } = await getExecutorStatus.refetch();
+    const { data } = await refetch();
     const { status, output, errorMessage } = data!;
     if (status === EXECUTOR.DONE || status === EXECUTOR.FAIL) {
       setIsLoading(false);
@@ -65,6 +72,9 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
 
   return (
     <div className={styles.container}>
+      <button className={styles.closeButton} onClick={handleClose}>
+        <CloseSVG width={24} height={24} stroke="#F24242" />
+      </button>
       <div className={styles.content}>
         <div>
           <div>Input</div>

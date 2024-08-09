@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { CanvasSection } from '@/pages/Canvas/CanvasSection';
@@ -18,6 +18,8 @@ export function Compiler() {
   const [codeText, setCodeText] = useState('');
   const [highlightedCode, setHighlightedCode] = useState('');
   const [canvasIsOpen, setCanvasIsOpen] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const codeAreaRef = useRef<HTMLDivElement | null>(null);
   const { isModalOpen, setIsModalOpen, setModal, setIsFill } =
     useCompilerModalState();
   // TODO : 스터디원 정보 받아오도록 수정
@@ -36,20 +38,49 @@ export function Compiler() {
     selected.toString(),
   );
 
+  const resizeCodeArea = () => {
+    textareaRef.current!.style.width = '100%';
+    textareaRef.current!.style.height = '100%';
+    codeAreaRef.current!.style.height = '100%';
+    textareaRef.current!.style.width = `${textareaRef.current!.scrollWidth}px`;
+    textareaRef.current!.style.height = `${textareaRef.current!.scrollHeight}px`;
+    codeAreaRef.current!.style.height = `${codeAreaRef.current!.scrollHeight}px`;
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newCodeText = event.target.value;
     setCodeText(newCodeText);
+    resizeCodeArea();
   };
 
   useEffect(() => {
-    if (data) {
+    if (data && data.code) {
       setCodeText(data.code);
     }
   }, [data]);
 
   useEffect(() => {
     setHighlightedCode(highlightCode(codeText, 'java'));
+    resizeCodeArea();
   }, [codeText]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await refetch();
+      if (data) {
+        setCodeText(data.code);
+      } else {
+        setCodeText('');
+      }
+    })();
+  }, [selected]);
+
+  useEffect(() => {
+    window.addEventListener('resize', resizeCodeArea);
+    return () => {
+      window.removeEventListener('resize', resizeCodeArea);
+    };
+  }, []);
 
   const openCanvas = () => {
     setCanvasIsOpen(true);
@@ -67,12 +98,12 @@ export function Compiler() {
 
   const handleTabClick = async (selectedTab: number) => {
     setSelected(selectedTab);
-    const { data } = await refetch();
-    if (data) {
-      setCodeText(data.code);
-    } else {
-      setCodeText('');
-    }
+    // const { data } = await refetch();
+    // if (data) {
+    //   setCodeText(data.code);
+    // } else {
+    //   setCodeText('');
+    // }
   };
 
   return (
@@ -96,13 +127,14 @@ export function Compiler() {
           <div>Java</div>
         </div>
         <div className={styles.compiler}>
-          <div className={styles.compilerBody}>
+          <div className={styles.compilerBody} ref={codeAreaRef}>
             <LineNumber codeText={codeText} />
             <div className={styles.codeContainer}>
               <textarea
                 className={styles.textArea}
                 onChange={handleChange}
                 value={codeText}
+                ref={textareaRef}
               ></textarea>
               <pre className={styles.codeArea}>
                 <code

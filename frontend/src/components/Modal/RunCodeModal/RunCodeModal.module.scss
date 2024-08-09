@@ -18,6 +18,10 @@
   font-size: 1.4rem;
   line-height: 2.4rem;
   gap: 3.2rem;
+
+  @media screen and (max-width: 880px) {
+    flex-direction: column;
+  }
 }
 
 .textarea {
