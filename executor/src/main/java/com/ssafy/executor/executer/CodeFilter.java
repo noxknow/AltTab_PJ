@@ -8,6 +8,7 @@ public class CodeFilter {
 
     /**
      * 금지 패턴 탐색
+     *
      * @param sourceCode
      * @return 금지 패턴 일치 여부
      */
@@ -22,6 +23,7 @@ public class CodeFilter {
 
     /**
      * 금지 패턴 목록 조회
+     *
      * @param sourceCode
      * @return 금지 패턴 목록
      */

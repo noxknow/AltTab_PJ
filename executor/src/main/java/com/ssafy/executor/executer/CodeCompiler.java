@@ -4,12 +4,6 @@ import com.ssafy.executor.common.enums.ExceptionMessage;
 import com.ssafy.executor.common.enums.LogMessage;
 import com.ssafy.executor.common.exception.CompileException;
 import com.ssafy.executor.dto.CodeExecutionRequestDto;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -18,7 +12,12 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
@@ -49,6 +48,7 @@ public class CodeCompiler {
 
     /**
      * 컴파일 프로세스 생성 및 시작
+     *
      * @param mainJavaFile
      * @return process
      * @throws IOException
@@ -87,7 +87,8 @@ public class CodeCompiler {
     private boolean waitForCompilation(Process compileProcess, CodeExecutionRequestDto request) throws Exception {
         if (!compileProcess.waitFor(COMPILE_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
             compileProcess.destroy();
-            throw new CompileException(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS), request);
+            throw new CompileException(ExceptionMessage.COMPILATION_TIMEOUT.formatMessage(COMPILE_TIMEOUT_SECONDS),
+                    request);
         }
         return compileProcess.exitValue() == 0;
     }
@@ -110,10 +111,11 @@ public class CodeCompiler {
      * 컴파일 성공 여부 확인
      *
      * @param success 컴파일 성공 여부
-     * @param output 컴파일 출력 정보
+     * @param output  컴파일 출력 정보
      * @throws CompileException 컴파일 실패 시 발생
      */
-    private void checkCompileResult(boolean success, String output, CodeExecutionRequestDto request) throws CompileException {
+    private void checkCompileResult(boolean success, String output, CodeExecutionRequestDto request)
+            throws CompileException {
         if (!success) {
             String formattedErrors = formatCompileErrors(output);
             log.error(ExceptionMessage.COMPILATION_FAILED.formatMessage(formattedErrors));

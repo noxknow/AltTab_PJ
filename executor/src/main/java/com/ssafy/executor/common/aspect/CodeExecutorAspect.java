@@ -1,7 +1,6 @@
 package com.ssafy.executor.common.aspect;
 
 import com.ssafy.executor.common.enums.ExceptionMessage;
-import com.ssafy.executor.common.exception.CompileException;
 import com.ssafy.executor.dto.CodeExecutionRequestDto;
 import com.ssafy.executor.dto.CodeExecutionResponseDto;
 import lombok.extern.slf4j.Slf4j;

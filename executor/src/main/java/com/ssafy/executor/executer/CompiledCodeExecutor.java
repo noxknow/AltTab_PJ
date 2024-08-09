@@ -33,7 +33,6 @@ public class CompiledCodeExecutor {
     private final CodeCompiler codeCompiler;
 
     /**
-     *
      * @param request
      * @return
      * @throws Exception
@@ -63,7 +62,7 @@ public class CompiledCodeExecutor {
      * 코드를 파일로 작성
      *
      * @param tempDir 임시 디렉토리 경로
-     * @param code 작성할 코드 문자열
+     * @param code    작성할 코드 문자열
      * @return 작성된 Java 파일의 Path
      * @throws IOException 파일 작성 실패 시 발생
      */
@@ -92,7 +91,8 @@ public class CompiledCodeExecutor {
      * @return 코드 실행 결과
      * @throws IOException 프로세스 실행 또는 입출력 오류 시 발생
      */
-    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input) throws Exception {
+    private CodeExecutionResponseDto runCode(CodeExecutionRequestDto request, Path tempDir, String input)
+            throws Exception {
         log.info(LogMessage.EXECUTION_STARTED.getMessage(), input);
         ProcessBuilder runProcessBuilder = new ProcessBuilder("java", "-cp", tempDir.toString(), MAIN_CLASS_NAME);
         runProcessBuilder.redirectErrorStream(true);
@@ -108,7 +108,7 @@ public class CompiledCodeExecutor {
      * 실행 중인 프로세스에 입력 제공
      *
      * @param process 입력을 받을 프로세스
-     * @param input 제공할 입력 문자열
+     * @param input   제공할 입력 문자열
      * @throws IOException 입력 제공 중 오류 발생 시
      */
     private void provideInput(Process process, String input) throws IOException {
@@ -125,11 +125,12 @@ public class CompiledCodeExecutor {
      *
      * @param process 실행할 프로세스
      * @return 프로세스의 출력 문자열
-     * @throws TimeoutException 실행 시간이 초과된 경우
-     * @throws ExecutionException 실행 중 예외가 발생한 경우
+     * @throws TimeoutException     실행 시간이 초과된 경우
+     * @throws ExecutionException   실행 중 예외가 발생한 경우
      * @throws InterruptedException 실행이 중단된 경우
      */
-    private String executeWithTimeout(Process process, CodeExecutionRequestDto request) throws ExecutionException, InterruptedException {
+    private String executeWithTimeout(Process process, CodeExecutionRequestDto request)
+            throws ExecutionException, InterruptedException {
         StringBuilder output = new StringBuilder();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
@@ -137,7 +138,8 @@ public class CompiledCodeExecutor {
             future.get(TIMEOUT_SECONDS, TimeUnit.SECONDS);
             return output.toString();
         } catch (TimeoutException e) {
-            throw new CodeExecutionException(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS), request);
+            throw new CodeExecutionException(ExceptionMessage.EXECUTION_TIMEOUT.formatMessage(TIMEOUT_SECONDS),
+                    request);
         } finally {
             executor.shutdownNow();
         }
@@ -147,7 +149,7 @@ public class CompiledCodeExecutor {
      * 프로세스의 출력을 읽음
      *
      * @param process 출력을 읽을 프로세스
-     * @param output 출력을 저장할 StringBuilder
+     * @param output  출력을 저장할 StringBuilder
      * @return 프로세스의 전체 출력 문자열
      * @throws IOException 입출력 오류 발생 시
      */
@@ -166,10 +168,11 @@ public class CompiledCodeExecutor {
      * 프로세스 실행 결과 처리
      *
      * @param process 실행된 프로세스
-     * @param output 프로세스의 출력 문자열
+     * @param output  프로세스의 출력 문자열
      * @return 코드 실행 결과를 담은 CodeExecutionResponseDto
      */
-    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process, String output)
+    private CodeExecutionResponseDto handleProcessResult(CodeExecutionRequestDto request, Process process,
+                                                         String output)
             throws InterruptedException {
         waitForProcessCompletion(process);
         int exitValue = getProcessExitValue(process);
@@ -209,7 +212,7 @@ public class CompiledCodeExecutor {
     /**
      * 실행 실패 시 응답 처리
      *
-     * @param request 코드 실행 요청 DTO
+     * @param request   코드 실행 요청 DTO
      * @param exitValue 프로세스 종료 코드
      * @return 실행 실패에 대한 응답 DTO
      */
@@ -228,7 +231,7 @@ public class CompiledCodeExecutor {
      * 실행 성공 시 응답 처리
      *
      * @param request 코드 실행 요청 DTO
-     * @param output 프로세스 실행 결과 출력
+     * @param output  프로세스 실행 결과 출력
      * @return 실행 성공에 대한 응답 DTO
      */
     private CodeExecutionResponseDto handleSuccessfulExecution(CodeExecutionRequestDto request, String output) {
