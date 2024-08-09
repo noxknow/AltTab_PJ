@@ -1,10 +1,9 @@
-import React from 'react';
 import { Card } from './Card';
 import styles from './Section.module.scss';
 
 interface SectionProps {
   title: string;
-  problems: { title: string; tags: string; level: number; problemId: number }[];
+  problems?: { title: string; tags: string; level: number; problemId: number }[];
 }
 
 export function Section({ title, problems }: SectionProps) {
@@ -12,7 +11,7 @@ export function Section({ title, problems }: SectionProps) {
     <div className={styles.section}>
       <h2>{title}</h2>
       <div className={styles.cards}>
-        {problems.map((problem, index) => (
+        {problems?.map((problem, index) => (
           <Card
             key={index}
             title={problem.title}

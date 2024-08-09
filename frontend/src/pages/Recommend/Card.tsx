@@ -1,5 +1,4 @@
-import React from 'react';
-import styles from './Card.module.scss';
+import styles from './Card.module.scss'; 
 
 interface CardProps {
   title: string;
@@ -9,7 +8,7 @@ interface CardProps {
 }
 
 export function Card({ title, tags, level, problemId }: CardProps) {
-  const handleClick = () => {
+  const handleClick = () => { 
     window.open(`https://www.acmicpc.net/problem/${problemId}`, '_blank');
   };
 

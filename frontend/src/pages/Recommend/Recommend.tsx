@@ -1,5 +1,3 @@
-import React from 'react';
-import { Content } from './Content';
 import { Section } from './Section'; // Section 컴포넌트 임포트
 import styles from './Recommend.module.scss';
 
