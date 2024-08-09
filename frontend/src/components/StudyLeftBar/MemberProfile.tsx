@@ -3,10 +3,10 @@ import styles from './MemberProfile.module.scss';
 type MemberProfileProps = {
   url: string;
   name: string;
-  point: number;
+  point?: number;
 };
 
-export function MemberProfile({ url, name, point }: MemberProfileProps) {
+export function MemberProfile({ url, name, point = 0 }: MemberProfileProps) {
   return (
     <div className={styles.main}>
       <div>

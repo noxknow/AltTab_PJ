@@ -10,7 +10,9 @@ import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.study.dto.JoinedStudyResponseDto;
 import com.ssafy.alttab.study.entity.Study;
+
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,7 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(name));
 
         return MemberInfoResponseDto.builder()
+                .memberId(member.getId())
                 .name(member.getName())
                 .avatarUrl(member.getAvatarUrl())
                 .build();

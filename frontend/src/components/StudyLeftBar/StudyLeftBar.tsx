@@ -1,7 +1,5 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { studyInfo, memberInfo } from '@/types/study.ts';
 import { useGetStudyInfoQuery, useGetStudyMemberQuery } from '@/queries/study';
 
 import { StudyIntro } from './StudyIntro';
@@ -12,44 +10,25 @@ import styles from './StudyLeftBar.module.scss';
 
 export function StudyLeftBar() {
   const { studyId } = useParams<{ studyId: string }>();
-  const [studyInfo, setStudyInfo] = useState<studyInfo>({});
-  const [studyMember, setStudyMember] = useState<memberInfo>({});
-
-  const loadStudyInfo = async () => {
-    if (!studyId) return;
-
-    try {
-      const { data } = useGetStudyInfoQuery(studyId);
-      setStudyInfo(data!);
-    } catch (error) {
-      console.error('스터디 정보 로드 실패:', error);
-    }
-  };
-
-  const loadStudyMember = async () => {
-    if (!studyId) return;
-
-    try {
-      const { data } = useGetStudyMemberQuery(studyId);
-      setStudyMember(data!);
-    } catch (error) {
-      console.error('스터디 멤버 로드 실패:', error);
-    }
-  };
-
-  useEffect(() => {
-    loadStudyInfo();
-    loadStudyMember();
-  }, [studyId]);
+  const { data: studyInfo } = useGetStudyInfoQuery(studyId!);
+  const { data: studyMember } = useGetStudyMemberQuery(studyId!);
 
   return (
     <div className={styles.main}>
-      <StudyIntro
-        studyName={studyInfo.studyName}
-        studyDescription={studyInfo.studyDescription}
-      />
+      {studyInfo ? (
+        <StudyIntro
+          studyName={studyInfo.studyName}
+          studyDescription={studyInfo.studyDescription}
+        />
+      ) : (
+        <>스터디 정보가 없습니다.</>
+      )}
       <StudySchedule date={new Date('2024-08-05 20:00:00')} />
-      <StudyMembers memberNames={studyMember.memberNames} />
+      {studyMember ? (
+        <StudyMembers members={studyMember} />
+      ) : (
+        <>스터디원 정보가 없습니다.</>
+      )}
     </div>
   );
 }

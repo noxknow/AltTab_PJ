@@ -3,15 +3,9 @@ import MembersSVG from '@/assets/icons/members.svg?react';
 import { MemberProfile } from './MemberProfile';
 import styles from './StudyMembers.module.scss';
 
-export function StudyMembers({ memberNames }: memberInfo) {
-  if (!memberNames) return null;
+type studyMemberProps = { members: memberInfo[] };
 
-  const data = memberNames.map((name) => ({
-    url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
-    name: name,
-    point: 1732,
-  }));
-
+export function StudyMembers({ members }: studyMemberProps) {
   return (
     <div className={styles.main}>
       <div className={styles.top}>
@@ -20,15 +14,15 @@ export function StudyMembers({ memberNames }: memberInfo) {
         </div>
         <div>Members</div>
       </div>
-
-      {data.map((member, index) => (
-        <MemberProfile
-          key={index}
-          url={member.url}
-          name={member.name}
-          point={member.point}
-        />
-      ))}
+      {members &&
+        members.map((member, index) => (
+          <MemberProfile
+            key={index}
+            url={member.avatarUrl}
+            name={member.name}
+            point={member.point}
+          />
+        ))}
     </div>
   );
 }

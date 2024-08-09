@@ -12,10 +12,10 @@ import styles from './RunCodeModal.module.scss';
 
 type RunCodeModalProps = {
   code: string;
-  problemTab?: number;
+  memberId?: number;
 };
 
-export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
+export function RunCodeModal({ code, memberId }: RunCodeModalProps) {
   const { studyId, problemId } = useParams();
   const [inputText, setInputText] = useState('');
   const [outputText, setOutputText] = useState<string | null>('');
@@ -25,7 +25,7 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   const { refetch } = useGetExecutorStatusQuery(
     studyId!,
     problemId!,
-    problemTab!.toString(),
+    memberId!.toString(),
   );
   const { setIsModalOpen } = useCompilerModalState();
 
@@ -40,9 +40,9 @@ export function RunCodeModal({ code, problemTab }: RunCodeModalProps) {
   const runCode = async () => {
     setOutputText('');
     const form: requestExecutor = {
-      studyGroupId: studyId!,
+      studyId: studyId!,
       problemId: problemId!,
-      problemTab: problemTab!.toString(),
+      memberId: memberId!.toString(),
       code,
       input: inputText,
     };

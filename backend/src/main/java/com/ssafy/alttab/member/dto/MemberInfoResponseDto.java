@@ -8,11 +8,13 @@ import lombok.Getter;
 @Builder
 public class MemberInfoResponseDto {
 
+    private Long memberId;
     private String name;
     private String avatarUrl;
 
     public static MemberInfoResponseDto toDto(Member member) {
         return MemberInfoResponseDto.builder()
+                .memberId(member.getId())
                 .name(member.getName())
                 .avatarUrl(member.getAvatarUrl())
                 .build();

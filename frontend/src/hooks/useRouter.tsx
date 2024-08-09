@@ -33,7 +33,7 @@ export const useRouter = () =>
         { path: 'noStudy', element: <NoStudy /> },
         { path: 'newStudy', element: <NewStudy /> },
         { path: 'community', element: <Community /> },
-       { path: 'Recommend/:studyId', element: <Recommend />}
+        { path: 'Recommend/:studyId', element: <Recommend /> },
       ],
     },
   ]);

@@ -8,6 +8,7 @@ import { useCompilerModalState } from '@/hooks/useCompilerState';
 import { MODAL } from '@/constants/modal';
 import { highlightCode } from '@/utils/highlightCode';
 import { useGetCodeQuery } from '@/queries/executor';
+import { useGetStudyMemberQuery } from '@/queries/study';
 
 import styles from './Compiler.module.scss';
 import { LineNumber } from './LineNumber';
@@ -22,15 +23,7 @@ export function Compiler() {
   const codeAreaRef = useRef<HTMLDivElement | null>(null);
   const { isModalOpen, setIsModalOpen, setModal, setIsFill } =
     useCompilerModalState();
-  // TODO : 스터디원 정보 받아오도록 수정
-  const [members] = useState([
-    '신승호',
-    '유경헌',
-    '이재영',
-    '이지원',
-    '이치왕',
-    '지종권',
-  ]);
+  const { data: studyMember } = useGetStudyMemberQuery(studyId!);
   const [selected, setSelected] = useState(0);
   const { data, refetch } = useGetCodeQuery(
     studyId!,
@@ -98,12 +91,6 @@ export function Compiler() {
 
   const handleTabClick = async (selectedTab: number) => {
     setSelected(selectedTab);
-    // const { data } = await refetch();
-    // if (data) {
-    //   setCodeText(data.code);
-    // } else {
-    //   setCodeText('');
-    // }
   };
 
   return (
@@ -111,17 +98,19 @@ export function Compiler() {
       {isModalOpen && <Modal code={codeText} selected={selected} />}
       <div className={styles.compilerContainer}>
         <CompilerSidebar />
-        <div className={styles.tabContainer}>
-          {members.map((member, index) => (
-            <div
-              key={index}
-              className={`${styles.tab} ${index === selected ? styles.selected : ''}`}
-              onClick={() => handleTabClick(index)}
-            >
-              {member}
-            </div>
-          ))}
-        </div>
+        {studyMember && (
+          <div className={styles.tabContainer}>
+            {studyMember.map((member, index) => (
+              <div
+                key={index}
+                className={`${styles.tab} ${index === selected ? styles.selected : ''}`}
+                onClick={() => handleTabClick(index)}
+              >
+                {member.name}
+              </div>
+            ))}
+          </div>
+        )}
         <div className={styles.compilerTitle}>
           <div>Code Snippet</div>
           <div>Java</div>

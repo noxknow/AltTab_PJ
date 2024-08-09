@@ -18,9 +18,9 @@ export const useExecuteQuery = () => {
       queryClient.invalidateQueries({
         queryKey: [
           ...executorKeys.status,
-          form.studyGroupId,
+          form.studyId,
           form.problemId,
-          form.problemTab,
+          form.memberId,
         ],
       });
     },
@@ -30,11 +30,11 @@ export const useExecuteQuery = () => {
 export const useGetExecutorStatusQuery = (
   studyId: string,
   problemId: string,
-  problemTab: string,
+  memberId: string,
 ) => {
   const { data, refetch } = useQuery({
-    queryKey: [...executorKeys.status, studyId, problemId, problemTab],
-    queryFn: () => executor.getStatus(studyId, problemId, problemTab),
+    queryKey: [...executorKeys.status, studyId, problemId, memberId],
+    queryFn: () => executor.getStatus(studyId, problemId, memberId),
     retry: false,
     refetchOnMount: false,
   });
@@ -44,11 +44,11 @@ export const useGetExecutorStatusQuery = (
 export const useGetCodeQuery = (
   studyId: string,
   problemId: string,
-  problemTab: string,
+  memberId: string,
 ) => {
   const { data, refetch } = useQuery({
-    queryKey: [...executorKeys.status, studyId, problemId, problemTab],
-    queryFn: () => executor.getCode(studyId, problemId, problemTab),
+    queryKey: [...executorKeys.status, studyId, problemId, memberId],
+    queryFn: () => executor.getCode(studyId, problemId, memberId),
     retry: false,
     refetchOnMount: false,
   });
