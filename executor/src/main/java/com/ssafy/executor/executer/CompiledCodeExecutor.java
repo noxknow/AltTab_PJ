@@ -33,9 +33,11 @@ public class CompiledCodeExecutor {
     private final CodeCompiler codeCompiler;
 
     /**
-     * @param request
-     * @return
-     * @throws Exception
+     * 주어진 코드를 실행하고 결과를 반환
+     *
+     * @param request 코드 실행 요청 정보를 담은 DTO
+     * @return 코드 실행 결과를 담은 CodeExecutionResponseDto
+     * @throws Exception 코드 실행 중 발생할 수 있는 다양한 예외
      */
     public CodeExecutionResponseDto executeCode(CodeExecutionRequestDto request) throws Exception {
         Path tempDir = createTempDirectory();
@@ -125,7 +127,6 @@ public class CompiledCodeExecutor {
      *
      * @param process 실행할 프로세스
      * @return 프로세스의 출력 문자열
-     * @throws TimeoutException     실행 시간이 초과된 경우
      * @throws ExecutionException   실행 중 예외가 발생한 경우
      * @throws InterruptedException 실행이 중단된 경우
      */
