@@ -27,9 +27,9 @@ public class CodeExecutorAspect {
     private CodeExecutionResponseDto buildErrorResponse(Throwable ex, ProceedingJoinPoint joinPoint) {
         CodeExecutionRequestDto request = extractRequestFromArgs(joinPoint.getArgs());
         return CodeExecutionResponseDto.builder()
-                .studyGroupId(request.getStudyGroupId())
+                .studyId(request.getStudyId())
                 .problemId(request.getProblemId())
-                .problemTab(request.getProblemTab())
+                .memberId(request.getMemberId())
                 .errorMessage(ex.getMessage())
                 .build();
     }

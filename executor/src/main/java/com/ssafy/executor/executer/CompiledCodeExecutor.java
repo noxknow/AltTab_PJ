@@ -5,15 +5,23 @@ import com.ssafy.executor.common.enums.LogMessage;
 import com.ssafy.executor.common.exception.CodeExecutionException;
 import com.ssafy.executor.dto.CodeExecutionRequestDto;
 import com.ssafy.executor.dto.CodeExecutionResponseDto;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
@@ -209,9 +217,9 @@ public class CompiledCodeExecutor {
         log.error(LogMessage.EXECUTION_FAILED.getMessage(),
                 ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(exitValue));
         return CodeExecutionResponseDto.builder()
-                .studyGroupId(request.getStudyGroupId())
+                .studyId(request.getStudyId())
                 .problemId(request.getProblemId())
-                .problemTab(request.getProblemTab())
+                .memberId(request.getMemberId())
                 .errorMessage(ExceptionMessage.EXECUTION_FAILED_WITH_EXIT_CODE.formatMessage(exitValue))
                 .build();
     }
@@ -226,9 +234,9 @@ public class CompiledCodeExecutor {
     private CodeExecutionResponseDto handleSuccessfulExecution(CodeExecutionRequestDto request, String output) {
         log.info(LogMessage.EXECUTION_SUCCESSFUL.getMessage());
         return CodeExecutionResponseDto.builder()
-                .studyGroupId(request.getStudyGroupId())
+                .studyId(request.getStudyId())
                 .problemId(request.getProblemId())
-                .problemTab(request.getProblemTab())
+                .memberId(request.getMemberId())
                 .output(output)
                 .build();
     }
