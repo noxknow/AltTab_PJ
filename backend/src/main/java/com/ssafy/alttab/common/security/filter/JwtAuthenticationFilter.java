@@ -73,8 +73,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(accessToken, userDetails)) {
+                log.info("valid access token");
                 setAuthentication(request, userDetails);
             } else {
+                log.info("not valid access token");
                 handleInvalidAccessToken(request, response, username, userDetails);
             }
         }
@@ -93,10 +95,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleInvalidAccessToken(HttpServletRequest request, HttpServletResponse response, String username, UserDetails userDetails) {
         String refreshToken = CookieUtil.getCookieValue(request, "refresh_token");
         if (refreshToken == null) {
+            log.error("not found refresh Token");
             throw new TokenNotFoundException("refresh Token");
         }
 
         if (!jwtUtil.validateRefreshToken(refreshToken, username)) {
+            log.error("not valid refresh Token");
             throw new TokenNotValidException("refresh Token");
         }
 
