@@ -27,17 +27,17 @@
     cursor: pointer;
 
     &.selected {
-      background-color: #e0e0e0; // Change to desired background color
-      border-color: #888; // Change to desired border color
+      background-color: #e0e0e0;
+      border-color: #888;
     }
 
     &:hover {
-      border-color: #aaa; // Darken the border on hover for better UX
+      border-color: #aaa;
     }
 
     &:focus {
-      outline: none; // Remove default focus outline
-      border-color: #888; // Change border color on focus
+      outline: none;
+      border-color: #888;
     }
   }
 }

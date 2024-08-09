@@ -1,13 +1,12 @@
 import { memberInfo } from '@/types/study.ts';
-
-import { MembersIcon } from '../MembersIcon/MembersIcon';
-import MemberProfile from './MemberProfile';
+import MembersSVG from '@/assets/icons/members.svg?react';
+import { MemberProfile } from './MemberProfile';
 import styles from './StudyMembers.module.scss';
 
-export default function StudyMembers({ memberNames }: memberInfo) {
+export function StudyMembers({ memberNames }: memberInfo) {
   if (!memberNames) return null;
-  
-  const data = memberNames.map(name => ({
+
+  const data = memberNames.map((name) => ({
     url: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
     name: name,
     point: 1732,
@@ -17,7 +16,7 @@ export default function StudyMembers({ memberNames }: memberInfo) {
     <div className={styles.main}>
       <div className={styles.top}>
         <div>
-          <MembersIcon />
+          <MembersSVG />
         </div>
         <div>Members</div>
       </div>

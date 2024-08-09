@@ -1,4 +1,4 @@
-import { CalendarIcon } from '@/components/CalendarIcon/CalendarIcon';
+import CalendarSVG from '@/assets/icons/calendar.svg?react';
 import { format, differenceInDays } from 'date-fns';
 import styles from './StudySchedule.module.scss';
 
@@ -6,12 +6,12 @@ type StudyScheduleProps = {
   date: Date;
 };
 
-export default function StudySchedule({ date }: StudyScheduleProps) {
+export function StudySchedule({ date }: StudyScheduleProps) {
   return (
     <div className={styles.main}>
       <div className={styles.header}>
         <div>
-          <CalendarIcon />
+          <CalendarSVG />
         </div>
         <div>Schedule</div>
       </div>

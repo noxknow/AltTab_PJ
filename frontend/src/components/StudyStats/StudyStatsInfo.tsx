@@ -6,7 +6,7 @@ type StudyStatsInfoProps = {
   ranking: number;
 };
 
-export default function StudyStatsInfo({
+export function StudyStatsInfo({
   score,
   solved,
   ranking,

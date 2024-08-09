@@ -5,10 +5,7 @@ type TableInputProps = {
   onCancel: () => void;
 };
 
-export default function TableInput({
-  onCreateTable,
-  onCancel,
-}: TableInputProps) {
+export function TableInput({ onCreateTable, onCancel }: TableInputProps) {
   const [rows, setRows] = useState(2);
   const [columns, setColumns] = useState(2);
 

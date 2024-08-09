@@ -7,7 +7,7 @@ type AttendanceInfoProps = {
   eventclickarg: EventClickArg;
 };
 
-export default function AttendanceInfo({ eventclickarg }: AttendanceInfoProps) {
+export function AttendanceInfo({ eventclickarg }: AttendanceInfoProps) {
   const date = eventclickarg.event.start;
 
   const [participants, setParticipants] = useState<string[]>([]);

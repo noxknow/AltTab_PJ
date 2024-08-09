@@ -1,15 +1,15 @@
-import { AttendanceIcon } from '../AttendanceIcon/AttendanceIcon';
-import { Button } from '../Button/Button';
+import AttendanceSVG from '@/assets/icons/attendance.svg?react';
+import { Button } from '@/components/Button/Button';
 import styles from './Attendance.module.scss';
-import Calendar from './Calendar';
+import { Calendar } from './Calendar';
 
-export default function Attendance() {
+export function Attendance() {
   return (
     <div className={styles.main}>
       <div className={styles.top}>
         <div className={styles.header}>
           <div>
-            <AttendanceIcon />
+            <AttendanceSVG />
           </div>
           <div>출석부</div>
         </div>

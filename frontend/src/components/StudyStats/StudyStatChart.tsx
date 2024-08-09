@@ -10,7 +10,7 @@ import {
 } from 'chart.js/auto';
 import { Chart } from 'react-chartjs-2';
 
-export default function StudyStatChart() {
+export function StudyStatChart() {
   ChartJS.register(
     PolarAreaController,
     RadialLinearScale,

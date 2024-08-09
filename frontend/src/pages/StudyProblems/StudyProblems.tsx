@@ -1,4 +1,4 @@
-import StudyLeftBar from '@/components/StudyLeftBar/StudyLeftBar';
+import { StudyLeftBar } from '@/components/StudyLeftBar/StudyLeftBar';
 import styles from './StudyProblems.module.scss';
 import { TotalProblemList } from '@/components/TotalProblemList/TotalProblemList';
 

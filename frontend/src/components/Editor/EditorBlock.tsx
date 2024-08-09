@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable';
 import styles from './EditorBlock.module.scss';
-import Dropdown from './Dropdown';
-import TableInput from './TableInput';
-import ImageUploadInput from './ImageUploadInput';
+import { Dropdown } from './Dropdown';
+import { TableInput } from './TableInput';
+import { ImageUploadInput } from './ImageUploadInput';
 import DraggableSVG from '@/assets/icons/draggable.svg?react';
 
 type EditorBlockProps = {

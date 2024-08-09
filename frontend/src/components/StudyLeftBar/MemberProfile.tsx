@@ -6,11 +6,7 @@ type MemberProfileProps = {
   point: number;
 };
 
-export default function MemberProfile({
-  url,
-  name,
-  point,
-}: MemberProfileProps) {
+export function MemberProfile({ url, name, point }: MemberProfileProps) {
   return (
     <div className={styles.main}>
       <div>

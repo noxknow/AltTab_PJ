@@ -1,9 +1,9 @@
-import StudyStatChart from './StudyStatChart';
+import { StudyStatChart } from './StudyStatChart';
 import styles from './StudyStats.module.scss';
-import StudyStatsHeader from './StudyStatsHeader';
-import StudyStatsInfo from './StudyStatsInfo';
+import { StudyStatsHeader } from './StudyStatsHeader';
+import { StudyStatsInfo } from './StudyStatsInfo';
 
-export default function StudyStats() {
+export function StudyStats() {
   return (
     <div className={styles.main}>
       <StudyStatsHeader />
