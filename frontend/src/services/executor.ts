@@ -17,17 +17,17 @@ export const executor = {
   getStatus: async (
     studyId: string,
     problemId: string,
-    problemTab: string,
+    memberId: string,
   ): Promise<responseExecutor> => {
     const { data } = await API.get(
-      `${executor.endpoint.default}/status/${studyId}/${problemId}/${problemTab}`,
+      `${executor.endpoint.default}/status/${studyId}/${problemId}/${memberId}`,
     );
     return data;
   },
 
-  getCode: async (studyId: string, problemId: string, problemTab: string) => {
+  getCode: async (studyId: string, problemId: string, memberId: string) => {
     const { data } = await API.get(
-      `${executor.endpoint.default}/${studyId}/${problemId}/${problemTab}`,
+      `${executor.endpoint.default}/${studyId}/${problemId}/${memberId}`,
     );
     return data;
   },

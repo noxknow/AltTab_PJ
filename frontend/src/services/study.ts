@@ -20,9 +20,9 @@ export const study = {
     return data;
   },
 
-  getStudyMember: async (studyId: string): Promise<memberInfo> => {
-    const { data } = await API.get<memberInfo>(
-      `${study.endpoint.default}/${studyId}/member`,
+  getStudyMember: async (studyId: string): Promise<memberInfo[]> => {
+    const { data } = await API.get<memberInfo[]>(
+      `${study.endpoint.default}/${studyId}/members`,
     );
 
     return data;

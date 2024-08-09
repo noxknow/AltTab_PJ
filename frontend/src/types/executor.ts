@@ -1,15 +1,15 @@
 export type requestExecutor = {
-  studyGroupId: string;
+  studyId: string;
   problemId: string;
-  problemTab: string;
+  memberId: string;
   code: string;
   input: string;
 };
 
 export type responseExecutor = {
-  studyGroupId: number;
+  studyId: number;
   problemId: number;
-  problemTab: number;
+  memberId: number;
   status: string;
   output: string | null;
   errorMessage: string | null;
