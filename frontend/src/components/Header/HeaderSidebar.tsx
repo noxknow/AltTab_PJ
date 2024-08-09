@@ -1,4 +1,7 @@
+import { NavLink } from 'react-router-dom';
 import classNames from 'classnames';
+
+import { useGetMyStudiesQuery } from '@/queries/member';
 
 import styles from './Header.module.scss';
 
@@ -13,6 +16,8 @@ export function HeaderSidebar({
   showSidebar,
   hideSidebar,
 }: HeaderSidebarProps) {
+  const { data } = useGetMyStudiesQuery();
+
   const sibebarClass = classNames(styles.headerSidebar, {
     [styles.visible]: isVisible,
     [styles.hidden]: !isVisible,
@@ -27,7 +32,18 @@ export function HeaderSidebar({
       <div className={sibebarClass}>
         <div className={styles.itemWrapper}>
           <div className={styles.sidebarItem}>내 스터디</div>
-          <div className={styles.sidebarItem}>금주의 스터디</div>
+          {data &&
+            data.joinedStudies &&
+            data.joinedStudies.map((study, index) => (
+              <NavLink to={`study/${study.studyId}`}>
+                <div key={index} className={styles.sidebarItem}>
+                  {study.studyName}
+                </div>
+              </NavLink>
+            ))}
+          <NavLink to={'community'}>
+            <div className={styles.sidebarItem}>금주의 스터디</div>
+          </NavLink>
           <div className={styles.sidebarItem}>문제 추천</div>
           <div className={styles.sidebarItem}>전체 문제리스트</div>
         </div>
