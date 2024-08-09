@@ -4,6 +4,7 @@ import styles from './EditorBlock.module.scss';
 import Dropdown from './Dropdown';
 import TableInput from './TableInput';
 import ImageUploadInput from './ImageUploadInput';
+import DraggableSVG from '@/assets/icons/draggable.svg?react';
 
 type EditorBlockProps = {
   id: string;
@@ -11,6 +12,7 @@ type EditorBlockProps = {
   option: string;
   addBlock: (id: string) => void;
   deleteBlock: (id: string) => void;
+  updateBlock: (id: string, text: string, option: string) => void;
 };
 
 export function EditorBlock({
@@ -19,6 +21,7 @@ export function EditorBlock({
   option,
   addBlock,
   deleteBlock,
+  updateBlock,
 }: EditorBlockProps) {
   const innerText = useRef<string>(text);
   const [innerOption, setInnerOption] = useState(option);
@@ -30,6 +33,7 @@ export function EditorBlock({
     top: number;
     left: number;
   } | null>(null);
+  const isFocusedRef = useRef(false);
 
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
@@ -37,8 +41,23 @@ export function EditorBlock({
       (innerText.current === '' && innerOption === 'image') ||
       (innerText.current === '<br>' && innerOption === 'table')
     ) {
+      setInnerOption('content');
       deleteBlock(id);
     }
+  };
+
+  const handleFocus = () => {
+    isFocusedRef.current = true;
+  };
+
+  const handleBlur = () => {
+    if (isFocusedRef.current) {
+      updateBlock(id, innerText.current, innerOption);
+      isFocusedRef.current = false;
+    }
+  };
+  const handleMouseDown = () => {
+    updateBlock(id, innerText.current, innerOption);
   };
 
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
@@ -46,14 +65,21 @@ export function EditorBlock({
       setShowDropdown(false);
       e.preventDefault();
       addBlock(id);
-    } else if (innerOption === 'table' || innerOption === 'image') {
-      return;
     } else if (e.key === 'Backspace') {
       setShowDropdown(false);
       if (innerText.current === '') {
         e.preventDefault();
         deleteBlock(id);
+        setInnerOption('content');
       }
+      // if (innerOption === 'table' || innerOption === 'image') {
+      //   e.repeat;
+      //   if (innerText.current === '') {
+      //     console.log('hi');
+      //     deleteBlock(id);
+      //     setInnerOption('content');
+      //   }
+      // }
     } else if (e.key === '/') {
       e.preventDefault();
       if (showDropdown) {
@@ -62,6 +88,8 @@ export function EditorBlock({
         setDropdownPosition(getCursorPosition());
         setShowDropdown(true);
       }
+    } else if (innerOption === 'table' || innerOption === 'image') {
+      return;
     } else if (e.key === 'ArrowUp') {
       setShowDropdown(false);
       e.preventDefault();
@@ -155,6 +183,7 @@ export function EditorBlock({
     while (
       curNode !==
       document.querySelector('.block')!.childNodes[index].childNodes[0]
+        .childNodes[1].childNodes[0]
     ) {
       index++;
     }
@@ -174,10 +203,12 @@ export function EditorBlock({
 
     if (direction === 'up') {
       startContainer =
-        document.querySelector('.block')!.childNodes[index - 1].childNodes[0];
+        document.querySelector('.block')!.childNodes[index - 1].childNodes[0]
+          .childNodes[1].childNodes[0];
     } else {
       startContainer =
-        document.querySelector('.block')!.childNodes[index + 1].childNodes[0];
+        document.querySelector('.block')!.childNodes[index + 1].childNodes[0]
+          .childNodes[1].childNodes[0];
     }
 
     if (startContainer && selection) {
@@ -204,35 +235,44 @@ export function EditorBlock({
   };
 
   return (
-    <div onPaste={handlePaste} className={styles.block}>
-      {showBlock && (
-        <ContentEditable
-          className={`a${id} ${styles[innerOption]}`}
-          html={innerText.current}
-          onChange={handleChange}
-          onKeyDown={onKeyDownHandler}
-        />
-      )}
-      {showDropdown && dropdownPosition && (
-        <Dropdown
-          handleOption={handleOption}
-          style={{
-            position: 'absolute',
-            top: dropdownPosition.top,
-            left: dropdownPosition.left,
-          }}
-        />
-      )}
-      {showImageInput && <ImageUploadInput onImageUpload={handleImageUpload} />}
-      {showTableInput && (
-        <TableInput
-          onCreateTable={handleTableCreate}
-          onCancel={() => {
-            setShowTableInput(false);
-            setShowBlock(true);
-          }}
-        />
-      )}
+    <div className={styles.main}>
+      <div className={styles.svg} onMouseDown={handleMouseDown}>
+        <DraggableSVG />
+      </div>
+      <div onPaste={handlePaste} className={styles.block}>
+        {showBlock && (
+          <ContentEditable
+            className={`a${id} ${styles[innerOption]}`}
+            html={innerText.current}
+            onChange={handleChange}
+            onKeyDown={onKeyDownHandler}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+          />
+        )}
+        {showDropdown && dropdownPosition && (
+          <Dropdown
+            handleOption={handleOption}
+            style={{
+              position: 'absolute',
+              top: dropdownPosition.top,
+              left: dropdownPosition.left,
+            }}
+          />
+        )}
+        {showImageInput && (
+          <ImageUploadInput onImageUpload={handleImageUpload} />
+        )}
+        {showTableInput && (
+          <TableInput
+            onCreateTable={handleTableCreate}
+            onCancel={() => {
+              setShowTableInput(false);
+              setShowBlock(true);
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }
