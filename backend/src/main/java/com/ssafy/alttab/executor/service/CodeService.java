@@ -98,6 +98,7 @@ public class CodeService {
      * @param request 코드 실행 요청 DTO
      * @return 초기 코드 실행 응답 DTO
      */
+    @Transactional
     public CodeExecutionResponseDto executeCodeAsync(CodeExecutionRequestDto request) {
         CodeSnippet savedSnippet = saveCode(request);
         CodeExecutionResponseDto response = CodeExecutionResponseDto.builder()
@@ -119,6 +120,7 @@ public class CodeService {
      *
      * @param response 코드 실행 결과를 담은 DTO
      */
+    @Transactional
     @RabbitListener(queues = "code-execution-response-queue")
     public void receive(CodeExecutionResponseDto response) {
         codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(

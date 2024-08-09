@@ -7,9 +7,10 @@ import java.util.List;
 public class CodeFilter {
 
     /**
-     * 금지 패턴 탐색
-     * @param sourceCode
-     * @return 금지 패턴 일치 여부
+     * 소스 코드가 안전한지 확인
+     *
+     * @param sourceCode 검사할 소스 코드
+     * @return 소스 코드가 안전하면 true, 그렇지 않으면 false
      */
     public static boolean isSafeCode(String sourceCode) {
         for (ForbiddenPattern pattern : ForbiddenPattern.values()) {
@@ -21,9 +22,10 @@ public class CodeFilter {
     }
 
     /**
-     * 금지 패턴 목록 조회
-     * @param sourceCode
-     * @return 금지 패턴 목록
+     * 소스 코드에서 위반된 패턴 목록 반환
+     *
+     * @param sourceCode 검사할 소스 코드
+     * @return 위반된 패턴에 대한 설명 목록
      */
     public static List<String> getViolations(String sourceCode) {
         List<String> violations = new ArrayList<>();
