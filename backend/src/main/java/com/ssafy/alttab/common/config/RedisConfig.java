@@ -80,6 +80,7 @@ public class RedisConfig {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(listenerAdapter, new PatternTopic("drawing:*"));
+        container.addMessageListener(listenerAdapter, new PatternTopic("participant:*"));
         return container;
     }
 

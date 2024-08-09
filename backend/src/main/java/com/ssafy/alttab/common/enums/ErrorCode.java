@@ -20,7 +20,6 @@ public enum ErrorCode {
     // Socket
     CONNECTION_REFUSED(SERVICE_UNAVAILABLE, "Connection Refused");
 
-
     private final HttpStatus httpStatus;
     private final String message;
 }

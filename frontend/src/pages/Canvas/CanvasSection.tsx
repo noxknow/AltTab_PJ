@@ -19,6 +19,10 @@ export function CanvasSection({ closeCanvas }: CanvasProps) {
   const [canvas, setCanvas] = useState<fabric.Canvas | null>(null);
   const [isCanvasVisible, setIsCanvasVisible] = useState(true);
 
+  if (!studyId || !problemId) {
+    return null;
+  }  
+
   const { sendDrawingData } = useWebSocket(studyId, problemId, canvas);
   const { initializeCanvas, handleCanvasEvents } = useCanvas(sendDrawingData);
 
