@@ -37,14 +37,14 @@ public class CodeSnippet {
     @Column(name = "execution_status")
     private ExecutionStatus executionStatus;
 
-    @Column(name = "study_group_id")
+    @Column(name = "study_id")
     private Long studyGroupId;
 
     @Column(name = "problem_id")
     private Long problemId;
 
-    @Column(name = "problem_tab")
-    private Long problemTab;
+    @Column(name = "member_id")
+    private Long memberId;
 
     //==비즈니스 로직==//
 
