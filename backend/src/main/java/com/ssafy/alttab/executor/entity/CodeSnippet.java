@@ -38,7 +38,7 @@ public class CodeSnippet {
     private ExecutionStatus executionStatus;
 
     @Column(name = "study_id")
-    private Long studyGroupId;
+    private Long studyId;
 
     @Column(name = "problem_id")
     private Long problemId;

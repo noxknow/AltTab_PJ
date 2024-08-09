@@ -26,19 +26,19 @@ public class CodeController {
         return new ResponseEntity<>(codeService.executeCodeAsync(request), HttpStatus.OK);
     }
 
-    @GetMapping("/{studyGroupId}/{problemId}/{problemTab}")
+    @GetMapping("/{studyId}/{problemId}/{memberId}")
     public ResponseEntity<CodeResponseDto> getCode(
-            @PathVariable Long studyGroupId,
+            @PathVariable Long studyId,
             @PathVariable Long problemId,
-            @PathVariable Long problemTab) {
-        return new ResponseEntity<>(codeService.getCode(studyGroupId, problemId, problemTab), HttpStatus.OK);
+            @PathVariable Long memberId) {
+        return new ResponseEntity<>(codeService.getCode(studyId, problemId, memberId), HttpStatus.OK);
     }
 
-    @GetMapping("/status/{studyGroupId}/{problemId}/{problemTab}")
+    @GetMapping("/status/{studyId}/{problemId}/{memberId}")
     public ResponseEntity<CodeExecutionResponseDto> getExecutionStatus(
-            @PathVariable Long studyGroupId,
+            @PathVariable Long studyId,
             @PathVariable Long problemId,
-            @PathVariable Long problemTab) {
-        return new ResponseEntity<>(codeService.getExecutionResult(studyGroupId, problemId, problemTab), HttpStatus.OK);
+            @PathVariable Long memberId) {
+        return new ResponseEntity<>(codeService.getExecutionResult(studyId, problemId, memberId), HttpStatus.OK);
     }
 }

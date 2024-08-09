@@ -26,22 +26,22 @@ public class CodeService {
     private final CacheManager cacheManager;
 
     @Transactional
-    public CodeResponseDto getCode(Long studyGroupId, Long problemId, Long problemTab) {
-        Optional<CodeSnippet> code = codeSnippetRepository.findByStudyGroupIdAndProblemIdAndProblemTab(
-                studyGroupId, problemId, problemTab);
+    public CodeResponseDto getCode(Long studyId, Long problemId, Long memberId) {
+        Optional<CodeSnippet> code = codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(
+                studyId, problemId, memberId);
         if (code.isPresent()) {
             return CodeResponseDto.builder()
                     .code(code.get().getCode())
                     .build();
         }
 
-        throw new CodeNotFoundException(studyGroupId, problemId, problemTab);
+        throw new CodeNotFoundException(studyId, problemId, memberId);
     }
 
     /**
      * 코드와 실행 ID를 저장하거나 업데이트
      *
-     * @param request 요청 dto (코드, studyGroupId, problemId, problemTab )
+     * @param request 요청 dto (코드, studyId, problemId, memberId )
      * @return 저장된 코드 스니펫의 ID
      */
     @Transactional
@@ -57,8 +57,8 @@ public class CodeService {
      * @return 업데이트되거나 새로 생성된 CodeSnippet 객체
      */
     public CodeSnippet updateCodeIfExisting(CodeExecutionRequestDto request) {
-        return codeSnippetRepository.findByStudyGroupIdAndProblemIdAndProblemTab(
-                        request.getStudyGroupId(), request.getProblemId(), request.getProblemTab())
+        return codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(
+                        request.getStudyId(), request.getProblemId(), request.getMemberId())
                 .map(snippet -> updateExistingCodeSnippet(snippet, request.getCode()))
                 .orElseGet(() -> createNewCodeSnippet(request));
     }
@@ -84,9 +84,9 @@ public class CodeService {
      */
     private CodeSnippet createNewCodeSnippet(CodeExecutionRequestDto request) {
         return CodeSnippet.builder()
-                .studyGroupId(request.getStudyGroupId())
+                .studyId(request.getStudyId())
                 .problemId(request.getProblemId())
-                .problemTab(request.getProblemTab())
+                .memberId(request.getMemberId())
                 .code(request.getCode())
                 .executionStatus(ExecutionStatus.NOT_START)
                 .build();
@@ -101,9 +101,9 @@ public class CodeService {
     public CodeExecutionResponseDto executeCodeAsync(CodeExecutionRequestDto request) {
         CodeSnippet savedSnippet = saveCode(request);
         CodeExecutionResponseDto response = CodeExecutionResponseDto.builder()
-                .studyGroupId(savedSnippet.getStudyGroupId())
+                .studyId(savedSnippet.getStudyId())
                 .problemId(savedSnippet.getProblemId())
-                .problemTab(savedSnippet.getProblemTab())
+                .memberId(savedSnippet.getMemberId())
                 .status(ExecutionStatus.IN_PROGRESS)
                 .build();
 
@@ -121,8 +121,8 @@ public class CodeService {
      */
     @RabbitListener(queues = "code-execution-response-queue")
     public void receive(CodeExecutionResponseDto response) {
-        codeSnippetRepository.findByStudyGroupIdAndProblemIdAndProblemTab(
-                        response.getStudyGroupId(), response.getProblemId(), response.getProblemTab())
+        codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(
+                        response.getStudyId(), response.getProblemId(), response.getMemberId())
                 .ifPresent(snippet -> processExecutionResponse(snippet, response));
     }
 
@@ -163,16 +163,16 @@ public class CodeService {
     /**
      * 주어진 파라미터에 해당하는 코드 실행 결과를 조회
      *
-     * @param studyGroupId 스터디 그룹 ID
+     * @param studyId 스터디 그룹 ID
      * @param problemId    문제 ID
-     * @param problemTab   문제 탭
+     * @param memberId   문제 탭
      * @return 코드 실행 결과 DTO
      */
     @Transactional
-    public CodeExecutionResponseDto getExecutionResult(Long studyGroupId, Long problemId, Long problemTab) {
-        return codeSnippetRepository.findByStudyGroupIdAndProblemIdAndProblemTab(studyGroupId, problemId, problemTab)
+    public CodeExecutionResponseDto getExecutionResult(Long studyId, Long problemId, Long memberId) {
+        return codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(studyId, problemId, memberId)
                 .map(this::processAndGetExecutionResult)
-                .orElseGet(() -> createFailResponseDto(studyGroupId, problemId, problemTab));
+                .orElseGet(() -> createFailResponseDto(studyId, problemId, memberId));
     }
 
     /**
@@ -216,9 +216,9 @@ public class CodeService {
     private CodeExecutionResponseDto createResponseDtoFromSnippet(CodeSnippet snippet) {
         CodeExecutionResponseDto result = getOutputFromCache(snippet);
         return CodeExecutionResponseDto.builder()
-                .studyGroupId(snippet.getStudyGroupId())
+                .studyId(snippet.getStudyId())
                 .problemId(snippet.getProblemId())
-                .problemTab(snippet.getProblemTab())
+                .memberId(snippet.getMemberId())
                 .status(snippet.getExecutionStatus())
                 .output(result != null ? result.getOutput() : null)
                 .errorMessage(result != null ? result.getErrorMessage() : null)
@@ -248,16 +248,16 @@ public class CodeService {
     /**
      * 실행 실패 상태의 CodeExecutionResponseDto를 생성
      *
-     * @param studyGroupId 스터디 그룹 ID
+     * @param studyId 스터디 그룹 ID
      * @param problemId    문제 ID
-     * @param problemTab   문제 탭
+     * @param memberId   문제 탭
      * @return 실행 실패 상태로 설정된 CodeExecutionResponseDto 객체
      */
-    private CodeExecutionResponseDto createFailResponseDto(Long studyGroupId, Long problemId, Long problemTab) {
+    private CodeExecutionResponseDto createFailResponseDto(Long studyId, Long problemId, Long memberId) {
         return CodeExecutionResponseDto.builder()
-                .studyGroupId(studyGroupId)
+                .studyId(studyId)
                 .problemId(problemId)
-                .problemTab(problemTab)
+                .memberId(memberId)
                 .status(ExecutionStatus.FAIL)
                 .build();
     }
@@ -269,7 +269,7 @@ public class CodeService {
      * @return 생성된 캐시 키 문자열
      */
     private String getCacheKey(CodeSnippet codeSnippet) {
-        return String.format("%d:%d:%d", codeSnippet.getStudyGroupId(), codeSnippet.getProblemId(),
-                codeSnippet.getProblemTab());
+        return String.format("%d:%d:%d", codeSnippet.getStudyId(), codeSnippet.getProblemId(),
+                codeSnippet.getMemberId());
     }
 }

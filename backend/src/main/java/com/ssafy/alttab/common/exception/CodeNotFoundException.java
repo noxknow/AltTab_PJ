@@ -2,8 +2,8 @@ package com.ssafy.alttab.common.exception;
 
 public class CodeNotFoundException extends RuntimeException {
 
-    public CodeNotFoundException(Long studyGroupId, Long problemId, Long problemTab) {
-        super(String.format("Code not found for studyGroupId: %d, problemId: %d, problemTab: %d",
-                studyGroupId, problemId, problemTab));
+    public CodeNotFoundException(Long studyId, Long problemId, Long memberId) {
+        super(String.format("Code not found for studyId: %d, problemId: %d, memberId: %d",
+                studyId, problemId, memberId));
     }
 }
