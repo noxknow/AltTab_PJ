@@ -1,14 +1,10 @@
 package com.ssafy.alttab.drawing.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.ssafy.alttab.drawing.service.DrawingService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
