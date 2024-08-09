@@ -3,6 +3,8 @@ package com.ssafy.alttab.common.handler;
 import com.ssafy.alttab.common.dto.ErrorResponseDto;
 import com.ssafy.alttab.common.exception.CodeNotFoundException;
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.common.exception.TokenNotFoundException;
+import com.ssafy.alttab.common.exception.TokenNotValidException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    //== not found ==//
     @ExceptionHandler(CodeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleCodeNotFoundException(CodeNotFoundException ex) {
@@ -31,6 +34,20 @@ public class GlobalExceptionHandler {
         return ErrorResponseDto.toResponse(ex);
     }
 
+    @ExceptionHandler(TokenNotFoundException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> handleTokenNotFoundException(TokenNotFoundException ex) {
+        return ErrorResponseDto.toResponse(ex);
+    }
+
+    //== not valid ==//
+    @ExceptionHandler(TokenNotValidException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<?> handleTokenNotValidException(TokenNotValidException ex) {
+        return ErrorResponseDto.toResponse(ex);
+    }
+
+    //== unExcepted ==//
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<?> handleGeneralException(Exception ex) {

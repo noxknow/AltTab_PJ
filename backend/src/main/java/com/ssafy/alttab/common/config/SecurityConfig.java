@@ -1,11 +1,10 @@
 package com.ssafy.alttab.common.config;
 
-import com.ssafy.alttab.common.security.JwtAuthenticationFilter;
-import com.ssafy.alttab.common.security.OAuth2LoginSuccessHandler;
-
+import com.ssafy.alttab.common.security.filter.JwtAuthenticationFilter;
+import com.ssafy.alttab.common.security.handler.OAuth2LoginSuccessHandler;
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import java.util.Arrays;
 import java.util.List;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,12 +35,12 @@ public class SecurityConfig {
         http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests((auth) -> auth
-//                        .anyRequest().permitAll()) // 모든 요청을 허용
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/error", "/oauth2/**",
                                 "/h2-console", "/swagger-ui/index.html", "/swagger",
                                 "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
+                        .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpoint ->
@@ -61,7 +60,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontUrl)); // 프론트엔드 주소
+        configuration.setAllowedOrigins(List.of(frontUrl));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
