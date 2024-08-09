@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import ProblemList from '../ProblemList/ProblemList';
+import { ProblemList } from '@/components/ProblemList/ProblemList';
 import styles from './TotalProblemList.module.scss';
-import { SearchIcon } from '../SearchIcon/SearchIcon';
+import SearchSVG from '@/assets/icons/search.svg?react';
 
 export function TotalProblemList() {
   const [selectedButton, setSelectedButton] = useState('');
@@ -35,7 +35,7 @@ export function TotalProblemList() {
         </div>
         <div className={styles.search}>
           <button className={styles.searchButton}>
-            <SearchIcon />
+            <SearchSVG />
           </button>
 
           <input type="text" placeholder="검색" />

@@ -1,11 +1,11 @@
-import { StatsIcon } from '../StatsIcon/StatsIcon';
+import StatsSVG from '@/assets/icons/stats.svg?react';
 import styles from './StudyStatsHeader.module.scss';
 
-export default function StudyStatsHeader() {
+export function StudyStatsHeader() {
   return (
     <div className={styles.main}>
       <div>
-        <StatsIcon />
+        <StatsSVG />
       </div>
       <div>통계 및 분석</div>
     </div>

@@ -1,19 +1,19 @@
 import stylesSmall from './ProblemListStyleSmall.module.scss';
 import stylesBig from './ProblemListStyleBig.module.scss';
 import { DisabledButton } from '@/components/DisabledButton/DisabledButton';
-import PieChart from './PieChart';
-import { ProgressIcon } from '@/components/ProgressIcon/ProgressIcon';
-import { StarIcon } from '@/components/StarIcon/StarIcon';
-import { TitleIcon } from '@/components/TitleIcon/TitleIcon';
-import { WeekIcon } from '@/components/WeekIcon/WeekIcon';
-import { CategoryIcon } from '@/components/CategoryIcon/CategoryIcon';
-import { PersonIcon } from '@/components/PersonIcon/PersonIcon';
+import { PieChart } from './PieChart';
+import ProgressSVG from '@/assets/icons/progress.svg?react';
+import StarSVG from '@/assets/icons/star.svg?react';
+import TitleSVG from '@/assets/icons/title.svg?react';
+import WeekSVG from '@/assets/icons/week.svg?react';
+import CategorySVG from '@/assets/icons/category.svg?react';
+import PersonSVG from '@/assets/icons/person.svg?react';
 
 type ProblemListProps = {
   styleType: 'small' | 'big';
 };
 
-export default function ProblemList({ styleType }: ProblemListProps) {
+export function ProblemList({ styleType }: ProblemListProps) {
   const styles = styleType === 'small' ? stylesSmall : stylesBig;
 
   const data = [
@@ -74,37 +74,37 @@ export default function ProblemList({ styleType }: ProblemListProps) {
           <tr>
             <th>
               <div className={styles.icon}>
-                <WeekIcon />
+                <WeekSVG />
                 <span>Week</span>
               </div>
             </th>
             <th>
               <div className={styles.icon}>
-                <TitleIcon />
+                <TitleSVG />
                 <span>문제 제목</span>
               </div>
             </th>
             <th>
               <div className={styles.icon}>
-                <PersonIcon />
+                <PersonSVG />
                 담당자
               </div>
             </th>
             <th>
               <div className={styles.icon}>
-                <ProgressIcon />
+                <ProgressSVG />
                 Progress
               </div>
             </th>
             <th>
               <div className={styles.icon}>
-                <StarIcon />
+                <StarSVG />
                 난이도
               </div>
             </th>
             <th>
               <div className={styles.icon}>
-                <CategoryIcon />
+                <CategorySVG />
                 유형
               </div>
             </th>

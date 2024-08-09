@@ -1,12 +1,12 @@
 import styles from '@/components/CommunityProfile/CommunityProfile.module.scss';
-import { FullHeart } from '../FullHeart/FullHeart';
+import FullHeartSVG from '@/assets/icons/full_heart.svg?react';
 
 export function CommunityProfile() {
   return (
     <div className={styles.profile_card}>
       <div className={styles.profile_card_left}>
         <div className={styles.profile_study}>알고하이</div>
-        <FullHeart />
+        <FullHeartSVG />
         <div className={styles.profile_detail}>1000+</div>
 
         <img

@@ -2,7 +2,7 @@ import { studyInfo } from '@/types/study.ts';
 
 import styles from './StudyIntro.module.scss';
 
-export default function StudyIntro({ studyName, studyDescription }: studyInfo) {
+export function StudyIntro({ studyName, studyDescription }: studyInfo) {
   return (
     <div className={styles.main}>
       <div className={styles.name}>{studyName}</div>

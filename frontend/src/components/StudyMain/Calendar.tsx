@@ -2,7 +2,7 @@ import { useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
-import AttendanceInfo from './AttendanceInfo';
+import { AttendanceInfo } from './AttendanceInfo';
 import './Calendar.scss';
 import { EventClickArg } from '@fullcalendar/core/index.js';
 import { v4 } from 'uuid';
@@ -23,7 +23,7 @@ const data: EventData[] = [
   },
 ];
 
-export default function Calendar() {
+export function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState<EventClickArg | null>(
     null,
   );

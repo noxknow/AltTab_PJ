@@ -6,7 +6,7 @@ type DropdownProps = {
   style?: React.CSSProperties;
 };
 
-export default function Dropdown({ handleOption, style }: DropdownProps) {
+export function Dropdown({ handleOption, style }: DropdownProps) {
   return (
     <div className={styles.main} style={style}>
       <div onClick={() => handleOption('header')}>Header</div>

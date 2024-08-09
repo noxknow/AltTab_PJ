@@ -1,6 +1,6 @@
-import MemberProfile from '@/components/StudyLeftBar/MemberProfile';
+import { MemberProfile } from '@/components/StudyLeftBar/MemberProfile';
 import styles from './ProfileModal.module.scss';
-import { Alarm } from '../Alarm/Alarm';
+import AlarmSVG from '@/assets/icons/alarm.svg?react';
 import { Button } from '../Button/Button';
 
 type ProfileModalProps = {
@@ -27,7 +27,7 @@ export function ProfileModal({ open, setIsModal }: ProfileModalProps) {
           />
           <div className={styles.notice}>
             <div className={styles.alarm}>
-              <Alarm />
+              <AlarmSVG />
               <div>알림</div>
             </div>
             <div className={styles.number}>

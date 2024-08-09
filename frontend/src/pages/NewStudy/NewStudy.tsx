@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Button } from '@/components/Button/Button';
-import { Tool } from '@/components/Tool/Tool';
-import { People } from '@/components/People/People';
-import { Info } from '@/components/Info/Info';
+import ToolSVG from '@/assets/icons/tool.svg?react';
+import PeopleSVG from '@/assets/icons/people.svg?react';
+import InfoSVG from '@/assets/icons/info.svg?react';
 import { Input } from '@/components/Input/Input';
-import { Check } from '@/components/Check/Check';
+import CheckSVG from '@/assets/icons/check.svg?react';
 import { studyInfo } from '@/types/study.ts';
 import { useCreateStudyQuery } from '@/queries/study';
 
@@ -57,7 +57,7 @@ export function NewStudy() {
       <div className={styles.title}>스터디 생성</div>
       <div className={styles.main_mid}>
         <div className={styles.option}>
-          <Tool />
+          <ToolSVG />
           <div>
             <div className={styles.small_title}>팀명 생성</div>
             <Input
@@ -71,7 +71,7 @@ export function NewStudy() {
           </div>
         </div>
         <div className={styles.option}>
-          <People />
+          <PeopleSVG />
           <div>
             <div className={styles.small_title}>팀 초대</div>
             {studyEmails.map((email, index) => (
@@ -98,7 +98,7 @@ export function NewStudy() {
           </div>
         </div>
         <div className={styles.option}>
-          <Info />
+          <InfoSVG />
           <div>
             <div className={styles.small_title}>Info</div>
             <Input
@@ -113,7 +113,7 @@ export function NewStudy() {
         </div>
       </div>
       <Button color="green" fill={true} size="long" onClick={createStudy}>
-        <Check />
+        <CheckSVG />
         <span>생성</span>
       </Button>
     </div>

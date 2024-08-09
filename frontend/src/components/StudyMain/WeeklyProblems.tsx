@@ -1,22 +1,22 @@
-import { ProblemIcon } from '@/components/ProblemIcon/ProblemIcon';
-import { PlusIcon } from '@/components/PlusIcon/PlusIcon';
-import ProblemList from '../ProblemList/ProblemList';
+import ProblemSVG from '@/assets/icons/problem.svg?react';
+import PlusSVG from '@/assets/icons/plus.svg?react';
+import { ProblemList } from '@/components/ProblemList/ProblemList';
 import styles from './WeeklyProblems.module.scss';
 import { useState } from 'react';
-import ProblemInputModal from '../ProblemInputModal/ProblemInputModal';
+import { ProblemInputModal } from '@/components/ProblemInputModal/ProblemInputModal';
 
-export default function WeeklyProblems() {
+export function WeeklyProblems() {
   const [isModal, setIsModal] = useState(false);
 
   return (
     <div className={styles.main}>
       <div className={styles.top}>
         <div className={styles.header}>
-          <ProblemIcon />
+          <ProblemSVG />
           <div>이 주의 문제</div>
         </div>
         <button className={styles.button} onClick={() => setIsModal(true)}>
-          <PlusIcon />
+          <PlusSVG />
         </button>
       </div>
       <ProblemList styleType="small" />

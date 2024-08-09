@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/Button/Button';
-import { SearchIcon } from '@/components/SearchIcon/SearchIcon';
-import { PencilIcon } from '@/components/PencilIcon/PencilIcon';
+import SearchSVG from '@/assets/icons/search.svg?react';
+import PencilSVG from '@/assets/icons/pencil.svg?react';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import styles from './ProblemInputModal.module.scss';
 
@@ -10,10 +10,7 @@ type ProblemInputModalProps = {
   onClose: () => void;
 };
 
-export default function ProblemInputModal({
-  open,
-  onClose,
-}: ProblemInputModalProps) {
+export function ProblemInputModal({ open, onClose }: ProblemInputModalProps) {
   const [keyword, setKeyword] = useState('');
   const [results, setResults] = useState<string[]>([]);
   const [selectedResult, setSelectedResult] = useState<string | null>(null);
@@ -60,7 +57,7 @@ export default function ProblemInputModal({
               placeholder="검색어 입력"
             />
             <button className={styles.searchButton}>
-              <SearchIcon />
+              <SearchSVG />
             </button>
           </div>
 
@@ -76,7 +73,7 @@ export default function ProblemInputModal({
                   className={`${styles.resultItem} ${selectedResult === result ? styles.selected : ''}`}
                   onClick={() => handleResultClick(result)}
                 >
-                  <PencilIcon />
+                  <PencilSVG />
                   {result}
                 </div>
               ))

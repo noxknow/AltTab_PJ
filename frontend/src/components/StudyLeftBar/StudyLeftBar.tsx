@@ -4,13 +4,13 @@ import { useParams } from 'react-router-dom';
 import { studyInfo, memberInfo } from '@/types/study.ts';
 import { useGetStudyInfoQuery, useGetStudyMemberQuery } from '@/queries/study';
 
-import StudyIntro from './StudyIntro';
-import StudyMembers from './StudyMembers';
-import StudySchedule from './StudySchedule';
+import { StudyIntro } from './StudyIntro';
+import { StudyMembers } from './StudyMembers';
+import { StudySchedule } from './StudySchedule';
 
 import styles from './StudyLeftBar.module.scss';
 
-export default function StudyLeftBar() {
+export function StudyLeftBar() {
   const { studyId } = useParams<{ studyId: string }>();
   const [studyInfo, setStudyInfo] = useState<studyInfo>({});
   const [studyMember, setStudyMember] = useState<memberInfo>({});

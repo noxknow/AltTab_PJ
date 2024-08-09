@@ -6,7 +6,7 @@ type PieChartProps = {
   percentage: number;
 };
 
-export default function PieChart({ percentage }: PieChartProps) {
+export function PieChart({ percentage }: PieChartProps) {
   ChartJS.register(ArcElement);
 
   const data = {
