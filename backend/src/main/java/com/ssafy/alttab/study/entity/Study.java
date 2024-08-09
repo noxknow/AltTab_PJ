@@ -6,19 +6,12 @@ import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.enums.ProblemStatus;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +49,7 @@ public class Study extends BaseTimeEntity {
 
     @Column(name = "member_study")
     @Builder.Default
-    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
