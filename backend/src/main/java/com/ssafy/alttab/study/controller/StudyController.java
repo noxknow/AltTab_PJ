@@ -11,7 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +44,8 @@ public class StudyController {
 
     @GetMapping("/{studyId}/follow")
     public ResponseEntity<?> followStudy(@AuthenticationPrincipal UserDetails userDetails,
-                                         @PathVariable Long studyId) throws StudyNotFoundException, MemberNotFoundException {
+                                         @PathVariable Long studyId)
+            throws StudyNotFoundException, MemberNotFoundException {
         return new ResponseEntity<>(studyService.followStudy(userDetails.getUsername(), studyId), HttpStatus.OK);
     }
 

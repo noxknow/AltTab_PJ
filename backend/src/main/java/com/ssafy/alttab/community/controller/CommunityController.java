@@ -27,12 +27,12 @@ public class CommunityController {
     }
 
     @GetMapping("/top/follower")
-    public ResponseEntity<List<TopFollowerDto>> getTopFollower(){
+    public ResponseEntity<List<TopFollowerDto>> getTopFollower() {
         return new ResponseEntity<>(communityService.getTopFollowerStudys(), HttpStatus.OK);
     }
 
     @GetMapping("/top/solve")
-    public ResponseEntity<List<TopSolverDto>> getTopSolver(){
+    public ResponseEntity<List<TopSolverDto>> getTopSolver() {
         return new ResponseEntity<>(communityService.getTopSolvers(), HttpStatus.OK);
     }
 }

@@ -26,10 +26,10 @@ public class CodeService {
     private final CacheManager cacheManager;
 
     @Transactional
-    public CodeResponseDto getCode(Long studyGroupId, Long problemId, Long problemTab){;
+    public CodeResponseDto getCode(Long studyGroupId, Long problemId, Long problemTab) {
         Optional<CodeSnippet> code = codeSnippetRepository.findByStudyGroupIdAndProblemIdAndProblemTab(
                 studyGroupId, problemId, problemTab);
-        if (code.isPresent()){
+        if (code.isPresent()) {
             return CodeResponseDto.builder()
                     .code(code.get().getCode())
                     .build();
@@ -129,7 +129,7 @@ public class CodeService {
     /**
      * 코드 실행 결과를 처리하고 캐시에 저장하는 메서드
      *
-     * @param snippet 코드 스니펫 엔티티
+     * @param snippet  코드 스니펫 엔티티
      * @param response 코드 실행 결과를 담은 DTO
      */
     private void processExecutionResponse(CodeSnippet snippet, CodeExecutionResponseDto response) {
@@ -151,7 +151,7 @@ public class CodeService {
      * 코드 스니펫의 실행 결과를 캐시에 저장
      *
      * @param codeSnippet 코드 스니펫 객체
-     * @param response 코드 실행 결과 DTO
+     * @param response    코드 실행 결과 DTO
      */
     private void cacheOutput(CodeSnippet codeSnippet, CodeExecutionResponseDto response) {
         Cache cache = cacheManager.getCache("outputCache");
@@ -164,8 +164,8 @@ public class CodeService {
      * 주어진 파라미터에 해당하는 코드 실행 결과를 조회
      *
      * @param studyGroupId 스터디 그룹 ID
-     * @param problemId 문제 ID
-     * @param problemTab 문제 탭
+     * @param problemId    문제 ID
+     * @param problemTab   문제 탭
      * @return 코드 실행 결과 DTO
      */
     @Transactional
@@ -249,8 +249,8 @@ public class CodeService {
      * 실행 실패 상태의 CodeExecutionResponseDto를 생성
      *
      * @param studyGroupId 스터디 그룹 ID
-     * @param problemId 문제 ID
-     * @param problemTab 문제 탭
+     * @param problemId    문제 ID
+     * @param problemTab   문제 탭
      * @return 실행 실패 상태로 설정된 CodeExecutionResponseDto 객체
      */
     private CodeExecutionResponseDto createFailResponseDto(Long studyGroupId, Long problemId, Long problemTab) {
@@ -269,6 +269,7 @@ public class CodeService {
      * @return 생성된 캐시 키 문자열
      */
     private String getCacheKey(CodeSnippet codeSnippet) {
-        return String.format("%d:%d:%d", codeSnippet.getStudyGroupId(), codeSnippet.getProblemId(), codeSnippet.getProblemTab());
+        return String.format("%d:%d:%d", codeSnippet.getStudyGroupId(), codeSnippet.getProblemId(),
+                codeSnippet.getProblemTab());
     }
 }

@@ -1,6 +1,7 @@
 package com.ssafy.alttab.study.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
 @Builder

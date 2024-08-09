@@ -50,17 +50,19 @@ public class CodeSnippet {
 
     /**
      * 코드 변경
+     *
      * @param code
      */
-    public void changeCode(String code){
+    public void changeCode(String code) {
         this.code = code;
     }
 
     /**
      * 상태 변경
+     *
      * @param executionStatus
      */
-    public void changeExecutionStatus(ExecutionStatus executionStatus){
+    public void changeExecutionStatus(ExecutionStatus executionStatus) {
         this.executionStatus = executionStatus;
     }
 

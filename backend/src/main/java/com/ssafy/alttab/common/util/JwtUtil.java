@@ -4,34 +4,30 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class JwtUtil {
 
+    private final RedisTemplate<String, String> redisTemplate;
     @Value("${jwt.secret}")
     private String secret;
-
     @Value("${jwt.access.expiration}")
     private Long expiration;
-
     @Value("${jwt.refresh.expiration}")
     private Long refreshExpiration;
-
-    private final RedisTemplate<String, String> redisTemplate;
 
     //== access token ==//
     public String generateToken(String username) {
@@ -110,14 +106,13 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
-        try{
+        try {
             return Jwts.parser()
                     .verifyWith(getSigningKey())
                     .build()
                     .parseSignedClaims(token)
                     .getPayload();
-        }
-        catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e) {
             return e.getClaims();
         }
     }

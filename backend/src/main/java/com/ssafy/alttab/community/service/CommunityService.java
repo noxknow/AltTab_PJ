@@ -7,24 +7,23 @@ import com.ssafy.alttab.community.dto.WeeklyStudyDto;
 import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import lombok.Builder;
-import org.springframework.stereotype.Service;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 @Builder
 public class CommunityService {
 
-    private final StudyRepository studyRepository;
     private static final int TOP_LIMIT = 10;
+    private final StudyRepository studyRepository;
 
     /**
      * 커뮤니티 메인 페이지에 필요한 데이터를 조회
