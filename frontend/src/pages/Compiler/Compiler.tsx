@@ -64,6 +64,13 @@ export function Compiler() {
     resizeCodeArea();
   }, [codeText, selected]);
 
+  useEffect(() => {
+    window.addEventListener('resize', resizeCodeArea);
+    return () => {
+      window.removeEventListener('resize', resizeCodeArea);
+    };
+  }, []);
+
   const openCanvas = () => {
     setCanvasIsOpen(true);
   };
