@@ -62,7 +62,18 @@ export function Compiler() {
   useEffect(() => {
     setHighlightedCode(highlightCode(codeText, 'java'));
     resizeCodeArea();
-  }, [codeText, selected]);
+  }, [codeText]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await refetch();
+      if (data) {
+        setCodeText(data.code);
+      } else {
+        setCodeText('');
+      }
+    })();
+  }, [selected]);
 
   useEffect(() => {
     window.addEventListener('resize', resizeCodeArea);
@@ -87,12 +98,12 @@ export function Compiler() {
 
   const handleTabClick = async (selectedTab: number) => {
     setSelected(selectedTab);
-    const { data } = await refetch();
-    if (data) {
-      setCodeText(data.code);
-    } else {
-      setCodeText('');
-    }
+    // const { data } = await refetch();
+    // if (data) {
+    //   setCodeText(data.code);
+    // } else {
+    //   setCodeText('');
+    // }
   };
 
   return (
