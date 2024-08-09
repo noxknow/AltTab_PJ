@@ -6,7 +6,12 @@ export type memberInfo = {
 };
 
 export type studyInfo = {
+  studyId?: string;
   studyName?: string;
   studyEmails?: string[];
   studyDescription?: string;
+};
+
+export type joinedStudies = {
+  joinedStudies: studyInfo[];
 };
