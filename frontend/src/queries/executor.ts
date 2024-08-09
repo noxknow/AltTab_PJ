@@ -35,6 +35,8 @@ export const useGetExecutorStatusQuery = (
   const { data, refetch } = useQuery({
     queryKey: [...executorKeys.status, studyId, problemId, problemTab],
     queryFn: () => executor.getStatus(studyId, problemId, problemTab),
+    retry: false,
+    refetchOnMount: false,
   });
   return { data, refetch };
 };
@@ -47,6 +49,8 @@ export const useGetCodeQuery = (
   const { data, refetch } = useQuery({
     queryKey: [...executorKeys.status, studyId, problemId, problemTab],
     queryFn: () => executor.getCode(studyId, problemId, problemTab),
+    retry: false,
+    refetchOnMount: false,
   });
   return { data, refetch };
 };
