@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class WeeklyStudyDto {
     private String name;
+    private Long studyId;
     private Long like;
     private Long follower;
     private Long view;

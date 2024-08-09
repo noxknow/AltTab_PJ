@@ -8,6 +8,7 @@ import lombok.Getter;
 @Builder
 public class TopFollowerDto {
     private String name;
+    private Long studyId;
     private Long like;
     private Long totalFollower;
     private Long view;
