@@ -28,7 +28,7 @@ export function Modal({ code, selected }: ModalProps) {
         {modal === MODAL.SOLUTION && <SolutionModal />}
         {modal === MODAL.CANVAS && <CanvasModal />}
         {modal === MODAL.RUN && (
-          <RunCodeModal code={code} problemTab={selected} />
+          <RunCodeModal code={code} memberId={selected} />
         )}
       </div>
     </>
