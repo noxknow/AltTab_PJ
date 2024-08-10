@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { v4 } from 'uuid';
 import { EditorBlock } from './EditorBlock';
 import styles from './EditorPage.module.scss';
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import ReactDOM from 'react-dom';
+import { useCreateBlocksQuery, useGetBlocksQuery } from '@/queries/solutions';
 
-type Block = {
+export type Block = {
   id: string;
   text: string;
   option: string;
@@ -17,6 +19,19 @@ export function EditorPage() {
   const isAdd = useRef(true);
   const isChanged = useRef(false);
   const index = useRef(-1);
+  const { studyId, problemId } = useParams();
+  const { data } = useGetBlocksQuery(studyId!, problemId!);
+  const createBlocksMutation = useCreateBlocksQuery(
+    studyId!,
+    problemId!,
+    blocks,
+  );
+
+  useEffect(() => {
+    if (data) {
+      setBlocks(data);
+    }
+  }, [data]);
 
   const handleChange = (result: any) => {
     if (!result.destination) return;
@@ -73,6 +88,8 @@ export function EditorPage() {
   };
 
   useEffect(() => {
+    createBlocksMutation.mutate();
+
     if (!isChanged.current) {
       return;
     }
