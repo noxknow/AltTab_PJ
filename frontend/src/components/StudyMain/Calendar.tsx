@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
 import { AttendanceInfo } from './AttendanceInfo';
 import './Calendar.scss';
-import { EventClickArg } from '@fullcalendar/core/index.js';
+import { EventClickArg, DatesSetArg } from '@fullcalendar/core/index.js';
 import { v4 } from 'uuid';
 
 type EventData = {
@@ -62,8 +62,13 @@ export function Calendar() {
       setEvents([...events, newEvent]);
     }
   };
+  const handleDatesSet = (arg: DatesSetArg) => {
+    console.log(
+      `Current view: ${arg.start.getFullYear()}년 ${arg.start.getMonth() + 1}월`,
+    );
+  };
   return (
-    <div className="main">
+    <div className="calendar">
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={headerOptions}
@@ -72,6 +77,8 @@ export function Calendar() {
         dateClick={handleDateClick}
         stickyFooterScrollbar={false}
         fixedWeekCount={false}
+        datesSet={handleDatesSet}
+        showNonCurrentDates={false}
       />
       {selectedEvent && <AttendanceInfo eventclickarg={selectedEvent} />}
     </div>

@@ -16,6 +16,29 @@
     border: 1px solid purple;
     padding: 1rem;
   }
+  th:nth-child(1) {
+    width: 10%;
+  }
+
+  th:nth-child(2) {
+    width: 20%;
+  }
+
+  th:nth-child(3) {
+    width: 10%;
+  }
+
+  th:nth-child(4) {
+    width: 10%;
+  }
+
+  th:nth-child(5) {
+    width: 10%;
+  }
+
+  th:nth-child(6) {
+    width: 40%;
+  }
 }
 
 .icon {
@@ -41,28 +64,4 @@
   justify-content: center;
   align-items: center;
   gap: 0.5rem;
-}
-
-th:nth-child(1) {
-  width: 10%;
-}
-
-th:nth-child(2) {
-  width: 20%;
-}
-
-th:nth-child(3) {
-  width: 10%;
-}
-
-th:nth-child(4) {
-  width: 10%;
-}
-
-th:nth-child(5) {
-  width: 10%;
-}
-
-th:nth-child(6) {
-  width: 40%;
 }
