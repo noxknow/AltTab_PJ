@@ -4,17 +4,11 @@ import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.entity.Study;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Builder
 @Entity
