@@ -3,8 +3,6 @@ package com.ssafy.alttab.common.config;
 import com.ssafy.alttab.common.security.filter.JwtAuthenticationFilter;
 import com.ssafy.alttab.common.security.handler.OAuth2LoginSuccessHandler;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
-import java.util.Arrays;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -36,7 +37,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/error", "/oauth2/**",
+                        .requestMatchers("/", "/login", "/api/v1/member/logout", "/error", "/oauth2/**",
                                 "/h2-console", "/swagger-ui/index.html", "/swagger",
                                 "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
                         .permitAll()

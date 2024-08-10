@@ -1,13 +1,17 @@
 package com.ssafy.alttab.member.controller;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.common.util.CookieUtil;
 import com.ssafy.alttab.member.service.MemberService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +26,11 @@ public class MemberController {
     public ResponseEntity<?> getMemberInfo(@AuthenticationPrincipal UserDetails userDetails)
             throws MemberNotFoundException {
         return new ResponseEntity<>(memberService.getMemberInfo(userDetails.getUsername()), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+        return new ResponseEntity<>(CookieUtil.deleteAuthTokens(request, response), HttpStatus.OK);
     }
 
     @GetMapping("/studies")
