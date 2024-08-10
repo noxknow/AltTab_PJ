@@ -2,6 +2,8 @@ package com.ssafy.alttab.common.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.alttab.common.dto.ErrorResponseDto;
+import com.ssafy.alttab.common.enums.FailMessage;
+import com.ssafy.alttab.common.enums.SuccessMessage;
 import com.ssafy.alttab.common.exception.TokenNotFoundException;
 import com.ssafy.alttab.common.exception.TokenNotValidException;
 import com.ssafy.alttab.common.util.CookieUtil;
@@ -10,7 +12,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,6 +24,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
@@ -72,10 +75,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
 
             if (jwtUtil.validateToken(accessToken, userDetails)) {
-                log.info("valid access token");
+                log.info(SuccessMessage.ACCESS_TOKEN_VALID.getMessage());
                 setAuthentication(request, userDetails);
             } else {
-                log.info("not valid access token");
+                log.info(FailMessage.ACCESS_TOKEN_NOT_VALID.getMessage());
                 handleInvalidAccessToken(request, response, username, userDetails);
             }
         }
@@ -94,12 +97,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                           UserDetails userDetails) {
         String refreshToken = CookieUtil.getCookieValue(request, "refresh_token");
         if (refreshToken == null) {
-            log.error("not found refresh Token");
+            log.error(FailMessage.REFRESH_TOKEN_NOT_FOUND.getMessage());
             throw new TokenNotFoundException("refresh Token");
         }
 
         if (!jwtUtil.validateRefreshToken(refreshToken, username)) {
-            log.error("not valid refresh Token");
+            log.error(FailMessage.ACCESS_TOKEN_NOT_VALID.getMessage());
+            jwtUtil.deleteRefreshToken(refreshToken);
             throw new TokenNotValidException("refresh Token");
         }
 
