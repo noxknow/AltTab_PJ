@@ -72,14 +72,6 @@ export function EditorBlock({
         deleteBlock(id);
         setInnerOption('content');
       }
-      // if (innerOption === 'table' || innerOption === 'image') {
-      //   e.repeat;
-      //   if (innerText.current === '') {
-      //     console.log('hi');
-      //     deleteBlock(id);
-      //     setInnerOption('content');
-      //   }
-      // }
     } else if (e.key === '/') {
       e.preventDefault();
       if (showDropdown) {
