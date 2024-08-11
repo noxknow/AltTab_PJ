@@ -6,7 +6,6 @@ import lombok.Getter;
 @Builder
 @Getter
 public class JoinedStudyResponseDto {
-
     private Long studyId;
     private String studyName;
 }

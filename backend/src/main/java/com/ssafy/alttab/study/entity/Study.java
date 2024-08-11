@@ -2,13 +2,15 @@ package com.ssafy.alttab.study.entity;
 
 import com.ssafy.alttab.common.entity.BaseTimeEntity;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
+import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.enums.ProblemStatus;
+import java.util.ArrayList;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,33 +43,29 @@ public class Study extends BaseTimeEntity {
     @Column(name = "like_count")
     private Long like;
 
-    @ElementCollection
-    @CollectionTable(name = "study_emails", joinColumns = @JoinColumn(name = "study_id"))
-    @Column(name = "email")
-    @Builder.Default
-    private List<String> studyEmails = new ArrayList<>();
-
     @Column(name = "member_study")
     @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
+//    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @Builder.Default
+//    private List<Problem> problems = new ArrayList<>();
+
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Problem> problems = new ArrayList<>();
+    private List<StudyProblem> studyProblems = new ArrayList<>();
 
     //==비즈니스 로직==//
-
     /**
      * 스터디에서 완료된 문제의 총 개수를 반환합니다.
      *
      * @return 완료된 문제의 총 개수
      */
-    public Long totalSolve() {
-        return problems.stream()
-                .filter(problem -> problem.getProblemStatus() == ProblemStatus.DONE)
-                .count();
-    }
+//    public Long totalSolve() {
+//        return problems.stream()
+//                .filter(problem -> problem.getProblemStatus() == ProblemStatus.DONE)
+//                .count();
+//    }
 
     /**
      * 스터디의 총 팔로워 수를 반환합니다.
@@ -95,6 +93,10 @@ public class Study extends BaseTimeEntity {
     public void updateStudy(StudyInfoRequestDto dto) {
         this.studyName = dto.getStudyName();
         this.studyDescription = dto.getStudyDescription();
+    }
+
+    public void addStudyProblem(StudyProblem studyProblem) {
+        this.studyProblems.add(studyProblem);
     }
 
 }

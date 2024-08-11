@@ -1,4 +1,7 @@
 package com.ssafy.alttab.problem.repository;
 
-public class ProblemRepository {
+import com.ssafy.alttab.problem.entity.Problem;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProblemRepository extends JpaRepository<Problem, Long> {
 }
