@@ -1,14 +1,14 @@
 import styles from '@/components/CommunityProfile/CommunityProfile.module.scss';
 import FullHeartSVG from '@/assets/icons/full_heart.svg?react';
+import { communityStudy } from '@/types/study';
 
-export function CommunityProfile() {
+export function CommunityProfile({ study }: { study: communityStudy }) {
   return (
     <div className={styles.profile_card}>
       <div className={styles.profile_card_left}>
-        <div className={styles.profile_study}>알고하이</div>
+        <div className={styles.profile_study}>{study.name}</div>
         <FullHeartSVG />
-        <div className={styles.profile_detail}>1000+</div>
-
+        <div className={styles.profile_detail}>{study.like}</div>
         <img
           className={styles.profile_image}
           src="https://fir-rollup.firebaseapp.com/de-sm.jpg"

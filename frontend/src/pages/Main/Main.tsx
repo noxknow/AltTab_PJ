@@ -35,7 +35,15 @@ export function MainPage() {
             스터디 생성
           </Button>
         </div>
-        <CommunityProfile />
+        <CommunityProfile
+          study={{
+            name: '알고하이',
+            follower: 1000,
+            like: 1000,
+            studyId: 1,
+            view: 500,
+          }}
+        />
       </div>
       <div className={styles.main_right}>
         <img className={styles.image} src={MAIN_IMAGE} alt="No Image" />

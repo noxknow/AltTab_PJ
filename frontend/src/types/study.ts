@@ -15,3 +15,16 @@ export type studyInfo = {
 export type joinedStudies = {
   joinedStudies: studyInfo[];
 };
+
+export type communityStudy = {
+  studyId: number;
+  name: string;
+  like: number;
+  follower: number;
+  view: number;
+};
+
+export type weeklyStudies = {
+  weeklyStudies: communityStudy[];
+  topSolvers: communityStudy[];
+};

@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { member } from '@/services/member';
 import { memberInfo, joinedStudies } from '@/types/study.ts';
@@ -6,6 +6,7 @@ import { memberInfo, joinedStudies } from '@/types/study.ts';
 const memberKeys = {
   studies: ['studies'],
   info: ['info'],
+  logout: ['logout'],
 };
 
 export const useGetMyInfoQuery = () => {
@@ -23,4 +24,17 @@ export const useGetMyStudiesQuery = () => {
     queryFn: (): Promise<joinedStudies> => member.getMemberStudies(),
   });
   return { data, isLoading };
+};
+
+export const useLogoutQuery = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => member.logout(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: memberKeys.logout,
+      });
+    },
+  });
 };
