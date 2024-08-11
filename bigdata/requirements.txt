@@ -6,3 +6,4 @@ cryptography
 gunicorn
 mysql-connector-python
 python-dotenv
+flask-cors

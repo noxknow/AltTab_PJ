@@ -36,7 +36,7 @@ export function RunCodeModal({ code, memberId }: RunCodeModalProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInputText(e.currentTarget.value);
   };
-
+          
   const runCode = async () => {
     setOutputText('');
     const form: requestExecutor = {
