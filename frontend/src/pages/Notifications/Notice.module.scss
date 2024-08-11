@@ -1,0 +1,21 @@
+.notice {
+  border-bottom: 1px solid #e0e0e0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.content {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+.date {
+  font-size: 1.4rem;
+  color: #888;
+}
