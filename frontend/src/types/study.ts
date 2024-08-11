@@ -19,9 +19,16 @@ export type joinedStudies = {
 export type communityStudy = {
   studyId: number;
   name: string;
+  studyDescription: string;
   like: number;
-  follower: number;
+  follower?: number;
+  totalSolve?: number;
+  totalFollower?: number;
   view: number;
+  leaderMemberDto: {
+    name: string;
+    avatarUrl: string;
+  };
 };
 
 export type weeklyStudies = {
