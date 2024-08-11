@@ -35,10 +35,8 @@ export function HeaderSidebar({
           {data &&
             data.joinedStudies &&
             data.joinedStudies.map((study, index) => (
-              <NavLink to={`study/${study.studyId}`}>
-                <div key={index} className={styles.sidebarItem}>
-                  {study.studyName}
-                </div>
+              <NavLink to={`study/${study.studyId}`} key={index}>
+                <div className={styles.sidebarItem}>{study.studyName}</div>
               </NavLink>
             ))}
           <NavLink to={'community'}>

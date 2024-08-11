@@ -72,12 +72,13 @@ export function Header() {
           </Button>
         </div>
       )}
-      <ProfileModal
-        open={isModal}
-        setIsModal={setIsModal}
-        url={userInfo ? userInfo.avatarUrl : ''}
-        name={userInfo ? userInfo.name : ''}
-      />
+      {isModal && (
+        <ProfileModal
+          setIsModal={setIsModal}
+          url={userInfo ? userInfo.avatarUrl : ''}
+          name={userInfo ? userInfo.name : ''}
+        />
+      )}
     </header>
   );
 }

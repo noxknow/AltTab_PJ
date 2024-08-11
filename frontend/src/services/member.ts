@@ -5,6 +5,7 @@ export const member = {
   endpoint: {
     studies: '/member/studies',
     info: '/member/info',
+    logout: '/member/logout',
   },
 
   getMemberInfo: async (): Promise<memberInfo> => {
@@ -17,5 +18,9 @@ export const member = {
     const { data } = await API.get<joinedStudies>(`${member.endpoint.studies}`);
 
     return data;
+  },
+
+  logout: async () => {
+    await API.post(`${member.endpoint.logout}`);
   },
 };
