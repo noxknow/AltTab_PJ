@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .permitAll()
                         .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
                         .anyRequest().authenticated()
+//                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpoint ->

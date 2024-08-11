@@ -8,6 +8,5 @@ import lombok.Getter;
 @Getter
 @Builder
 public class MemberJoinedStudiesResponseDto {
-
     List<JoinedStudyResponseDto> joinedStudies;
 }

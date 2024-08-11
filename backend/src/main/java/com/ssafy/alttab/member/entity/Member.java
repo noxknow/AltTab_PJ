@@ -2,6 +2,7 @@ package com.ssafy.alttab.member.entity;
 
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
+import com.ssafy.alttab.notification.entity.Notification;
 import com.ssafy.alttab.study.entity.Study;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,6 +38,9 @@ public class Member {
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Notification> notifications = new ArrayList<>();
+
     //==생성 메서드==//
     public static Member createMember(String name, String avatarUrl, MemberRoleStatus role) {
         return Member.builder()
@@ -71,5 +75,9 @@ public class Member {
      */
     public void removeMemberStudy(MemberStudy memberStudy) {
         this.memberStudies.remove(memberStudy);
+    }
+
+    public void addNotification(Notification notification) {
+        this.notifications.add(notification);
     }
 }

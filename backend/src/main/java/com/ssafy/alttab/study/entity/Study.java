@@ -6,11 +6,11 @@ import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
-import com.ssafy.alttab.study.enums.ProblemStatus;
+
 import java.util.ArrayList;
+
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,22 +38,28 @@ public class Study extends BaseTimeEntity {
     private String studyDescription;
 
     @Column(name = "view_count")
-    private Long view;
+    @Builder.Default
+    private Long view = 0L;
 
     @Column(name = "like_count")
-    private Long like;
+    @Builder.Default
+    private Long like = 0L;
 
     @Column(name = "member_study")
     @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @Builder.Default
-//    private List<Problem> problems = new ArrayList<>();
-
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
     private List<StudyProblem> studyProblems = new ArrayList<>();
+
+    //==생성 메서드==//
+    public static Study createStudy(String studyName, String studyDescription) {
+        return Study.builder()
+                .studyName(studyName)
+                .studyDescription(studyDescription)
+                .build();
+    }
 
     //==비즈니스 로직==//
     /**
@@ -99,4 +105,9 @@ public class Study extends BaseTimeEntity {
         this.studyProblems.add(studyProblem);
     }
 
+    public void addMemberStudy(MemberStudy memberStudy) {
+        this.memberStudies.add(memberStudy);
+        Member member = memberStudy.getMember();
+        member.getMemberStudies().add(memberStudy);
+    }
 }
