@@ -1,4 +1,3 @@
-// recommend.ts
 export type Problem = {
   problem_id: number;
   title: string;
@@ -17,7 +16,7 @@ export type RecommendationResponse = {
   most_common_representative: Problem[];
 };
 
-export interface SectionProps {
+export type SectionProps = {
   title: string;
   problems: Problem[];
-}
+};
