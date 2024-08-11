@@ -1,8 +1,18 @@
-@import '../../styles/font.module.scss';
+.cardContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between; /* 카드들 사이에 동일한 간격을 두기 위해 */
+  gap: 10px; /* 카드 사이에 일정한 간격을 주기 위해 */
+  margin: 20px;
+}
 
 .card {
-  display: flex;
-  justify-content: space-between;
+  position: relative; /* 이미지를 카드 내에서 위치시키기 위해 relative로 설정 */
+  flex: 1 1 calc(20% - 20px); /* 5개의 카드를 한 줄에 표시 */
+  box-sizing: border-box;
+  margin: 10px;
+  min-width: 200px; /* 최소 카드 크기 설정 */
+  max-width: 250px; /* 최대 카드 크기 설정 */
   border-radius: 15px;
   color: white;
   padding: 20px;
@@ -10,6 +20,7 @@
   transition:
     transform 0.2s,
     box-shadow 0.2s;
+  text-align: center; /* 텍스트와 이미지가 중앙에 오도록 정렬 */
 
   &:hover {
     transform: translateY(-5px);
@@ -26,15 +37,11 @@
 }
 
 .gold {
-  background: linear-gradient(135deg, #f1c40f, #e67e22); /* 골드 색상 수정 */
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
 }
 
 .platinum {
-  background: linear-gradient(
-    135deg,
-    #3a8d97,
-    #4bb3c1
-  ); /* 플래티넘 색상 수정 */
+  background: linear-gradient(135deg, #3a8d97, #4bb3c1);
 }
 
 .diamond {
@@ -49,12 +56,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: space-between;
+  height: 100%;
   color: white;
 }
 
 .cardHeader {
   font-size: 1.5rem;
   font-weight: bold;
+  margin-top: 45px; /* 이미지와 텍스트 간의 간격 확보 */
   margin-bottom: 10px;
   text-align: center;
 }
@@ -63,6 +73,22 @@
   font-size: 1rem;
   margin-bottom: 20px;
   text-align: center;
+}
+
+.tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.tagItem {
+  background-color: #004f8c;
+  color: white;
+  padding: 5px 10px;
+  margin: 5px;
+  border-radius: 12px;
+  font-size: 0.9rem;
 }
 
 .cardButton {
@@ -80,4 +106,13 @@
     background-color: #004f8c;
     color: white;
   }
+}
+
+/* 이미지 위치 조정 */
+.tierImage {
+  position: absolute;
+  top: -25px; /* 카드 위쪽에 걸쳐지도록 */
+  left: 50%;
+  transform: translateX(-50%); /* 중앙 정렬을 위한 transform */
+  width: 50px; /* 적절한 크기로 이미지 크기 조정 */
 }
