@@ -37,11 +37,16 @@ export function MainPage() {
         </div>
         <CommunityProfile
           study={{
+            studyId: 1,
             name: '알고하이',
+            studyDescription: '자바를 활용한 알고리즘 스터디입니다.',
             follower: 1000,
             like: 1000,
-            studyId: 1,
             view: 500,
+            leaderMemberDto: {
+              name: 'Lana Steiner',
+              avatarUrl: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
+            },
           }}
         />
       </div>
