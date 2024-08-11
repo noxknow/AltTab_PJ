@@ -1,9 +1,8 @@
 package com.ssafy.alttab.community.service;
 
-import com.ssafy.alttab.community.dto.CommunityMainResponseDto;
-import com.ssafy.alttab.community.dto.TopFollowerDto;
-import com.ssafy.alttab.community.dto.TopSolverDto;
-import com.ssafy.alttab.community.dto.WeeklyStudyDto;
+import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
+import com.ssafy.alttab.community.dto.*;
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.transaction.Transactional;
@@ -22,8 +21,9 @@ import org.springframework.stereotype.Service;
 @Builder
 public class CommunityService {
 
-    private static final int TOP_LIMIT = 10;
+    private static final int TOP_LIMIT = 6;
     private final StudyRepository studyRepository;
+    private final MemberStudyRepository memberStudyRepository;
 
     /**
      * 커뮤니티 메인 페이지에 필요한 데이터를 조회
@@ -58,19 +58,17 @@ public class CommunityService {
     }
 
     /**
-     * StudyInfo 엔티티를 WeeklyStudyDto로 변환
      *
-     * @param study StudyInfo 엔티티
-     * @return WeeklyStudyDto 변환된 DTO 객체
+     * @param study
+     * @return
      */
-    private WeeklyStudyDto mapToWeeklyStudyDto(Study study) {
-        return WeeklyStudyDto.builder()
-                .name(study.getStudyName())
-                .studyId(study.getId())
-                .like(study.getLike())
-                .follower(study.getFollowerCount())
-                .view(study.getView())
-                .build();
+    private LeaderMemberDto getLeaderInfo(Study study) {
+        return memberStudyRepository.findMemberByStudyIdAndRole(study.getId(), MemberRoleStatus.LEADER)
+                .map(leader -> LeaderMemberDto.builder()
+                        .name(leader.getMember().getName())
+                        .avatarUrl(leader.getMember().getAvatarUrl())
+                        .build())
+                .orElse(null);
     }
 
     /**
@@ -106,13 +104,38 @@ public class CommunityService {
     //==map dto==//
 
     /**
+     * StudyInfo 엔티티를 WeeklyStudyDto로 변환
+     *
+     * @param study StudyInfo 엔티티
+     * @return WeeklyStudyDto 변환된 DTO 객체
+     */
+    private WeeklyStudyDto mapToWeeklyStudyDto(Study study) {
+        return WeeklyStudyDto.builder()
+                .name(study.getStudyName())
+                .studyId(study.getId())
+                .like(study.getLike())
+                .studyDescription(study.getStudyDescription())
+                .follower(study.getFollowerCount())
+                .view(study.getView())
+                .leaderMemberDto(getLeaderInfo(study))
+                .build();
+    }
+
+    /**
      * StudyInfo 엔티티를 TopFollowerDto로 변환
      *
      * @param study StudyInfo 엔티티
      * @return TopFollowerDto 변환된 DTO 객체
      */
     private TopFollowerDto mapToTopFollowerDto(Study study) {
-        return TopFollowerDto.toDto(study);
+        return TopFollowerDto.builder()
+                .name(study.getStudyName())
+                .like(study.getLike())
+                .studyDescription(study.getStudyDescription())
+                .totalFollower(study.getFollowerCount())  // 팔로워 수로 변경
+                .view(study.getView())
+                .leaderMemberDto(getLeaderInfo(study))
+                .build();
     }
 
     /**
@@ -126,8 +149,10 @@ public class CommunityService {
                 .name(study.getStudyName())
                 .studyId(study.getId())
                 .like(study.getLike())
+                .studyDescription(study.getStudyDescription())
 //                .totalSolve(study.totalSolve())
                 .view(study.getView())
+                .leaderMemberDto(getLeaderInfo(study))
                 .build();
     }
 }
