@@ -1,10 +1,7 @@
 package com.ssafy.alttab.common.handler;
 
 import com.ssafy.alttab.common.dto.ErrorResponseDto;
-import com.ssafy.alttab.common.exception.CodeNotFoundException;
-import com.ssafy.alttab.common.exception.MemberNotFoundException;
-import com.ssafy.alttab.common.exception.TokenNotFoundException;
-import com.ssafy.alttab.common.exception.TokenNotValidException;
+import com.ssafy.alttab.common.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -24,7 +21,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MemberNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<?> handleMemberNotFoundException(Exception ex) {
+    public ResponseEntity<?> handleMemberNotFoundException(MemberNotFoundException ex) {
+        return ErrorResponseDto.toResponse(ex);
+    }
+
+    @ExceptionHandler(StudyNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> handleStudyNotFoundException(StudyNotFoundException ex) {
+        return ErrorResponseDto.toResponse(ex);
+    }
+
+    @ExceptionHandler(ProblemNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> handleProblemNotFoundException(ProblemNotFoundException ex) {
         return ErrorResponseDto.toResponse(ex);
     }
 

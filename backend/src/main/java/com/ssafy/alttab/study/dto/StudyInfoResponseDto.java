@@ -1,6 +1,5 @@
 package com.ssafy.alttab.study.dto;
 
-
 import lombok.Builder;
 import lombok.Getter;
 

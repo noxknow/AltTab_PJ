@@ -1,22 +1,18 @@
 package com.ssafy.alttab.study.controller;
 
-import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.common.exception.ProblemNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
+import com.ssafy.alttab.problem.dto.AddProblemsRequestDto;
+import com.ssafy.alttab.problem.dto.RemoveProblemsRequestDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.service.StudyService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,16 +38,36 @@ public class StudyController {
         return new ResponseEntity<>(studyService.updateStudyInfo(studyId, dto), HttpStatus.OK);
     }
 
-    @GetMapping("/{studyId}/follow")
-    public ResponseEntity<?> followStudy(@AuthenticationPrincipal UserDetails userDetails,
-                                         @PathVariable Long studyId)
-            throws StudyNotFoundException, MemberNotFoundException {
-        return new ResponseEntity<>(studyService.followStudy(userDetails.getUsername(), studyId), HttpStatus.OK);
+    @PostMapping("/{studyId}/problem")
+    public ResponseEntity<?> addProblems(@PathVariable Long studyId,
+                                         @RequestBody AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
+        studyService.addProblems(studyId, dto);
+        return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{studyId}/unfollow")
-    public ResponseEntity<?> unfollowStudy(@AuthenticationPrincipal UserDetails userDetails,
-                                           @PathVariable Long studyId) throws EntityNotFoundException {
-        return new ResponseEntity<>(studyService.unfollowStudy(userDetails.getUsername(), studyId), HttpStatus.OK);
+    @GetMapping("/{studyId}/problem")
+    public ResponseEntity<?> getProblems(@PathVariable Long studyId) throws StudyNotFoundException {
+        return new ResponseEntity<>(studyService.getProblems(studyId), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{studyId}/problem")
+    public ResponseEntity<?> removeProblems(@PathVariable Long studyId,
+                                            @RequestBody RemoveProblemsRequestDto dto) throws StudyNotFoundException {
+        studyService.removeProblems(studyId, dto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{studyId}/problem/{option}/{target}")
+    public ResponseEntity<?> queryProblems(@PathVariable Long studyId,
+                                           @PathVariable Long option,
+                                           @PathVariable String target) throws StudyNotFoundException {
+        return new ResponseEntity<>(studyService.queryProblems(studyId, option, target), HttpStatus.OK);
+    }
+
+    @GetMapping("/{studyId}/problem/weekly")
+    public ResponseEntity<?> weeklyProblems(@PathVariable Long studyId,
+                                            @RequestParam("today") LocalDate today) throws StudyNotFoundException {
+        return new ResponseEntity<>(studyService.weeklyProblems(studyId, today), HttpStatus.OK);
+    }
+
 }

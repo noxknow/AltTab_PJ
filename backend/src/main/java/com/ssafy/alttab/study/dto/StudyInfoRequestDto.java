@@ -8,6 +8,5 @@ import lombok.Getter;
 public class StudyInfoRequestDto {
     private String studyName;
     private String studyDescription;
-
 }
 

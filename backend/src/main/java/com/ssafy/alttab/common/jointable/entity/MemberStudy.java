@@ -40,6 +40,9 @@ public class MemberStudy {
     @Enumerated(EnumType.STRING)
     private MemberRoleStatus role;
 
+    @Builder.Default
+    private Long point = 0L;
+
     //==생성 메서드==//
     public static MemberStudy createMemberStudy(Member member, Study study, MemberRoleStatus role) {
         return MemberStudy.builder()
