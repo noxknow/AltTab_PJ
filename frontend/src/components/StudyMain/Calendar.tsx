@@ -54,7 +54,7 @@ export function Calendar() {
       setEvents(remainingEvents);
     } else {
       const newEvent: EventData = {
-        id: v4(), // 고유 id 받아야 함
+        id: v4(),
         title: 'Study',
         start: dateclickarg.dateStr,
         participants: [],
