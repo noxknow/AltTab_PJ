@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class WeeklyStudyDto {
-    private String name;
     private Long studyId;
+    private String name;
+    private String studyDescription;
     private Long like;
     private Long follower;
     private Long view;
+    private LeaderMemberDto leaderMemberDto;
 }
