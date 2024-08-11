@@ -4,8 +4,8 @@ import { API } from './api';
 export const community = {
   endpoint: {
     default: '/community',
-    solve: '/community/solve',
-    follower: '/community/follower',
+    solve: '/community/top/solve',
+    follower: '/community/top/follower',
   },
 
   getWeeklyStudies: async (): Promise<weeklyStudies> => {

@@ -31,14 +31,18 @@ export function HeaderSidebar({
     >
       <div className={sibebarClass}>
         <div className={styles.itemWrapper}>
-          <div className={styles.sidebarItem}>내 스터디</div>
-          {data &&
-            data.joinedStudies &&
-            data.joinedStudies.map((study, index) => (
-              <NavLink to={`study/${study.studyId}`} key={index}>
-                <div className={styles.sidebarItem}>{study.studyName}</div>
-              </NavLink>
-            ))}
+          <div className={styles.sidebarItem}>
+            내 스터디
+            <div className={styles.myStudies}>
+              {data &&
+                data.joinedStudies &&
+                data.joinedStudies.map((study, index) => (
+                  <NavLink to={`study/${study.studyId}`} key={index}>
+                    <div className={styles.myStudy}>{study.studyName}</div>
+                  </NavLink>
+                ))}
+            </div>
+          </div>
           <NavLink to={'community'}>
             <div className={styles.sidebarItem}>금주의 스터디</div>
           </NavLink>

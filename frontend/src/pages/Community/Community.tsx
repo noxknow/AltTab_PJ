@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import classNames from 'classnames';
 
 import { CommunityProfile } from '@/components/CommunityProfile/CommunityProfile';
@@ -36,14 +36,16 @@ export function Community() {
     setCommunityStudies(topSolvers);
   }, [initialStudies]);
 
+  const getCommunityStudies = useCallback(async () => {
+    const { data } =
+      filter === FILTER.SOLVED
+        ? await getTopSolvedStudies()
+        : await getTopFollowerStudies();
+    setCommunityStudies(data!);
+  }, [filter]);
+
   useEffect(() => {
-    (async () => {
-      const { data } =
-        filter === FILTER.SOLVED
-          ? await getTopSolvedStudies()
-          : await getTopFollowerStudies();
-      setCommunityStudies(data!);
-    })();
+    getCommunityStudies();
   }, [filter]);
 
   const handleFilterClick = (e: React.MouseEvent<HTMLButtonElement>) => {
