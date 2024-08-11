@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/solutions")
 @RequiredArgsConstructor
 public class SolutionController {
+
     private final SolutionService solutionService;
 
     @GetMapping("/{studyId}/{problemId}")

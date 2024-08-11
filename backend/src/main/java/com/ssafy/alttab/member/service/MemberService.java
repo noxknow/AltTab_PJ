@@ -3,6 +3,7 @@ package com.ssafy.alttab.member.service;
 import static com.ssafy.alttab.member.entity.Member.createMember;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.dto.MemberJoinedStudiesResponseDto;
 import com.ssafy.alttab.member.entity.Member;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final MemberStudyRepository memberStudyRepository;
 
     @Transactional
     public Member saveOrUpdateMember(String name, String avatarUrl) {
@@ -39,7 +41,6 @@ public class MemberService {
     public MemberInfoResponseDto getMemberInfo(String name) throws MemberNotFoundException {
         Member member = memberRepository.findByName(name)
                 .orElseThrow(() -> new MemberNotFoundException(name));
-
         return MemberInfoResponseDto.builder()
                 .memberId(member.getId())
                 .name(member.getName())
@@ -50,9 +51,9 @@ public class MemberService {
     public MemberJoinedStudiesResponseDto getJoinedStudies(String name) throws MemberNotFoundException {
         Member member = memberRepository.findByName(name)
                 .orElseThrow(() -> new MemberNotFoundException(name));
-
         return MemberJoinedStudiesResponseDto.builder()
-                .joinedStudies(member.getMemberStudies().stream()
+                .joinedStudies(memberStudyRepository.findByMember(member)
+                        .stream()
                         .map(memberStudy -> {
                             Study study = memberStudy.getStudy();
                             return JoinedStudyResponseDto.builder()
