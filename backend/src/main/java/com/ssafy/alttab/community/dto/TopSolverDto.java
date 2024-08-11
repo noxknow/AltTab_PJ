@@ -10,9 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class TopSolverDto {
-    private String name;
     private Long studyId;
+    private String name;
+    private String studyDescription;
     private Long like;
     private Long totalSolve;
     private Long view;
+    private LeaderMemberDto leaderMemberDto;
 }
