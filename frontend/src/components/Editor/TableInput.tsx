@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import styles from './TableInput.module.scss';
 
 type TableInputProps = {
   onCreateTable: (rows: number, columns: number) => void;
@@ -13,28 +14,68 @@ export function TableInput({ onCreateTable, onCancel }: TableInputProps) {
     onCreateTable(rows, columns);
   };
 
+  const handleRowsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value >= 1 && value <= 10) {
+      setRows(value);
+    } else if (value < 1) {
+      setRows(1);
+    } else {
+      setRows(10);
+    }
+  };
+
+  const handleColumnsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    if (value >= 1 && value <= 10) {
+      setColumns(value);
+    } else if (value < 1) {
+      setColumns(1);
+    } else {
+      setColumns(10);
+    }
+  };
+
   return (
-    <div>
-      <label>
-        Rows:
-        <input
-          type="number"
-          value={rows}
-          onChange={(e) => setRows(Number(e.target.value))}
-          min="1"
-        />
-      </label>
-      <label>
-        Columns:
-        <input
-          type="number"
-          value={columns}
-          onChange={(e) => setColumns(Number(e.target.value))}
-          min="1"
-        />
-      </label>
-      <button onClick={handleCreateTable}>Create Table</button>
-      <button onClick={onCancel}>Cancel</button>
+    <div className={styles.tableInputContainer}>
+      <div className={styles.item}>
+        <label className={styles.label}>
+          Rows:
+          <input
+            type="number"
+            value={rows}
+            onChange={handleRowsChange}
+            min="1"
+            max="10"
+            className={styles.input}
+          />
+        </label>
+        <label className={styles.label}>
+          Columns:
+          <input
+            type="number"
+            value={columns}
+            onChange={handleColumnsChange}
+            min="1"
+            max="10"
+            className={styles.input}
+          />
+        </label>
+      </div>
+      <div className={styles.item}>
+        <button
+          onClick={handleCreateTable}
+          className={`${styles.button} ${styles.createButton}`}
+        >
+          Create Table
+        </button>
+        <button
+          onClick={onCancel}
+          className={`${styles.button} ${styles.cancelButton}`}
+        >
+          Cancel
+        </button>
+      </div>
     </div>
   );
 }
