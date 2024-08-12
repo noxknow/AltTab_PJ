@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './ImageUploadInput.module.scss';
 
 type ImageUploadInputProps = {
   onImageUpload: (file: File) => void;
@@ -13,8 +14,17 @@ export function ImageUploadInput({ onImageUpload }: ImageUploadInputProps) {
   };
 
   return (
-    <div>
-      <input type="file" accept="image/*" onChange={handleChange} />
+    <div className={styles.imageUploadInput}>
+      <label htmlFor="fileUpload" className={styles.labelText}>
+        Upload Image
+        <input
+          id="fileUpload"
+          type="file"
+          accept="image/*"
+          className={styles.fileInput}
+          onChange={handleChange}
+        />
+      </label>
     </div>
   );
 }
