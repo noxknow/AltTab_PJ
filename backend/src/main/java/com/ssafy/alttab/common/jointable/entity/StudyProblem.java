@@ -31,8 +31,11 @@ public class StudyProblem {
     private Problem problem;
 
     private LocalDate deadline;
+
     private String presenter;
+
     private Long level;
+
     private String tag;
 
     @Enumerated(EnumType.STRING)

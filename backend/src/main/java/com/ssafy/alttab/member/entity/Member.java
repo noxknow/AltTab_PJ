@@ -34,11 +34,12 @@ public class Member {
     private MemberRoleStatus role;
 
     @Column(name = "member_study")
-    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @Builder.Default
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<Notification> notifications = new ArrayList<>();
 
     //==생성 메서드==//

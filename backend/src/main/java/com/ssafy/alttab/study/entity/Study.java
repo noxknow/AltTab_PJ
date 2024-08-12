@@ -51,11 +51,12 @@ public class Study extends BaseTimeEntity {
     private Long point = 0L;
 
     @Column(name = "member_study")
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
-    @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
     @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<StudyProblem> studyProblems = new ArrayList<>();
 
     //==생성 메서드==//

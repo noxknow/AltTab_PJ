@@ -17,6 +17,13 @@ public class DrawingService {
     private static final String PARTICIPANT_KEY_PREFIX = "participant:room:";
     private static final long TIMEOUT_MINUTES = 10;
 
+    /**
+     * 그림 데이터를 Redis 에 저장하고 해당 데이터를 구독자들에게 전송
+     *
+     * @param studyId 스터디 고유 아이디
+     * @param problemId 문제 고유 아이디
+     * @param drawingData 그림 데이터
+     */
     public void sendDrawing(Long studyId, Long problemId, String drawingData) {
 
         String drawingKey = DRAWING_KEY_PREFIX + studyId + "_" + problemId;
@@ -26,6 +33,13 @@ public class DrawingService {
         redisTemplate.convertAndSend(drawingKey, drawingData);
     }
 
+    /**
+     * 참가자 정보를 Redis 에 저장하고, 필요한 경우 저장된 그림 데이터를 구독자들에게 전송
+     *
+     * @param studyId 스터디 고유 아이디
+     * @param problemId 문제 고유 아이디
+     * @param userId 참가자 고유 아이디
+     */
     public void saveParticipant(Long studyId, Long problemId, String userId) {
 
         String participantKey = PARTICIPANT_KEY_PREFIX + studyId + "_" + problemId;
@@ -39,6 +53,13 @@ public class DrawingService {
                 .ifPresent(savedDrawing -> redisTemplate.convertAndSend(participantKey, savedDrawing));
     }
 
+    /**
+     * Redis 에서 저장된 그림 데이터를 가져옴
+     *
+     * @param studyId 스터디 고유 아이디
+     * @param problemId 문제 고유 아이디
+     * @return 저장된 그림 데이터
+     */
     private String getDrawing(Long studyId, Long problemId) {
 
         String drawingKey = DRAWING_KEY_PREFIX + studyId + "_" + problemId;

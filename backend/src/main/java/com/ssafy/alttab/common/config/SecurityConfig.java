@@ -31,6 +31,14 @@ public class SecurityConfig {
     @Value("${app.front.url}")
     private String frontUrl;
 
+    /**
+     * Spring Security 의 보안 필터 체인을 정의
+     * CORS 설정, CSRF 비활성화, 요청 인증 설정, 세션 관리 정책, OAuth2 로그인 설정 등을 포함
+     *
+     * @param http HttpSecurity 객체
+     * @return SecurityFilterChain 객체
+     * @throws Exception 설정 과정에서 발생할 수 있는 예외
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -62,6 +70,12 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * CORS(Cross-Origin Resource Sharing) 설정을 정의
+     * 특정 도메인에서 오는 요청을 허용하고, 허용되는 HTTP 메소드와 헤더를 설정
+     *
+     * @return CorsConfigurationSource 객체
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

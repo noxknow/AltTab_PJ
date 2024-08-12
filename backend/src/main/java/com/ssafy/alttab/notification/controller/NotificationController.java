@@ -18,16 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/notification")
 @RequiredArgsConstructor
 public class NotificationController {
+
     private final NotificationService notificationService;
 
     @GetMapping
     public ResponseEntity<?> getNotifications(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
+
         return new ResponseEntity<>(notificationService.getNotifications(userDetails.getUsername()), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> checkNotifications(@AuthenticationPrincipal UserDetails userDetails, NotificationRequestDto dto) throws MemberNotFoundException, StudyNotFoundException {
-        notificationService.checkNotification(userDetails.getUsername(), dto);
+    public ResponseEntity<?> checkNotifications(@AuthenticationPrincipal UserDetails userDetails, NotificationRequestDto notificationRequestDto) throws MemberNotFoundException, StudyNotFoundException {
+
+        notificationService.checkNotification(userDetails.getUsername(), notificationRequestDto);
         return ResponseEntity.ok().build();
     }
 

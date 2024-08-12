@@ -32,6 +32,11 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int redisPort;
 
+    /**
+     * Redisson 클라이언트를 생성하는 빈을 설정
+     *
+     * @return RedissonClient 객체
+     */
     @Bean
     public RedissonClient redissonClient() {
 
@@ -42,11 +47,23 @@ public class RedisConfig {
         return Redisson.create(config);
     }
 
+    /**
+     * RedisConnectionFactory 를 생성하는 빈을 설정
+     * Redis 서버에 대한 연결을 관리
+     *
+     * @return RedisConnectionFactory 객체
+     */
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
+    /**
+     * RedisTemplate 을 생성하는 빈을 설정
+     * Redis 와 상호작용하기 위한 템플릿으로, 직렬화 설정을 포함
+     *
+     * @return RedisTemplate 객체
+     */
     @Bean
     public RedisTemplate<Object, Object> redisTemplate() {
         RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
@@ -56,6 +73,13 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    /**
+     * RedisCacheManager 를 생성하는 빈을 설정
+     * 애플리케이션의 캐시 설정을 관리하며, TTL 및 직렬화 방식 등을 설정
+     *
+     * @param redisConnectionFactory RedisConnectionFactory 객체
+     * @return CacheManager 객체
+     */
     @Bean
     public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
@@ -74,6 +98,14 @@ public class RedisConfig {
                 .build();
     }
 
+    /**
+     * Redis 메시지 리스너 컨테이너를 생성하는 빈을 설정
+     * Redis 의 Pub/Sub 메시지를 처리하는 컨테이너
+     *
+     * @param connectionFactory RedisConnectionFactory 객체
+     * @param listenerAdapter 메시지 리스너 어댑터
+     * @return RedisMessageListenerContainer 객체
+     */
     @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter listenerAdapter) {
@@ -84,6 +116,13 @@ public class RedisConfig {
         return container;
     }
 
+    /**
+     * Redis 메시지 리스너 어댑터를 생성하는 빈을 설정
+     * 특정 메시지를 처리하는 데 필요한 로직을 가진 리스너를 어댑터에 연결
+     *
+     * @param subscriber RedisSubscriber 객체 (실제 메시지 처리 로직을 담당)
+     * @return MessageListenerAdapter 객체
+     */
     @Bean
     MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
         return new MessageListenerAdapter(subscriber);

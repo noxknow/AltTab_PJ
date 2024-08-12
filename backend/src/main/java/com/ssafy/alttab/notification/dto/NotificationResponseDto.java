@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationResponseDto {
+
     private Long notificationId;
     private Long studyId;
     private String studyName;
