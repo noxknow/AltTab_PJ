@@ -12,6 +12,7 @@ import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.notification.service.NotificationService;
 import com.ssafy.alttab.study.dto.MakeStudyRequestDto;
+import com.ssafy.alttab.study.dto.StudyIdResponseDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
 import com.ssafy.alttab.study.entity.Study;
@@ -64,7 +65,7 @@ public class StudyService {
     }
 
     @Transactional
-    public void createStudy(String username, MakeStudyRequestDto dto) throws MemberNotFoundException {
+    public StudyIdResponseDto createStudy(String username, MakeStudyRequestDto dto) throws MemberNotFoundException {
         Study study = Study.createStudy(dto.getStudyName(), dto.getStudyDescription());
         Member member = memberRepository.findByName(username)
                 .orElseThrow(() -> new MemberNotFoundException(username));
@@ -79,5 +80,6 @@ public class StudyService {
                 throw new MemberNotFoundException(memberId);
             }
         }
+        return StudyIdResponseDto.builder().studyId(study.getId()).build();
     }
 }

@@ -80,7 +80,7 @@ public class CommunityService {
     public List<TopSolverDto> getTopSolvers() {
         return studyRepository.findAll()
                 .stream()
-//                .sorted(Comparator.comparing(Study::totalSolve, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Study::totalSolve, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
                 .map(this::mapToTopSolverDto)
                 .collect(Collectors.toList());
@@ -150,7 +150,7 @@ public class CommunityService {
                 .studyId(study.getId())
                 .like(study.getLike())
                 .studyDescription(study.getStudyDescription())
-//                .totalSolve(study.totalSolve())
+                .totalSolve(study.totalSolve())
                 .view(study.getView())
                 .leaderMemberDto(getLeaderInfo(study))
                 .build();
