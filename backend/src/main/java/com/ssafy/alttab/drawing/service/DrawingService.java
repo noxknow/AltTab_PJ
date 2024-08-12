@@ -15,7 +15,7 @@ public class DrawingService {
 
     private static final String DRAWING_KEY_PREFIX = "drawing:room:";
     private static final String PARTICIPANT_KEY_PREFIX = "participant:room:";
-    private static final long TIMEOUT_MINUTES = 30;
+    private static final long TIMEOUT_MINUTES = 10;
 
     public void sendDrawing(Long studyId, Long problemId, String drawingData) {
 

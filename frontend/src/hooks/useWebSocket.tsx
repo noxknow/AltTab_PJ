@@ -33,7 +33,7 @@ const useWebSocket = (studyId: string, problemId: string, canvas: fabric.Canvas 
     const socket = new SockJS(`${socketURL}`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
-      reconnectDelay: 500,
+      reconnectDelay: 50,
       heartbeatIncoming: 2000,
       heartbeatOutgoing: 2000,
     });
