@@ -33,7 +33,7 @@ const useWebSocket = (studyId: string, problemId: string, canvas: fabric.Canvas 
     const socket = new SockJS(`${socketURL}`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
-      reconnectDelay: 1000,
+      reconnectDelay: 500,
       heartbeatIncoming: 2000,
       heartbeatOutgoing: 2000,
     });
@@ -69,7 +69,7 @@ const useWebSocket = (studyId: string, problemId: string, canvas: fabric.Canvas 
           () => {
             connect();
           },
-          Math.min(5000 * reconnectAttemptsRef.current, 60000),
+          Math.min(2000 * reconnectAttemptsRef.current, 10000),
         );
       } else {
         console.log('Max reconnect attempts reached.');
