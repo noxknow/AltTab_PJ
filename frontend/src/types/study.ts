@@ -8,7 +8,7 @@ export type memberInfo = {
 export type studyInfo = {
   studyId?: string;
   studyName?: string;
-  studyEmails?: string[];
+  memberIds?: string[];
   studyDescription?: string;
 };
 

@@ -7,6 +7,7 @@ const memberKeys = {
   studies: ['studies'],
   info: ['info'],
   logout: ['logout'],
+  name: ['name'],
 };
 
 export const useGetMyInfoQuery = () => {
@@ -37,4 +38,12 @@ export const useLogoutQuery = () => {
       });
     },
   });
+};
+
+export const useGetMembersByNameQuery = (name: string) => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: memberKeys.name,
+    queryFn: (): Promise<memberInfo[]> => member.getMembersByName(name),
+  });
+  return { data, isLoading, refetch };
 };
