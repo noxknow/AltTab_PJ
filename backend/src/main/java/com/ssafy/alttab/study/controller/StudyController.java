@@ -4,7 +4,10 @@ import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.study.dto.MakeStudyRequestDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
+import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
+import com.ssafy.alttab.study.service.StudyScheduleService;
 import com.ssafy.alttab.study.service.StudyService;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class StudyController {
 
     private final StudyService studyService;
+    private final StudyScheduleService studyScheduleService;
 
     @GetMapping("/{studyId}")
     public ResponseEntity<?> getStudyInfo(@PathVariable Long studyId) throws StudyNotFoundException {
@@ -47,4 +51,13 @@ public class StudyController {
         return new ResponseEntity<>(studyService.createStudy(username, dto), HttpStatus.OK);
     }
 
+    @GetMapping("/schedule/{id}/{startDate}")
+    public ResponseEntity<?> getSchedule(@PathVariable Long id, @PathVariable LocalDateTime startDate){
+        return new ResponseEntity<>(studyScheduleService.getStudySchedule(id, startDate), HttpStatus.OK);
+    }
+
+    @PostMapping("/schedule/update")
+    public ResponseEntity<?> updateSchedule(StudyScheduleRequestDto requestDto){
+        return new ResponseEntity<>(studyScheduleService.updateOrCreateStudySchedule(requestDto), HttpStatus.OK);
+    }
 }

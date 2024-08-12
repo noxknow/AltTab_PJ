@@ -2,6 +2,7 @@ package com.ssafy.alttab.common.jointable.entity;
 
 import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.study.entity.Study;
+import com.ssafy.alttab.study.entity.StudySchedule;
 import com.ssafy.alttab.study.enums.ProblemStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,10 @@ public class StudyProblem {
     @ManyToOne
     @JoinColumn(name = "problem_id")
     private Problem problem;
+
+    @ManyToOne
+    @JoinColumn(name = "study_schedule_id")
+    private StudySchedule studySchedule;
 
     private LocalDate deadline;
     private String presenter;
