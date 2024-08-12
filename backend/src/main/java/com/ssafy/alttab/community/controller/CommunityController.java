@@ -20,7 +20,7 @@ public class CommunityController {
     private final CommunityService communityService;
 
 
-    @GetMapping("/")
+    @GetMapping("/main")
     public ResponseEntity<CommunityMainResponseDto> getCommunityMain() {
         CommunityMainResponseDto response = communityService.getCommunityMain();
         return new ResponseEntity<>(response, HttpStatus.OK);
