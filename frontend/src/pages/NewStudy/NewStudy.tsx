@@ -1,47 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from '@/components/Button/Button';
 import ToolSVG from '@/assets/icons/tool.svg?react';
 import PeopleSVG from '@/assets/icons/people.svg?react';
 import InfoSVG from '@/assets/icons/info.svg?react';
-import { Input } from '@/components/Input/Input';
 import CheckSVG from '@/assets/icons/check.svg?react';
-import { studyInfo } from '@/types/study.ts';
+import CloseSVG from '@/assets/icons/close.svg?react';
+import { Button } from '@/components/Button/Button';
+import { Input } from '@/components/Input/Input';
+import { studyInfo, memberInfo } from '@/types/study.ts';
 import { useCreateStudyQuery } from '@/queries/study';
+import { useGetMembersByNameQuery } from '@/queries/member';
 
 import styles from './NewStudy.module.scss';
 
+const MAX_MEMBER_COUNT = 6;
+
 export function NewStudy() {
+  const [searchValue, setSearchValue] = useState('');
   const [studyName, setStudyName] = useState('');
-  const [studyEmails, setStudyEmails] = useState(['']);
+  const [studyMembers, setStudyMembers] = useState<memberInfo[]>([]);
   const [studyDescription, setStudyDescription] = useState('');
+  const [newMember, setNewMenber] = useState<memberInfo | null>();
   const navigate = useNavigate();
   const createStudyQuery = useCreateStudyQuery();
+  const { refetch } = useGetMembersByNameQuery(searchValue);
 
-  const handleEmailChange = (index: number, value: string) => {
-    const newEmails = [...studyEmails];
-    newEmails[index] = value;
-    setStudyEmails(newEmails);
+  const getMembersByName = useCallback(async () => {
+    const { data } = await refetch();
+    console.log(data);
+  }, [searchValue]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newMemberName = e.currentTarget.value;
+    setSearchValue(newMemberName);
+    getMembersByName();
   };
 
-  const addEmailField = () => {
-    setStudyEmails([...studyEmails, '']);
+  const addMemberField = () => {
+    setStudyMembers((prevMembers) => {
+      if (!newMember) {
+        return prevMembers;
+      }
+      const newMembers = [...prevMembers, newMember];
+      setNewMenber(null);
+      return newMembers;
+    });
   };
+
+  const deleteMember = useCallback(
+    (target: number) => {
+      setStudyMembers((prevMembers) => {
+        return prevMembers.filter((_, index) => index !== target);
+      });
+    },
+    [setStudyMembers],
+  );
 
   const createStudy = async () => {
     if (!studyName) {
-      alert('스터디 명을 입력해주세여');
+      alert('스터디 명을 입력해주세요');
+      return;
     }
 
     if (!studyDescription) {
-      alert('스터디 설명을 입력해주세여');
+      alert('스터디 설명을 입력해주세요');
+      return;
     }
 
     try {
       const form: studyInfo = {
         studyName,
-        studyEmails: studyEmails.filter((email) => email !== '')!,
+        memberIds: studyMembers.map((member) => member.memberId.toString())!,
         studyDescription,
       };
 
@@ -58,8 +88,8 @@ export function NewStudy() {
       <div className={styles.main_mid}>
         <div className={styles.option}>
           <ToolSVG />
-          <div>
-            <div className={styles.small_title}>팀명 생성</div>
+          <div className={styles.content}>
+            <div className={styles.small_title}>팀명</div>
             <Input
               placeholder="팀명을 입력하세요"
               maxLength={15}
@@ -72,35 +102,59 @@ export function NewStudy() {
         </div>
         <div className={styles.option}>
           <PeopleSVG />
-          <div>
-            <div className={styles.small_title}>팀 초대</div>
-            {studyEmails.map((email, index) => (
-              <Input
-                key={index}
-                type="email"
-                placeholder="팀원을 초대하세요"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  handleEmailChange(index, e.target.value)
-                }
-              />
-            ))}
-            <div className={styles.addMemberButtonWrapper}>
-              <Button
-                color="green"
-                fill={false}
-                size="small"
-                onClick={addEmailField}
-              >
-                + 팀원 추가
-              </Button>
+          <div className={styles.content}>
+            <div className={styles.small_title}>팀원 초대</div>
+            <div className={styles.study_members}>
+              <div className={styles.members}>
+                {studyMembers.length < MAX_MEMBER_COUNT && (
+                  <div className={styles.new_member}>
+                    <Input
+                      type="name"
+                      placeholder="팀원을 초대하세요"
+                      onChange={handleChange}
+                    />
+                    <Button
+                      className={styles.addMemberButtonWrapper}
+                      color="green"
+                      fill={true}
+                      size="long"
+                      onClick={addMemberField}
+                    >
+                      <CloseSVG
+                        width={24}
+                        height={24}
+                        stroke="#fff"
+                        className={styles.add_button}
+                      />
+                    </Button>
+                  </div>
+                )}
+                {studyMembers.map((member, index) => (
+                  <div key={index} className={styles.member}>
+                    <Input
+                      type="name"
+                      placeholder="팀원을 초대하세요"
+                      value={member.name}
+                      readonly={true}
+                    />
+                    <Button
+                      color="red"
+                      fill={false}
+                      size="small"
+                      onClick={() => deleteMember(index)}
+                    >
+                      <CloseSVG width={24} height={24} stroke="#F24242" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
         <div className={styles.option}>
           <InfoSVG />
-          <div>
-            <div className={styles.small_title}>Info</div>
+          <div className={styles.content}>
+            <div className={styles.small_title}>스터디 소개</div>
             <Input
               placeholder="스터디를 소개해 주세요"
               maxLength={25}

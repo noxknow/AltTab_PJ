@@ -6,11 +6,11 @@
   display: flex;
   flex-direction: column;
   max-width: 70rem;
-  padding: 7rem 0rem 7rem 0rem;
+  margin: 0 auto;
+  padding: 6rem 0rem;
   justify-content: space-between;
   align-items: center;
-  height: 66rem;
-  margin: auto;
+  gap: 4rem;
 }
 
 .main_mid {
@@ -18,16 +18,19 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+
+  @media screen and (max-width: 768px) {
+    flex-direction: column;
+  }
 }
 
 .option {
-  height: 17rem;
-  width: 17rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   text-align: center;
+  gap: 4rem;
 }
 
 .title {
@@ -42,6 +45,35 @@
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
   font-size: 1.4rem;
   font-weight: 400;
+  flex: 1 1 0;
+}
+
+.study_members {
+  display: flex;
+  flex: 1 1 0;
+
+  .members {
+    @include scrollable-container;
+    display: flex;
+    flex-direction: column;
+    height: 16rem;
+    overflow: auto;
+
+    .member {
+      display: flex;
+      width: 100%;
+    }
+  }
+}
+
+.new_member {
+  display: flex;
+}
+
+.add_button {
+  transform: rotate(45deg);
 }
