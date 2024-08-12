@@ -13,13 +13,8 @@ public class ErrorResponseDto {
         this.message = ex.getMessage();
     }
 
-    public static ResponseEntity<?> toResponse(CodeNotFoundException ex) {
+    public static ResponseEntity<?> toResponse(Exception ex, HttpStatus httpStatus) {
         ErrorResponseDto response = new ErrorResponseDto(ex);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-    public static ResponseEntity<?> toResponse(Exception ex) {
-        ErrorResponseDto response = new ErrorResponseDto(ex);
-        return new ResponseEntity<>(response, HttpStatus.SEE_OTHER);
+        return new ResponseEntity<>(response, httpStatus);
     }
 }

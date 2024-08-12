@@ -14,52 +14,44 @@ public class GlobalExceptionHandler {
 
     //== not found ==//
     @ExceptionHandler(CodeNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleCodeNotFoundException(CodeNotFoundException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleMemberNotFoundException(MemberNotFoundException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(StudyNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleStudyNotFoundException(StudyNotFoundException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ProblemNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleProblemNotFoundException(ProblemNotFoundException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(TokenNotFoundException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<?> handleTokenNotFoundException(TokenNotFoundException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.UNAUTHORIZED);
     }
 
     //== not valid ==//
     @ExceptionHandler(TokenNotValidException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<?> handleTokenNotValidException(TokenNotValidException ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.UNAUTHORIZED);
     }
 
     //== unExcepted ==//
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<?> handleGeneralException(Exception ex) {
-        return ErrorResponseDto.toResponse(ex);
+        return ErrorResponseDto.toResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
