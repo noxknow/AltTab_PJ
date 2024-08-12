@@ -15,9 +15,10 @@ public class DrawingService {
 
     private static final String DRAWING_KEY_PREFIX = "drawing:room:";
     private static final String PARTICIPANT_KEY_PREFIX = "participant:room:";
-    private static final long TIMEOUT_MINUTES = 120;
+    private static final long TIMEOUT_MINUTES = 30;
 
     public void sendDrawing(Long studyId, Long problemId, String drawingData) {
+
         String drawingKey = DRAWING_KEY_PREFIX + studyId + "_" + problemId;
         redisTemplate.opsForValue().set(drawingKey, drawingData);
         redisTemplate.expire(drawingKey, TIMEOUT_MINUTES, TimeUnit.MINUTES);
@@ -39,6 +40,7 @@ public class DrawingService {
     }
 
     private String getDrawing(Long studyId, Long problemId) {
+
         String drawingKey = DRAWING_KEY_PREFIX + studyId + "_" + problemId;
 
         return redisTemplate.opsForValue().get(drawingKey);
