@@ -21,6 +21,12 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
+    @GetMapping("/count")
+    public ResponseEntity<?> countNotifications(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
+
+        return new ResponseEntity<>(notificationService.countNotifications(userDetails.getUsername()), HttpStatus.OK);
+    }
+
     @GetMapping
     public ResponseEntity<?> getNotifications(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
 
@@ -33,5 +39,4 @@ public class NotificationController {
         notificationService.checkNotification(userDetails.getUsername(), notificationRequestDto);
         return ResponseEntity.ok().build();
     }
-
 }

@@ -1,10 +1,7 @@
 import axios from 'axios';
 
 import { URL } from '@/constants/url';
-import {
-  RecommendationRequest,
-  RecommendationResponse,
-} from '@/types/recommend';
+import { RecommendationRequest, RecommendationResponse } from '@/types/recommend';
 
 const baseURL = URL.RECOMMEND;
 const headers = {

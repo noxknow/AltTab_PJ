@@ -34,7 +34,7 @@ public class Member {
     private MemberRoleStatus role;
 
     @Column(name = "member_study")
-    @OneToMany(mappedBy = "member", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private List<MemberStudy> memberStudies = new ArrayList<>();
 

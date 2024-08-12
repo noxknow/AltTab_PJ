@@ -37,21 +37,13 @@ public class NotificationService {
     }
 
     @Transactional
-    public void checkNotification(String username, NotificationRequestDto notificationRequestDto) throws MemberNotFoundException, StudyNotFoundException {
+    public long countNotifications(String username) throws MemberNotFoundException {
 
         Member member = memberRepository.findByName(username)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
-        if (notificationRequestDto.isCheck()) {
-            Study study = studyRepository.findById(notificationRequestDto.getStudyId())
-                    .orElseThrow(() -> new StudyNotFoundException(notificationRequestDto.getStudyId()));
-
-            MemberStudy memberStudy = createMemberStudy(member, study, MEMBER);
-            memberStudyRepository.save(memberStudy);
-            study.addMemberStudy(memberStudy);
-        }
-
-        member.getNotifications().removeIf(notification -> notification.getId().equals(notificationRequestDto.getNotificationId()));
+        System.out.println(member.getNotifications().size());
+        return member.getNotifications().size();
     }
 
     @Transactional(readOnly = true)
@@ -65,5 +57,23 @@ public class NotificationService {
                         .map(NotificationResponseDto::toDto)
                         .toList())
                 .build();
+    }
+
+    @Transactional
+    public void checkNotification(String username, NotificationRequestDto notificationRequestDto) throws MemberNotFoundException, StudyNotFoundException {
+
+        Member member = memberRepository.findByName(username)
+                .orElseThrow(() -> new MemberNotFoundException(username));
+
+        if (notificationRequestDto.isCheck()) {
+            Study study = studyRepository.findById(notificationRequestDto.getNotificationId())
+                    .orElseThrow(() -> new StudyNotFoundException(notificationRequestDto.getStudyId()));
+
+            MemberStudy memberStudy = createMemberStudy(member, study, MEMBER);
+            memberStudyRepository.save(memberStudy);
+            study.addMemberStudy(memberStudy);
+        }
+
+        member.getNotifications().removeIf(notification -> notification.getId().equals(notificationRequestDto.getNotificationId()));
     }
 }

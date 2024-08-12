@@ -4,6 +4,7 @@ import AlarmSVG from '@/assets/icons/alarm.svg?react';
 import { MemberProfile } from '@/components/StudyLeftBar/MemberProfile';
 import { Button } from '@/components/Button/Button';
 import { useLogoutQuery } from '@/queries/member';
+import { useCountNotificationQuery } from '@/queries/notification';
 import { URL } from '@/constants/url';
 
 import styles from './ProfileModal.module.scss';
@@ -16,6 +17,7 @@ type ProfileModalProps = {
 
 export function ProfileModal({ setIsModal, url, name }: ProfileModalProps) {
   const { mutateAsync: logout } = useLogoutQuery();
+  const { data: notificationCount } = useCountNotificationQuery();
 
   const handleLogout = async () => {
     await logout();
@@ -40,7 +42,7 @@ export function ProfileModal({ setIsModal, url, name }: ProfileModalProps) {
                   <div>알림</div>
                 </div>
                 <div className={styles.number}>
-                  <div>7</div>
+                  <div>{notificationCount ?? 0}</div>
                 </div>
               </NavLink>
             </div>
