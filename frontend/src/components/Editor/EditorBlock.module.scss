@@ -51,35 +51,30 @@ $content-padding: 1rem;
     content: '내용을 입력하세요. "/"을 입력해 명령어 사용';
   }
 }
-
 $table-border-color: #dddddd;
 $table-bg-color: #f9f9f9;
 $table-hover-color: #f1f1f1;
 $table-text-color: #333333;
+$cell-border-color: #eeeeee; // 연한 border 색상 추가
 
 .table {
   width: 100%;
+  max-width: 1200px; // 최대 너비 설정 (원하는 값으로 조정)
   border-collapse: collapse;
-  margin: 2.5rem 0;
+  margin: 2.5rem auto; // 가운데 정렬
   font-size: 3rem;
   text-align: center;
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 2.5rem 0;
-    font-size: 3rem;
-    text-align: center;
 
-    tr,
-    th {
-      padding: 3rem 3rem;
-      border: 1px solid $table-border-color;
-      background-color: $table-bg-color;
-      color: $table-text-color;
-    }
+  th,
+  td {
+    padding: 2rem 2rem;
+    border: 1px solid $cell-border-color;
+    background-color: $table-bg-color;
+    color: $table-text-color;
+  }
 
-    tr:hover,
-    th:hover {
+  tr {
+    &:hover {
       background-color: $table-hover-color;
     }
   }
