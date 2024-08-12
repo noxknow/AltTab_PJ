@@ -25,6 +25,7 @@
 }
 
 .option {
+  width: 22rem;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -57,23 +58,29 @@
   flex: 1 1 0;
 
   .members {
-    @include scrollable-container;
     display: flex;
     flex-direction: column;
     height: 16rem;
-    overflow: auto;
+    // overflow: auto;
 
     .member {
       display: flex;
-      width: 100%;
+      // width: 80%;
     }
   }
 }
 
 .new_member {
   display: flex;
-}
+  position: relative;
 
-.add_button {
-  transform: rotate(45deg);
+  .search_result {
+    @include scrollable-container;
+    position: absolute;
+    top: calc(100% - 2px);
+    width: 100%;
+    height: calc(16rem - 100%);
+    text-align: left;
+    overflow: auto;
+  }
 }

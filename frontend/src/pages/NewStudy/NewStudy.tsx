@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ToolSVG from '@/assets/icons/tool.svg?react';
@@ -11,39 +11,51 @@ import { Input } from '@/components/Input/Input';
 import { studyInfo, memberInfo } from '@/types/study.ts';
 import { useCreateStudyQuery } from '@/queries/study';
 import { useGetMembersByNameQuery } from '@/queries/member';
+import { useDebounce } from '@/hooks/useDebounce';
 
 import styles from './NewStudy.module.scss';
 
 const MAX_MEMBER_COUNT = 6;
+const DEBOUNCE_DELAY = 1000;
 
 export function NewStudy() {
   const [searchValue, setSearchValue] = useState('');
+  const [searchResult, setSearchResult] = useState<memberInfo[] | null>(null);
   const [studyName, setStudyName] = useState('');
   const [studyMembers, setStudyMembers] = useState<memberInfo[]>([]);
   const [studyDescription, setStudyDescription] = useState('');
-  const [newMember, setNewMenber] = useState<memberInfo | null>();
   const navigate = useNavigate();
   const createStudyQuery = useCreateStudyQuery();
   const { refetch } = useGetMembersByNameQuery(searchValue);
+  const debouncedQuery = useDebounce(searchValue, DEBOUNCE_DELAY);
 
   const getMembersByName = useCallback(async () => {
+    if (searchValue === '') {
+      setSearchResult(null);
+      return;
+    }
     const { data } = await refetch();
-    console.log(data);
+    if (data && data.members) {
+      setSearchResult(data.members);
+    }
   }, [searchValue]);
+
+  useEffect(() => {
+    getMembersByName();
+  }, [debouncedQuery]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newMemberName = e.currentTarget.value;
     setSearchValue(newMemberName);
-    getMembersByName();
   };
 
-  const addMemberField = () => {
+  const addMemberField = (newMember: memberInfo) => {
     setStudyMembers((prevMembers) => {
       if (!newMember) {
         return prevMembers;
       }
       const newMembers = [...prevMembers, newMember];
-      setNewMenber(null);
+      setSearchResult([]);
       return newMembers;
     });
   };
@@ -113,30 +125,25 @@ export function NewStudy() {
                       placeholder="팀원을 초대하세요"
                       onChange={handleChange}
                     />
-                    <Button
-                      className={styles.addMemberButtonWrapper}
-                      color="green"
-                      fill={true}
-                      size="long"
-                      onClick={addMemberField}
-                    >
-                      <CloseSVG
-                        width={24}
-                        height={24}
-                        stroke="#fff"
-                        className={styles.add_button}
-                      />
-                    </Button>
+                    <div className={styles.search_result}>
+                      {searchResult &&
+                        searchResult.map((member) => (
+                          <Button
+                            key={member.memberId}
+                            color="green"
+                            fill={false}
+                            size="long"
+                            onClick={() => addMemberField(member)}
+                          >
+                            {member.name}
+                          </Button>
+                        ))}
+                    </div>
                   </div>
                 )}
                 {studyMembers.map((member, index) => (
                   <div key={index} className={styles.member}>
-                    <Input
-                      type="name"
-                      placeholder="팀원을 초대하세요"
-                      value={member.name}
-                      readonly={true}
-                    />
+                    <Input type="name" value={member.name} readonly={true} />
                     <Button
                       color="red"
                       fill={false}
