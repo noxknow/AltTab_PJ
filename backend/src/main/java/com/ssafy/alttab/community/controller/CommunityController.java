@@ -1,5 +1,6 @@
 package com.ssafy.alttab.community.controller;
 
+import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.community.dto.CommunityMainResponseDto;
 import com.ssafy.alttab.community.dto.TopFollowerDto;
 import com.ssafy.alttab.community.dto.TopSolverDto;
@@ -8,6 +9,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,8 +30,8 @@ public class CommunityController {
     }
 
     @GetMapping("/top/follower")
-    public ResponseEntity<List<TopFollowerDto>> getTopFollower() {
-        return new ResponseEntity<>(communityService.getTopFollowerStudys(), HttpStatus.OK);
+    public ResponseEntity<List<TopFollowerDto>> getTopFollower(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
+        return new ResponseEntity<>(communityService.getTopFollowerStudyList(userDetails.getUsername()), HttpStatus.OK);
     }
 
     @GetMapping("/top/solve")

@@ -1,6 +1,5 @@
 package com.ssafy.alttab.community.dto;
 
-import com.ssafy.alttab.study.entity.Study;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,4 +13,5 @@ public class TopFollowerDto {
     private Long totalFollower;
     private Long view;
     private LeaderMemberDto leaderMemberDto;
+    private boolean check;
 }

@@ -116,4 +116,8 @@ public class Study extends BaseTimeEntity {
         Member member = memberStudy.getMember();
         member.getMemberStudies().add(memberStudy);
     }
+
+    public void removeMemberStudy(MemberStudy memberStudy) {
+        this.memberStudies.remove(memberStudy);
+    }
 }
