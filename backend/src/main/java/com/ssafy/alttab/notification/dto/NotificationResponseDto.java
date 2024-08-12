@@ -11,14 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NotificationResponseDto {
-    private Long id;
+    private Long notificationId;
     private Long studyId;
     private String studyName;
 
     public static NotificationResponseDto toDto(Notification notification) {
-        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
         return NotificationResponseDto.builder()
-                .id(notification.getId())
+                .notificationId(notification.getId())
                 .studyId(notification.getStudyId())
                 .studyName(notification.getStudyName())
                 .build();

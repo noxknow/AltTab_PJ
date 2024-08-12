@@ -39,8 +39,12 @@ public class StudyController {
 
     @PostMapping
     public ResponseEntity<?> createStudy(@AuthenticationPrincipal UserDetails userDetails, @RequestBody MakeStudyRequestDto dto) throws MemberNotFoundException {
-        studyService.createStudy(userDetails.getUsername(), dto);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(studyService.createStudy(userDetails.getUsername(), dto), HttpStatus.OK);
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity<?> createStudyTest(String username, @RequestBody MakeStudyRequestDto dto) throws MemberNotFoundException {
+        return new ResponseEntity<>(studyService.createStudy(username, dto), HttpStatus.OK);
     }
 
 }

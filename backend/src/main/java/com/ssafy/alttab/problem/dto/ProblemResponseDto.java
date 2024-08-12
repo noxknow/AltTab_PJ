@@ -15,8 +15,8 @@ public class ProblemResponseDto {
     private Long studyProblemId;
     private Long problemId;
     private String title; // 문제 제목
-    private String tags; // 문제 태그
-    private Long tier; // 티어
+    private String tag; // 문제 태그
+    private Long level; // 티어
     private String presenter; // 발표자
     private LocalDate deadline;  // 마감 기한
 
@@ -26,8 +26,8 @@ public class ProblemResponseDto {
                 .studyProblemId(studyProblem.getId())
                 .problemId(problem.getProblemId())
                 .title(problem.getTitle())
-                .tags(problem.getTag())
-                .tier(problem.getLevel())
+                .tag(problem.getTag())
+                .level(problem.getLevel())
                 .presenter(studyProblem.getPresenter())
                 .deadline(studyProblem.getDeadline())
                 .build();

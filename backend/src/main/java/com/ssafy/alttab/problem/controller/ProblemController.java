@@ -14,6 +14,7 @@ import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/problem")
 public class ProblemController {
 
     private final ProblemService problemService;

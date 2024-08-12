@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MemberSearchResponseDto {
     private Long memberId;
-    private String memberName;
+    private String name;
     private String avatarUrl;
 
     public static MemberSearchResponseDto toDto(Member member) {
         return MemberSearchResponseDto.builder()
                 .memberId(member.getId())
-                .memberName(member.getName())
+                .name(member.getName())
                 .avatarUrl(member.getAvatarUrl())
                 .build();
     }

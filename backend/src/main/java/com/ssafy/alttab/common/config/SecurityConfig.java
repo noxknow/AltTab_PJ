@@ -37,13 +37,13 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/api/v1/member/logout", "/error", "/oauth2/**",
-                                "/h2-console", "/swagger-ui/index.html", "/swagger",
-                                "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
-                        .permitAll()
-                        .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
-                        .anyRequest().authenticated()
-//                        .anyRequest().permitAll()
+//                        .requestMatchers("/", "/login", "/api/v1/member/logout", "/error", "/oauth2/**",
+//                                "/h2-console", "/swagger-ui/index.html", "/swagger",
+//                                "/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/v3/api-docs/**")
+//                        .permitAll()
+//                        .requestMatchers("/api/v1/**").hasAuthority(MemberRoleStatus.MEMBER.name())
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpoint ->

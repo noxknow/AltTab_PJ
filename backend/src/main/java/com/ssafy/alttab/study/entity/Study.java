@@ -9,6 +9,7 @@ import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 
 import java.util.ArrayList;
 
+import com.ssafy.alttab.study.enums.ProblemStatus;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -45,6 +46,10 @@ public class Study extends BaseTimeEntity {
     @Builder.Default
     private Long like = 0L;
 
+    @Column
+    @Builder.Default
+    private Long point = 0L;
+
     @Column(name = "member_study")
     @Builder.Default
     @OneToMany(mappedBy = "study", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -62,16 +67,17 @@ public class Study extends BaseTimeEntity {
     }
 
     //==비즈니스 로직==//
+
     /**
      * 스터디에서 완료된 문제의 총 개수를 반환합니다.
      *
      * @return 완료된 문제의 총 개수
      */
-//    public Long totalSolve() {
-//        return problems.stream()
-//                .filter(problem -> problem.getProblemStatus() == ProblemStatus.DONE)
-//                .count();
-//    }
+    public Long totalSolve() {
+        return studyProblems.stream()
+                .filter(studyProblem -> studyProblem.getProblemStatus() == ProblemStatus.DONE)
+                .count();
+    }
 
     /**
      * 스터디의 총 팔로워 수를 반환합니다.
