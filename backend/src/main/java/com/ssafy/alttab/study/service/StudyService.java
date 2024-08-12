@@ -37,10 +37,7 @@ public class StudyService {
     public StudyInfoResponseDto getStudyInfo(Long studyId) throws StudyNotFoundException {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
-        return StudyInfoResponseDto.builder()
-                .studyName(study.getStudyName())
-                .studyDescription(study.getStudyDescription())
-                .build();
+        return StudyInfoResponseDto.toDto(study);
     }
 
     public List<MemberInfoResponseDto> getStudyMembers(Long studyId) throws StudyNotFoundException {
@@ -58,10 +55,7 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
         study.updateStudy(dto);
-        return StudyInfoResponseDto.builder()
-                .studyName(study.getStudyName())
-                .studyDescription(study.getStudyDescription())
-                .build();
+        return StudyInfoResponseDto.toDto(study);
     }
 
     @Transactional

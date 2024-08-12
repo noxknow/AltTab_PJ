@@ -1,20 +1,27 @@
 package com.ssafy.alttab.community.service;
 
+import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.community.dto.*;
+import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
+import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.transaction.Transactional;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import static com.ssafy.alttab.member.enums.MemberRoleStatus.FOLLOWER;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +31,7 @@ public class CommunityService {
     private static final int TOP_LIMIT = 6;
     private final StudyRepository studyRepository;
     private final MemberStudyRepository memberStudyRepository;
+    private final MemberRepository memberRepository;
 
     /**
      * 커뮤니티 메인 페이지에 필요한 데이터를 조회
@@ -58,7 +66,6 @@ public class CommunityService {
     }
 
     /**
-     *
      * @param study
      * @return
      */
@@ -92,12 +99,15 @@ public class CommunityService {
      * @return List<TopFollowerDto> 팔로워 수 기준 상위 스터디 목록
      */
     @Transactional
-    public List<TopFollowerDto> getTopFollowerStudys() {
+    public List<TopFollowerDto> getTopFollowerStudyList(String username) throws MemberNotFoundException {
+        Member member = memberRepository.findByName(username).orElseThrow(() -> new MemberNotFoundException(username));
+
         return studyRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Study::getFollowerCount, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
-                .map(this::mapToTopFollowerDto)
+//                .map(this::mapToTopFollowerDto)
+                .map(study -> mapToTopFollowerDto(member, study))
                 .collect(Collectors.toList());
     }
 
@@ -127,7 +137,7 @@ public class CommunityService {
      * @param study StudyInfo 엔티티
      * @return TopFollowerDto 변환된 DTO 객체
      */
-    private TopFollowerDto mapToTopFollowerDto(Study study) {
+    private TopFollowerDto mapToTopFollowerDto(Member member, Study study) {
         return TopFollowerDto.builder()
                 .name(study.getStudyName())
                 .like(study.getLike())
@@ -135,6 +145,7 @@ public class CommunityService {
                 .totalFollower(study.getFollowerCount())  // 팔로워 수로 변경
                 .view(study.getView())
                 .leaderMemberDto(getLeaderInfo(study))
+                .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
     }
 
