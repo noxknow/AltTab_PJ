@@ -6,9 +6,17 @@ type InputProps = {
   type?: string;
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+  readonly?: boolean;
+};
 
-export function Input({ type = 'text', placeholder, maxLength, value, onChange }: InputProps) {
+export function Input({
+  type = 'text',
+  placeholder,
+  maxLength,
+  value,
+  onChange,
+  readonly,
+}: InputProps) {
   return (
     <input
       type={type}
@@ -17,6 +25,7 @@ export function Input({ type = 'text', placeholder, maxLength, value, onChange }
       maxLength={maxLength}
       value={value}
       onChange={onChange}
+      readOnly={readonly}
     />
   );
 }
