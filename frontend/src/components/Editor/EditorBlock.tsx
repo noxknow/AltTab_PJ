@@ -34,12 +34,14 @@ export function EditorBlock({
     left: number;
   } | null>(null);
   const isFocusedRef = useRef(false);
+  const showDropdownRef = useRef(false);
 
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
     if (
       (innerText.current === '' && innerOption === 'image') ||
-      (innerText.current === '<br>' && innerOption === 'table')
+      (innerText.current === '<br>' && innerOption === 'table') ||
+      (innerText.current === '' && innerOption === 'table')
     ) {
       setInnerOption('content');
       deleteBlock(id);
@@ -74,11 +76,13 @@ export function EditorBlock({
       }
     } else if (e.key === '/') {
       e.preventDefault();
-      if (showDropdown) {
+      if (showDropdownRef.current) {
         setShowDropdown(false);
+        showDropdownRef.current = false;
       } else {
         setDropdownPosition(getCursorPosition());
         setShowDropdown(true);
+        showDropdownRef.current = true;
       }
     } else if (innerOption === 'table' || innerOption === 'image') {
       return;
