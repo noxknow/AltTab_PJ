@@ -33,6 +33,12 @@ export function EditorPage() {
     }
   }, [data]);
 
+  useEffect(() => {
+    return () => {
+      createBlocksMutation.mutate();
+    };
+  }, []);
+
   const handleChange = (result: any) => {
     if (!result.destination) return;
 
@@ -88,8 +94,6 @@ export function EditorPage() {
   };
 
   useEffect(() => {
-    createBlocksMutation.mutate();
-
     if (!isChanged.current) {
       return;
     }
