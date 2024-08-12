@@ -6,15 +6,19 @@ import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.dto.MemberJoinedStudiesResponseDto;
+import com.ssafy.alttab.member.dto.MemberListResponseDto;
+import com.ssafy.alttab.member.dto.MemberSearchResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.study.dto.JoinedStudyResponseDto;
 import com.ssafy.alttab.study.entity.Study;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +65,15 @@ public class MemberService {
                                     .studyName(study.getStudyName())
                                     .build();
                         })
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public MemberListResponseDto searchMember(String name) {
+        List<Member> members = memberRepository.findByNameStartingWith(name);
+        return MemberListResponseDto.builder()
+                .members(members.stream()
+                        .map(MemberSearchResponseDto::toDto)
                         .collect(Collectors.toList()))
                 .build();
     }

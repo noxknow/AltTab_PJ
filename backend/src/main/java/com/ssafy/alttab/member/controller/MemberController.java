@@ -10,10 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,7 +26,7 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response){
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         return new ResponseEntity<>(CookieUtil.deleteAuthTokens(request, response), HttpStatus.OK);
     }
 
@@ -37,5 +34,10 @@ public class MemberController {
     public ResponseEntity<?> getJoinedStudies(@AuthenticationPrincipal UserDetails userDetails)
             throws MemberNotFoundException {
         return new ResponseEntity<>(memberService.getJoinedStudies(userDetails.getUsername()), HttpStatus.OK);
+    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<?> searchMember(@PathVariable String name) {
+        return new ResponseEntity<>(memberService.searchMember(name), HttpStatus.OK);
     }
 }
