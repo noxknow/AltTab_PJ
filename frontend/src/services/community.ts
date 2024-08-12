@@ -3,7 +3,7 @@ import { API } from './api';
 
 export const community = {
   endpoint: {
-    default: '/community',
+    default: '/community/main',
     solve: '/community/top/solve',
     follower: '/community/top/follower',
   },
