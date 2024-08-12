@@ -12,6 +12,10 @@ export type studyInfo = {
   studyDescription?: string;
 };
 
+export type searchedMembers = {
+  members: memberInfo[];
+};
+
 export type joinedStudies = {
   joinedStudies: studyInfo[];
 };

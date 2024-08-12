@@ -1,4 +1,4 @@
-import { memberInfo, joinedStudies } from '@/types/study.ts';
+import { memberInfo, joinedStudies, searchedMembers } from '@/types/study.ts';
 import { API } from './api';
 
 export const member = {
@@ -26,7 +26,7 @@ export const member = {
   },
 
   getMembersByName: async (name: string) => {
-    const { data } = await API.get<memberInfo[]>(
+    const { data } = await API.get<searchedMembers>(
       `${member.endpoint.default}/${name}`,
     );
 
