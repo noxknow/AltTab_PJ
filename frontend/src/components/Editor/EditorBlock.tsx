@@ -65,10 +65,12 @@ export function EditorBlock({
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       e.preventDefault();
       addBlock(id);
     } else if (e.key === 'Backspace') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       if (innerText.current === '') {
         e.preventDefault();
         deleteBlock(id);
@@ -88,10 +90,12 @@ export function EditorBlock({
       return;
     } else if (e.key === 'ArrowUp') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       e.preventDefault();
       move('up');
     } else if (e.key === 'ArrowDown') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       e.preventDefault();
       move('down');
     }
