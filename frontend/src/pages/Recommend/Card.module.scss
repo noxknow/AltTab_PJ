@@ -1,99 +1,120 @@
-.cardContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between; /* 카드들 사이에 동일한 간격을 두기 위해 */
-  gap: 10px; /* 카드 사이에 일정한 간격을 주기 위해 */
-  margin: 20px;
-}
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
 
 .card {
-  position: relative; /* 이미지를 카드 내에서 위치시키기 위해 relative로 설정 */
-  flex: 1 1 calc(20% - 20px); /* 5개의 카드를 한 줄에 표시 */
-  box-sizing: border-box;
+  position: relative;
+  width: 250px;
+  height: 200px;
+  perspective: 1000px;
   margin: 10px;
-  min-width: 200px; /* 최소 카드 크기 설정 */
-  max-width: 250px; /* 최대 카드 크기 설정 */
-  border-radius: 15px;
-  color: white;
-  padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition:
-    transform 0.2s,
-    box-shadow 0.2s;
-  text-align: center; /* 텍스트와 이미지가 중앙에 오도록 정렬 */
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  &.flipped .cardInner {
+    transform: rotateY(180deg);
   }
 }
 
-.bronze {
-  background: linear-gradient(135deg, #cc5500, #d78a52);
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
 }
 
-.silver {
-  background: linear-gradient(135deg, #c0c0c0, #d3d3d3);
-}
-
-.gold {
-  background: linear-gradient(135deg, #f1c40f, #e67e22);
-}
-
-.platinum {
-  background: linear-gradient(135deg, #3a8d97, #4bb3c1);
-}
-
-.diamond {
-  background: linear-gradient(135deg, #0ab6ff, #0040ff);
-}
-
-.ruby {
-  background: linear-gradient(135deg, #ff007f, #800000);
-}
-
-.content {
+.cardFront,
+.cardBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  height: 100%;
-  color: white;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cardFront {
+  @include poppins-bold;
+  display: flex;
+  flex-direction: column;
+  //width: 29rem;
+  padding: 2rem;
+  gap: 1.2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cardBack {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+  transform: rotateY(180deg);
+  padding-top: 60px; /* Added padding to push tags down */
+}
+/* Tier-specific color classes */
+
+.bronze .cardBack {
+  background: linear-gradient(135deg, #cc5500, #d78a52);
+}
+
+.silver .cardBack {
+  background: linear-gradient(135deg, #c0c0c0, #d3d3d3);
+}
+
+.gold .cardBack {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+}
+
+.platinum .cardBack {
+  background: linear-gradient(135deg, #3a8d97, #4bb3c1);
+}
+
+.diamond .cardBack {
+  background: linear-gradient(135deg, #0ab6ff, #0040ff);
+}
+
+.ruby .cardBack {
+  background: linear-gradient(135deg, #ff007f, #800000);
 }
 
 .cardHeader {
   font-size: 1.5rem;
   font-weight: bold;
-  margin-top: 45px; /* 이미지와 텍스트 간의 간격 확보 */
   margin-bottom: 10px;
-  text-align: center;
 }
 
 .cardBody {
   font-size: 1rem;
   margin-bottom: 20px;
-  text-align: center;
 }
 
 .tags {
+  @include poppins-bold;
+  // @include scrollable-container;
+  font-size: 1.5rem;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  height: 12rem;
+  overflow: auto;
+  gap: 0.4rem;
 }
 
 .tagItem {
   background-color: #004f8c;
   color: white;
+  height: 2rem;
   padding: 5px 10px;
-  margin: 5px;
+  margin: 2px;
   border-radius: 12px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
 }
 
 .cardButton {
-  background-color: #fff;
+  background-color: #ffffff;
   color: #004f8c;
+
   border: none;
   padding: 10px 20px;
   border-radius: 25px;
@@ -108,11 +129,10 @@
   }
 }
 
-/* 이미지 위치 조정 */
 .tierImage {
   position: absolute;
-  top: -25px; /* 카드 위쪽에 걸쳐지도록 */
+  top: 10px; /* Adjusted the position slightly */
   left: 50%;
-  transform: translateX(-50%); /* 중앙 정렬을 위한 transform */
-  width: 50px; /* 적절한 크기로 이미지 크기 조정 */
+  transform: translateX(-50%);
+  width: 35px;
 }
