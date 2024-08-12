@@ -5,6 +5,7 @@ import { Dropdown } from './Dropdown';
 import { TableInput } from './TableInput';
 import { ImageUploadInput } from './ImageUploadInput';
 import DraggableSVG from '@/assets/icons/draggable.svg?react';
+import CloseSVG from '@/assets/icons/close.svg?react';
 
 type EditorBlockProps = {
   id: string;
@@ -29,17 +30,20 @@ export function EditorBlock({
   const [showDropdown, setShowDropdown] = useState(false);
   const [showImageInput, setShowImageInput] = useState(false);
   const [showTableInput, setShowTableInput] = useState(false);
+  const [showDeleteIcon, setShowDeleteIcon] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState<{
     top: number;
     left: number;
   } | null>(null);
   const isFocusedRef = useRef(false);
+  const showDropdownRef = useRef(false);
 
   const handleChange = (e: ContentEditableEvent) => {
     innerText.current = e.target.value;
     if (
       (innerText.current === '' && innerOption === 'image') ||
-      (innerText.current === '<br>' && innerOption === 'table')
+      (innerText.current === '<br>' && innerOption === 'table') ||
+      (innerText.current === '' && innerOption === 'table')
     ) {
       setInnerOption('content');
       deleteBlock(id);
@@ -59,14 +63,22 @@ export function EditorBlock({
   const handleMouseDown = () => {
     updateBlock(id, innerText.current, innerOption);
   };
+  const handleSvgClick = () => {
+    setShowDeleteIcon(!showDeleteIcon);
+  };
+  const handleDelete = () => {
+    deleteBlock(id);
+  };
 
   const onKeyDownHandler = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       e.preventDefault();
       addBlock(id);
     } else if (e.key === 'Backspace') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       if (innerText.current === '') {
         e.preventDefault();
         deleteBlock(id);
@@ -74,20 +86,24 @@ export function EditorBlock({
       }
     } else if (e.key === '/') {
       e.preventDefault();
-      if (showDropdown) {
+      if (showDropdownRef.current) {
         setShowDropdown(false);
+        showDropdownRef.current = false;
       } else {
         setDropdownPosition(getCursorPosition());
         setShowDropdown(true);
+        showDropdownRef.current = true;
       }
     } else if (innerOption === 'table' || innerOption === 'image') {
       return;
     } else if (e.key === 'ArrowUp') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       e.preventDefault();
       move('up');
     } else if (e.key === 'ArrowDown') {
       setShowDropdown(false);
+      showDropdownRef.current = false;
       e.preventDefault();
       move('down');
     }
@@ -228,7 +244,11 @@ export function EditorBlock({
 
   return (
     <div className={styles.main}>
-      <div className={styles.svg} onMouseDown={handleMouseDown}>
+      <div
+        className={styles.svg}
+        onMouseDown={handleMouseDown}
+        onClick={handleSvgClick}
+      >
         <DraggableSVG />
       </div>
       <div onPaste={handlePaste} className={styles.block}>
@@ -264,6 +284,9 @@ export function EditorBlock({
             }}
           />
         )}
+      </div>
+      <div onClick={handleDelete}>
+        {showDeleteIcon && <CloseSVG width={24} height={24} stroke="#F24242" />}
       </div>
     </div>
   );

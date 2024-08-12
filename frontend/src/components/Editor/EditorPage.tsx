@@ -1,9 +1,14 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { v4 } from 'uuid';
 import { EditorBlock } from './EditorBlock';
 import styles from './EditorPage.module.scss';
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
+import {
+  DragDropContext,
+  Draggable,
+  Droppable,
+  DropResult,
+} from '@hello-pangea/dnd';
 import ReactDOM from 'react-dom';
 import { useCreateBlocksQuery, useGetBlocksQuery } from '@/queries/solutions';
 
@@ -20,25 +25,36 @@ export function EditorPage() {
   const isChanged = useRef(false);
   const index = useRef(-1);
   const { studyId, problemId } = useParams();
-  const { data } = useGetBlocksQuery(studyId!, problemId!);
+  const { refetch } = useGetBlocksQuery(studyId!, problemId!);
+
   const createBlocksMutation = useCreateBlocksQuery(
     studyId!,
     problemId!,
     blocks,
   );
 
-  useEffect(() => {
+  const refetchBlocks = useCallback(async () => {
+    const { data } = await refetch();
     if (data) {
       setBlocks(data);
     }
-  }, [data]);
+  }, []);
 
-  const handleChange = (result: any) => {
+  useEffect(() => {
+    refetchBlocks();
+    return () => {
+      createBlocksMutation.mutate();
+    };
+  }, []);
+
+  const handleChange = (result: DropResult) => {
     if (!result.destination) return;
+
+    const { destination } = result;
 
     setBlocks((prevBlocks) => {
       const [newBlocks] = prevBlocks.splice(result.source.index, 1);
-      prevBlocks.splice(result.destination.index, 0, newBlocks);
+      prevBlocks.splice(destination.index, 0, newBlocks);
       return prevBlocks;
     });
   };
@@ -66,9 +82,10 @@ export function EditorPage() {
     setBlocks((prevBlocks) => {
       index.current = prevBlocks.findIndex((block) => block.id === id);
 
-      if (index.current == 0) {
+      if (prevBlocks.length === 1) {
         return prevBlocks;
       }
+
       const newBlocks = [
         ...prevBlocks.slice(0, index.current),
         ...prevBlocks.slice(index.current + 1),
@@ -88,8 +105,6 @@ export function EditorPage() {
   };
 
   useEffect(() => {
-    createBlocksMutation.mutate();
-
     if (!isChanged.current) {
       return;
     }

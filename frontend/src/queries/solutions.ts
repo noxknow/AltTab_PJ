@@ -24,9 +24,9 @@ export const useCreateBlocksQuery = (
   });
 };
 export const useGetBlocksQuery = (studyId: string, problemId: string) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: blocksKeys.getBlocks,
     queryFn: (): Promise<Block[]> => solutions.getBlocks(studyId, problemId),
   });
-  return { data, isLoading };
+  return { data, isLoading, refetch };
 };
