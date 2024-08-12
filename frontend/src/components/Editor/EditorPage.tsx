@@ -82,9 +82,10 @@ export function EditorPage() {
     setBlocks((prevBlocks) => {
       index.current = prevBlocks.findIndex((block) => block.id === id);
 
-      if (index.current == 0) {
+      if (prevBlocks.length === 1) {
         return prevBlocks;
       }
+
       const newBlocks = [
         ...prevBlocks.slice(0, index.current),
         ...prevBlocks.slice(index.current + 1),
