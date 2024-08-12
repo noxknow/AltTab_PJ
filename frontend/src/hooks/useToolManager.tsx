@@ -4,7 +4,6 @@ import { fabric } from 'fabric';
 import useSelectTool from './canvasTool/useSelectTool';
 import usePenTool from './canvasTool/usePenTool';
 import useEraserTool from './canvasTool/useEraserTool';
-import useHandTool from './canvasTool/useHandTool';
 import useTreeTool from './canvasTool/useTreeTool';
 import useTableTool from './canvasTool/useTableTool';
 
@@ -13,10 +12,9 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
   const [arraySize, setArraySize] = useState({ rows: 2, cols: 3 });
   const [treeDepth, setTreeDepth] = useState(3);
 
-  const { handleSelect } = useSelectTool(canvas);
+  const { handleSelect } = useSelectTool(canvas, sendDrawingData);
   const { handlePen } = usePenTool(canvas, activeTool === 'pen', sendDrawingData);
-  const { handleEraser } = useEraserTool(canvas);
-  const { handleHand } = useHandTool(canvas);
+  const { handleEraser } = useEraserTool(canvas, sendDrawingData);
   const { handleTree } = useTreeTool(canvas, sendDrawingData, treeDepth);
   const { handleTable } = useTableTool(canvas, sendDrawingData, arraySize);
 
@@ -50,9 +48,6 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
       case 'eraser':
         handleEraser();
         break;
-      case 'hand':
-        handleHand();
-        break;
       case 'tree':
         handleTree();
         break;
@@ -70,7 +65,7 @@ const useToolManager = (canvas: fabric.Canvas | null, sendDrawingData: (drawingD
       canvas.off('mouse:up');
       canvas.off('selection:created');
     };
-  }, [activeTool, arraySize, treeDepth, canvas, handleSelect, handlePen, handleEraser, handleHand, handleTree, handleTable, handleClose]); // treeDepth 추가
+  }, [activeTool, arraySize, treeDepth, canvas, handleSelect, handlePen, handleEraser, handleTree, handleTable, handleClose]);
 
   const handleTableSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -5,6 +5,7 @@ import static com.ssafy.alttab.common.enums.ErrorCode.CONNECTION_REFUSED;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ssafy.alttab.common.exception.AppException;
 import com.ssafy.alttab.drawing.dto.DrawingRequestDto;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
@@ -21,7 +22,7 @@ public class RedisSubscriber implements MessageListener {
     private final SimpMessageSendingOperations messagingTemplate;
 
     @Override
-    public void onMessage(Message message, byte[] pattern) {
+    public void onMessage(@NonNull Message message, byte[] pattern) {
         try {
             String publishMessage = redisTemplate.getStringSerializer().deserialize(message.getBody());
             DrawingRequestDto drawingRequestDto = objectMapper.readValue(publishMessage, DrawingRequestDto.class);

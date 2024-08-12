@@ -1,19 +1,22 @@
 import { useRef, useEffect, useState } from 'react';
 import SockJS from 'sockjs-client';
+import { fabric } from 'fabric';
+import { v4 as uuidv4 } from 'uuid';
 
 import { Client } from '@stomp/stompjs';
 import { compressData, decompressData } from '@/utils/CompressUtil';
 import { socketURL } from '@/services/api';
-import { fabric } from 'fabric';
 
-const useWebSocket = (studyId: string | undefined, problemId: string | undefined, canvas: fabric.Canvas | null) => {
+const useWebSocket = (studyId: string, problemId: string, canvas: fabric.Canvas | null) => {
   const stompClient = useRef<Client | null>(null);
   const reconnectAttemptsRef = useRef(0);
   const maxReconnectAttempts = 5;
   const [pendingDrawingData, setPendingDrawingData] = useState<any>(null);
+  const [userId] = useState(() => uuidv4());
 
   useEffect(() => {
     connect();
+
     return () => disconnect();
   }, [studyId, problemId]);
 
@@ -30,7 +33,7 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
     const socket = new SockJS(`${socketURL}`);
     stompClient.current = new Client({
       webSocketFactory: () => socket as any,
-      reconnectDelay: 1000,
+      reconnectDelay: 50,
       heartbeatIncoming: 2000,
       heartbeatOutgoing: 2000,
     });
@@ -44,7 +47,13 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
             updateCanvas(newMessage);
           },
         );
-      }``
+      }
+
+      stompClient.current?.publish({
+        destination: `/pub/api/v1/rooms/${studyId}/${problemId}/enter`,
+        body: JSON.stringify({ studyId, problemId, userId }),
+      });
+
       reconnectAttemptsRef.current = 0;
     };
 
@@ -54,14 +63,13 @@ const useWebSocket = (studyId: string | undefined, problemId: string | undefined
     };
 
     stompClient.current.onWebSocketClose = () => {
-      console.log("Socket Closed");
       if (reconnectAttemptsRef.current < maxReconnectAttempts) {
         reconnectAttemptsRef.current += 1;
         setTimeout(
           () => {
             connect();
           },
-          Math.min(5000 * reconnectAttemptsRef.current, 60000),
+          Math.min(2000 * reconnectAttemptsRef.current, 10000),
         );
       } else {
         console.log('Max reconnect attempts reached.');

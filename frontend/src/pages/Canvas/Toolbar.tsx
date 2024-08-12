@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import MouseIcon from '@/assets/icons/mouse.svg?react';
 import PenIcon from '@/assets/icons/pen.svg?react';
 import EraserIcon from '@/assets/icons/eraser.svg?react';
-import HandIcon from '@/assets/icons/hand.svg?react';
 import TableIcon from '@/assets/icons/table.svg?react';
 import TreeIcon from '@/assets/icons/tree.svg?react';
 import CloseDrawIcon from '@/assets/icons/closeDraw.svg?react';
@@ -70,12 +69,6 @@ const Toolbar: React.FC<ToolbarProps> = ({ canvas, sendDrawingData, closeCanvas 
         onClick={() => setActiveTool('eraser')}
         disabled={activeTool === 'eraser'}
         title="Eraser Tool"
-      />
-      <ToolButton
-        icon={HandIcon}
-        onClick={() => setActiveTool('hand')}
-        disabled={activeTool === 'hand'}
-        title="Hand Tool"
       />
       <ToolButton
         icon={TreeIcon}
