@@ -1,12 +1,17 @@
 package com.ssafy.alttab.common.handler;
 
 import com.ssafy.alttab.common.dto.ErrorResponseDto;
-import com.ssafy.alttab.common.exception.*;
+import com.ssafy.alttab.common.exception.CodeNotFoundException;
+import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.common.exception.ProblemNotFoundException;
+import com.ssafy.alttab.common.exception.StudyNotFoundException;
+import com.ssafy.alttab.common.exception.TokenNotFoundException;
+import com.ssafy.alttab.common.exception.TokenNotValidException;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
@@ -35,6 +40,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<?> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException ex){
         return ErrorResponseDto.toResponse(ex, HttpStatus.NOT_FOUND);
     }
 
