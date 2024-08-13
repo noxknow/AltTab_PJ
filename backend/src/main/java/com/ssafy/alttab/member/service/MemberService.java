@@ -51,6 +51,7 @@ public class MemberService {
                 .build();
     }
 
+    @Transactional
     public MemberJoinedStudiesResponseDto getJoinedStudies(String name) throws MemberNotFoundException {
         Member member = memberRepository.findByName(name)
                 .orElseThrow(() -> new MemberNotFoundException(name));
