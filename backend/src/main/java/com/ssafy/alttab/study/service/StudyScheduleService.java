@@ -9,6 +9,7 @@ import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.problem.entity.Status;
 import com.ssafy.alttab.problem.repository.ProblemRepository;
 import com.ssafy.alttab.problem.repository.StatusRepository;
+import com.ssafy.alttab.study.dto.DeadlinesResponseDto;
 import com.ssafy.alttab.study.dto.DeleteScheduleProblemRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleResponseDto;
@@ -19,6 +20,7 @@ import com.ssafy.alttab.study.repository.StudyScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -118,6 +120,25 @@ public class StudyScheduleService {
         studyScheduleRepository.delete(studySchedule);
 
         return 1;
+    }
+
+    @Transactional(readOnly = true)
+    public DeadlinesResponseDto findDeadlines(LocalDate yearMonth){
+        YearMonth currentYearMonth = YearMonth.from(yearMonth);
+        LocalDate startOfMonth = currentYearMonth.atDay(1);
+        LocalDate endOfMonth = currentYearMonth.atEndOfMonth();
+
+        List<StudySchedule> studySchedules = studyScheduleRepository
+                .findAllByDeadlineBetween(startOfMonth, endOfMonth);
+
+        List<LocalDate> deadlines = studySchedules.stream()
+                .map(StudySchedule::getDeadline)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return DeadlinesResponseDto.builder()
+                .deadlines(deadlines)
+                .build();
     }
 
     //== mapper ==//
