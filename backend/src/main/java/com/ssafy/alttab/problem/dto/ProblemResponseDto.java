@@ -18,7 +18,6 @@ public class ProblemResponseDto {
     private String tag; // 문제 태그
     private Long level; // 티어
     private String presenter; // 발표자
-    private LocalDate deadline;  // 마감 기한
 
     public static ProblemResponseDto toDto(StudyProblem studyProblem) {
         Problem problem = studyProblem.getProblem();
@@ -29,7 +28,6 @@ public class ProblemResponseDto {
                 .tag(problem.getTag())
                 .level(problem.getLevel())
                 .presenter(studyProblem.getPresenter())
-                .deadline(studyProblem.getDeadline())
                 .build();
     }
 }
