@@ -1,34 +1,23 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { problemService } from '@/services/problem'; // 문제 정보 가져오는 함수
+import styles from '../Modal.module.scss';
+import { ProblemDetailsResponse } from '@/types/problem';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
-import styles from '../Modal.module.scss';
-
-interface Problem {
-  problem_id: string;
-  description: string;
-  input_description: string;
-  output_description: string;
-  sample_input: string;
-  sample_output: string;
-}
 
 export function ProblemModal() {
   const { problemId } = useParams<{ problemId: string }>();
-  const { setIsModalOpen } = useCompilerModalState();
-  const [problemData, setProblemData] = useState<Problem | null>(null);
+  const [problemData, setProblemData] = useState<ProblemDetailsResponse | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
+  const { setIsModalOpen } = useCompilerModalState();
 
   useEffect(() => {
     const fetchProblemData = async () => {
       try {
-        const response = await fetch(
-          `http://127.0.0.1:5000/problem/${problemId}`,
-        );
-        if (!response.ok) {
-          throw new Error('Problem not found');
-        }
-        const data: Problem = await response.json();
+        const data = await problemService.getProblemDetails(Number(problemId));
         setProblemData(data);
       } catch (error) {
         console.error('Error fetching problem data:', error);
@@ -49,12 +38,7 @@ export function ProblemModal() {
   }
 
   if (!problemData) {
-    return (
-      <p>
-        문제 데이터가 없어요.. 문의사항에 올려주시면 업데이트 하겠습니다.
-        감사합니다.
-      </p>
-    );
+    return <p>Problem data not available</p>;
   }
 
   const handleOpenInNewTab = () => {
