@@ -9,6 +9,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Swagger/OpenAPI 설정 클래스
+ * Swagger를 사용하여 API 명세서를 자동으로 생성하며, API 보안 설정을 정의
+ */
 @OpenAPIDefinition(
         info = @Info(
                 title = "alttab api 명세서",
@@ -22,6 +26,7 @@ import org.springframework.context.annotation.Configuration;
         ),
         security = @SecurityRequirement(name = "bearerAuth")
 )
+
 @Configuration
 @SecurityScheme(
         name = "bearerAuth",
@@ -29,6 +34,7 @@ import org.springframework.context.annotation.Configuration;
         in = SecuritySchemeIn.HEADER,
         paramName = "Authorization"
 )
+
 public class SwaggerConfiguration {
 
 }

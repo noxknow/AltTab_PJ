@@ -22,7 +22,8 @@ export const useCreateBlocksQuery = (
       });
     },
   });
-};
+}; 
+
 export const useGetBlocksQuery = (studyId: string, problemId: string) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: blocksKeys.getBlocks,

@@ -13,6 +13,12 @@ public class CorsConfig implements WebMvcConfigurer {
     @Value("${app.front.url}")
     private String frontUrl;
 
+    /**
+     * CORS(Cross-Origin Resource Sharing) 설정
+     * 프론트엔드에서 백엔드 API 에 접근할 수 있도록 CORS 설정을 적용
+     *
+     * @param registry CorsRegistry 객체
+     */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
 

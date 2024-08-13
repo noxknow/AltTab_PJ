@@ -21,6 +21,12 @@ public class RedisSubscriber implements MessageListener {
     private final RedisTemplate<Object, Object> redisTemplate;
     private final SimpMessageSendingOperations messagingTemplate;
 
+    /**
+     * Redis 에서 메시지를 수신했을 때 실행되는 메소드
+     *
+     * @param message Redis 에서 수신된 메시지
+     * @param pattern Redis 채널 패턴 (사용되지 않음)
+     */
     @Override
     public void onMessage(@NonNull Message message, byte[] pattern) {
         try {

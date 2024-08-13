@@ -29,33 +29,50 @@ public class NotificationService {
 
     @Transactional
     public void createNotification(Long memberId, Long studyId, String studyName) throws MemberNotFoundException {
+
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
+
         member.addNotification(Notification.createNotification(member, studyId, studyName));
     }
 
     @Transactional
-    public void checkNotification(String username, NotificationRequestDto dto) throws MemberNotFoundException, StudyNotFoundException {
+    public long countNotifications(String username) throws MemberNotFoundException {
+
         Member member = memberRepository.findByName(username)
                 .orElseThrow(() -> new MemberNotFoundException(username));
-        if (dto.isCheck()) {
-            Study study = studyRepository.findById(dto.getStudyId())
-                    .orElseThrow(() -> new StudyNotFoundException(dto.getStudyId()));
-            MemberStudy memberStudy = createMemberStudy(member, study, MEMBER);
-            memberStudyRepository.save(memberStudy);
-            study.addMemberStudy(memberStudy);
-        }
-        member.getNotifications().removeIf(notification -> notification.getId().equals(dto.getNotificationId()));
+
+        return member.getNotifications().size();
     }
 
     @Transactional(readOnly = true)
     public NotificationListResponseDto getNotifications(String username) throws MemberNotFoundException {
+
         Member member = memberRepository.findByName(username)
                 .orElseThrow(() -> new MemberNotFoundException(username));
+
         return NotificationListResponseDto.builder()
                 .notifications(member.getNotifications().stream()
                         .map(NotificationResponseDto::toDto)
                         .toList())
                 .build();
+    }
+
+    @Transactional
+    public void checkNotification(String username, NotificationRequestDto notificationRequestDto) throws MemberNotFoundException, StudyNotFoundException {
+
+        Member member = memberRepository.findByName(username)
+                .orElseThrow(() -> new MemberNotFoundException(username));
+
+        if (notificationRequestDto.isCheck()) {
+            Study study = studyRepository.findById(notificationRequestDto.getStudyId())
+                    .orElseThrow(() -> new StudyNotFoundException(notificationRequestDto.getStudyId()));
+
+            MemberStudy memberStudy = createMemberStudy(member, study, MEMBER);
+            memberStudyRepository.save(memberStudy);
+            study.addMemberStudy(memberStudy);
+        }
+        System.out.println(4);
+        member.getNotifications().removeIf(notification -> notification.getId().equals(notificationRequestDto.getNotificationId()));
     }
 }
