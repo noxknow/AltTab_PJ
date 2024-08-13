@@ -2,6 +2,7 @@ package com.ssafy.alttab.study.controller;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
+import com.ssafy.alttab.study.dto.DeleteScheduleProblemRequestDto;
 import com.ssafy.alttab.study.dto.MakeStudyRequestDto;
 import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,5 +72,10 @@ public class StudyController {
     @PostMapping("/schedule/update")
     public ResponseEntity<?> updateSchedule(@RequestBody StudyScheduleRequestDto requestDto){
         return new ResponseEntity<>(studyScheduleService.updateOrCreateStudySchedule(requestDto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/schedule/problem/delete")
+    public ResponseEntity<?> deleteScheduleProblem(@RequestBody DeleteScheduleProblemRequestDto requestDto){
+        return new ResponseEntity<>(studyScheduleService.deleteStudyProblems(requestDto), HttpStatus.OK);
     }
 }
