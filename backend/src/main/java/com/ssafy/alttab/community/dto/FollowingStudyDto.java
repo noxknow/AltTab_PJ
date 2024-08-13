@@ -7,13 +7,12 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class FollowingStudyResponseDto {
+public class FollowingStudyDto {
     private Long studyId;
     private String studyName;
     private String studyDescription;
-    private Long studyFollowerCount;
     private Long like;
-    private Long totalFollower;
+    private Long totalSolve;
     private LeaderMemberDto leaderMemberDto;
     private boolean check;
 }

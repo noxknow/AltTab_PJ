@@ -6,9 +6,9 @@ import com.ssafy.alttab.community.dto.CommunityMainResponseDto;
 import com.ssafy.alttab.community.dto.TopFollowerDto;
 import com.ssafy.alttab.community.dto.TopSolverDto;
 import com.ssafy.alttab.community.service.CommunityService;
+
 import java.util.List;
 
-import com.ssafy.alttab.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class CommunityController {
 
     private final CommunityService communityService;
-    private final MemberService memberService;
-
 
     @GetMapping("/main")
     public ResponseEntity<CommunityMainResponseDto> getCommunityMain(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
@@ -38,18 +36,18 @@ public class CommunityController {
 
     @GetMapping("/top/solve")
     public ResponseEntity<List<TopSolverDto>> getTopSolver(@AuthenticationPrincipal UserDetails userDetails) throws MemberNotFoundException {
-        return new ResponseEntity<>(communityService.getTopSolvers(userDetails.getUsername()), HttpStatus.OK);
+        return new ResponseEntity<>(communityService.getTopSolversStudyList(userDetails.getUsername()), HttpStatus.OK);
+    }
+
+    @GetMapping("/my/follow")
+    public ResponseEntity<?> getFollowingStudy(@AuthenticationPrincipal UserDetails userDetails) {
+        return new ResponseEntity<>(communityService.getFollowingStudy(userDetails.getUsername()), HttpStatus.OK);
     }
 
     @PostMapping("/follow/{studyId}")
     public ResponseEntity<?> followStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) throws StudyNotFoundException, MemberNotFoundException {
-        memberService.followStudy(userDetails.getUsername(), studyId);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(communityService.followStudy(userDetails.getUsername(), studyId), HttpStatus.OK);
     }
 
-    @GetMapping("/follow")
-    public ResponseEntity<?> getFollowingStudy(@AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(memberService.getFollowingStudy(userDetails.getUsername()), HttpStatus.OK);
-    }
 
 }
