@@ -1,20 +1,20 @@
 package com.ssafy.alttab.study.service;
 
 import static com.ssafy.alttab.common.jointable.entity.MemberStudy.createMemberStudy;
+import static com.ssafy.alttab.member.dto.MemberInfoResponseDto.toDto;
 import static com.ssafy.alttab.member.enums.MemberRoleStatus.FOLLOWER;
 import static com.ssafy.alttab.member.enums.MemberRoleStatus.LEADER;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
+import com.ssafy.alttab.common.jointable.entity.StudyProblem;
+import com.ssafy.alttab.common.jointable.repository.StudyProblemRepository;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.notification.service.NotificationService;
-import com.ssafy.alttab.study.dto.MakeStudyRequestDto;
-import com.ssafy.alttab.study.dto.StudyIdResponseDto;
-import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
-import com.ssafy.alttab.study.dto.StudyInfoResponseDto;
+import com.ssafy.alttab.study.dto.*;
 import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 
@@ -33,6 +33,7 @@ public class StudyService {
     private final StudyRepository studyRepository;
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
+    private final StudyProblemRepository studyProblemRepository;
 
     public StudyInfoResponseDto getStudyInfo(Long studyId) throws StudyNotFoundException {
         Study study = studyRepository.findById(studyId)
@@ -45,8 +46,7 @@ public class StudyService {
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
         return study.getMemberStudies().stream()
                 .filter(memberStudy -> !memberStudy.getRole().equals(FOLLOWER))
-                .map(MemberStudy::getMember)
-                .map(MemberInfoResponseDto::toDto)
+                .map(memberStudy -> toDto(memberStudy.getMember(), memberStudy.getMemberPoint()))
                 .collect(Collectors.toList());
     }
 
@@ -75,5 +75,43 @@ public class StudyService {
             }
         }
         return StudyIdResponseDto.builder().studyId(study.getId()).build();
+    }
+
+    public StudyScoreResponseDto getStudyScore(Long studyId) throws StudyNotFoundException {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyNotFoundException(studyId));
+        int rank = studyRepository.findStudyPointRankById(studyId);
+        List<StudyProblem> studyProblemList = studyProblemRepository.findByStudyId(studyId);
+        int[] tagCount = new int[8];
+        for (StudyProblem studyProblem : studyProblemList) {
+            String tag = studyProblem.getTag();
+            switch (tag) {
+                case "수학":
+                    tagCount[0]++;
+                    break;
+                case "다이나믹 프로그래밍":
+                    tagCount[1]++;
+                    break;
+                case "자료 구조":
+                    tagCount[2]++;
+                    break;
+                case "구현":
+                    tagCount[3]++;
+                    break;
+                case "그래프 이론":
+                    tagCount[4]++;
+                    break;
+                case "탐색":
+                    tagCount[5]++;
+                    break;
+                case "정렬":
+                    tagCount[6]++;
+                    break;
+                case "문자열":
+                    tagCount[7]++;
+                    break;
+            }
+        }
+        return StudyScoreResponseDto.toDto(study, tagCount, rank);
     }
 }

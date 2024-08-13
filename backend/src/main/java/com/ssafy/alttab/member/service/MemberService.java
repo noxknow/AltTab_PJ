@@ -13,8 +13,7 @@ import com.ssafy.alttab.member.dto.MemberSearchResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
-import com.ssafy.alttab.study.dto.FollowStudyListResponseDto;
-import com.ssafy.alttab.study.dto.FollowStudyResponseDto;
+import com.ssafy.alttab.community.dto.FollowingStudyResponseDto;
 import com.ssafy.alttab.study.dto.JoinedStudyResponseDto;
 import com.ssafy.alttab.study.entity.Study;
 
@@ -86,7 +85,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void follow(String username, Long studyId) throws MemberNotFoundException, StudyNotFoundException {
+    public void followStudy(String username, Long studyId) throws MemberNotFoundException, StudyNotFoundException {
         Member member = memberRepository.findByName(username)
                 .orElseThrow(() -> new MemberNotFoundException("Member not found"));
 
@@ -109,15 +108,21 @@ public class MemberService {
         }
     }
 
-    public FollowStudyListResponseDto getFollowStudyList(String username) {
+    public List<FollowingStudyResponseDto> getFollowingStudy(String username) {
         List<MemberStudy> memberStudies = memberStudyRepository.findByMemberName(username);
-        return FollowStudyListResponseDto.builder()
-                .followStudyList(
-                        memberStudies.stream()
-                                .filter(memberStudy -> memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
-                                .map(memberStudy -> FollowStudyResponseDto.toDto(memberStudy.getStudy()))
-                                .collect(Collectors.toList())
-                )
+        return memberStudies.stream()
+                .filter(memberStudy -> memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
+                .map(memberStudy -> mapToFollowingStudyDto(memberStudy.getMember(), memberStudy.getStudy()))
+                .collect(Collectors.toList());
+    }
+
+    private FollowingStudyResponseDto mapToFollowingStudyDto(Member member, Study study) {
+        return FollowingStudyResponseDto.builder()
+                .studyId(study.getId())
+                .studyName(study.getStudyName())
+                .studyDescription(study.getStudyDescription())
+                .studyFollowerCount(study.getFollowerCount())
+                .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
     }
 }

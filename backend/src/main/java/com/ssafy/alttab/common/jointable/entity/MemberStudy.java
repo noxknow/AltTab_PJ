@@ -33,7 +33,7 @@ public class MemberStudy {
     private MemberRoleStatus role;
 
     @Builder.Default
-    private Long point = 0L;
+    private Long memberPoint = 0L;
 
     //==생성 메서드==//
     public static MemberStudy createMemberStudy(Member member, Study study, MemberRoleStatus role) {
@@ -44,5 +44,10 @@ public class MemberStudy {
                 .build();
     }
 
+    public void incrementMemberPoint(Long value) {
+        this.memberPoint += value;
+    }
+
     //==연관 관계 메서드==//
+
 }

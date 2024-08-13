@@ -3,19 +3,17 @@ package com.ssafy.alttab.community.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class TopSolverDto {
+@AllArgsConstructor
+public class FollowingStudyResponseDto {
     private Long studyId;
     private String studyName;
     private String studyDescription;
+    private Long studyFollowerCount;
     private Long like;
-    private Long totalSolve;
-    private Long view;
+    private Long totalFollower;
     private LeaderMemberDto leaderMemberDto;
     private boolean check;
 }
