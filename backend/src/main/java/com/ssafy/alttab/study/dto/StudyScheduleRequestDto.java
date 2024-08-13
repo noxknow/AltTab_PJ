@@ -1,6 +1,5 @@
 package com.ssafy.alttab.study.dto;
 
-import com.ssafy.alttab.problem.dto.ProblemRequestDto;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -13,5 +12,6 @@ import lombok.Getter;
 public class StudyScheduleRequestDto {
     private Long studyId;
     private LocalDate deadline;
-    private List<ProblemRequestDto> studyProblems;
+    private String presenter;
+    private List<Long> problemId;
 }
