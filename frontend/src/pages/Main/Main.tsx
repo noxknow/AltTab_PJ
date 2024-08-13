@@ -38,7 +38,7 @@ export function MainPage() {
         <CommunityProfile
           study={{
             studyId: 1,
-            name: '알고하이',
+            studyName: '알고하이',
             studyDescription: '자바를 활용한 알고리즘 스터디입니다.',
             follower: 1000,
             like: 1000,
@@ -47,7 +47,9 @@ export function MainPage() {
               name: 'Lana Steiner',
               avatarUrl: 'https://fir-rollup.firebaseapp.com/de-sm.jpg',
             },
+            check: true,
           }}
+          isLink={false}
         />
       </div>
       <div className={styles.main_right}>
