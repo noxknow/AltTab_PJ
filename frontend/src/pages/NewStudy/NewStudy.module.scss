@@ -48,24 +48,37 @@
 .content {
   display: flex;
   flex-direction: column;
+  width: 100%;
   font-size: 1.4rem;
   font-weight: 400;
-  flex: 1 1 0;
 }
 
 .study_members {
   display: flex;
-  flex: 1 1 0;
+  width: 100%;
 
-  .members {
+  .member_container {
     display: flex;
     flex-direction: column;
     height: 16rem;
-    // overflow: auto;
+    gap: 0.4rem;
 
-    .member {
-      display: flex;
-      // width: 80%;
+    .members {
+      @include scrollable-container;
+      flex-grow: 1;
+      overflow-x: hidden;
+      overflow-y: auto;
+
+      .member {
+        position: relative;
+        display: flex;
+        width: 100%;
+
+        .close_button {
+          position: absolute;
+          right: 0;
+        }
+      }
     }
   }
 }
@@ -82,5 +95,6 @@
     height: calc(16rem - 100%);
     text-align: left;
     overflow: auto;
+    z-index: 5;
   }
 }

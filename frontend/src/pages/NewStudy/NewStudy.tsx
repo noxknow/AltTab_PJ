@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import ToolSVG from '@/assets/icons/tool.svg?react';
@@ -15,7 +15,7 @@ import { useDebounce } from '@/hooks/useDebounce';
 
 import styles from './NewStudy.module.scss';
 
-const MAX_MEMBER_COUNT = 6;
+const MAX_MEMBER_COUNT = 5;
 const DEBOUNCE_DELAY = 1000;
 
 export function NewStudy() {
@@ -55,7 +55,8 @@ export function NewStudy() {
         return prevMembers;
       }
       const newMembers = [...prevMembers, newMember];
-      setSearchResult([]);
+      setSearchResult(null);
+      setSearchValue('');
       return newMembers;
     });
   };
@@ -87,8 +88,8 @@ export function NewStudy() {
         studyDescription,
       };
 
-      const { newStudyId } = await createStudyQuery.mutateAsync(form);
-      navigate(`/study/${newStudyId}`);
+      const { studyId } = await createStudyQuery.mutateAsync(form);
+      navigate(`/study/${studyId}`);
     } catch (error) {
       console.error('스터디 생성 실패:', error);
     }
@@ -115,45 +116,56 @@ export function NewStudy() {
         <div className={styles.option}>
           <PeopleSVG />
           <div className={styles.content}>
-            <div className={styles.small_title}>팀원 초대</div>
+            <div className={styles.small_title}>
+              팀원 초대 {studyMembers.length}/{MAX_MEMBER_COUNT}
+            </div>
             <div className={styles.study_members}>
-              <div className={styles.members}>
+              <div className={styles.member_container}>
                 {studyMembers.length < MAX_MEMBER_COUNT && (
                   <div className={styles.new_member}>
                     <Input
                       type="name"
+                      value={searchValue}
                       placeholder="팀원을 초대하세요"
                       onChange={handleChange}
+                      onFocus={getMembersByName}
+                      onBlur={() => {
+                        setSearchResult(null);
+                      }}
                     />
-                    <div className={styles.search_result}>
-                      {searchResult &&
-                        searchResult.map((member) => (
+                    {searchResult && (
+                      <div className={styles.search_result}>
+                        {searchResult.map((member) => (
                           <Button
                             key={member.memberId}
                             color="green"
                             fill={false}
                             size="long"
-                            onClick={() => addMemberField(member)}
+                            onMouseDown={() => addMemberField(member)}
                           >
                             {member.name}
                           </Button>
                         ))}
-                    </div>
+                      </div>
+                    )}
                   </div>
                 )}
-                {studyMembers.map((member, index) => (
-                  <div key={index} className={styles.member}>
-                    <Input type="name" value={member.name} readonly={true} />
-                    <Button
-                      color="red"
-                      fill={false}
-                      size="small"
-                      onClick={() => deleteMember(index)}
-                    >
-                      <CloseSVG width={24} height={24} stroke="#F24242" />
-                    </Button>
-                  </div>
-                ))}
+                <div className={styles.members}>
+                  {studyMembers.map((member, index) => (
+                    <div key={index} className={styles.member}>
+                      <Input type="name" value={member.name} readOnly />
+                      <Button
+                        className={styles.close_button}
+                        color="red"
+                        fill={false}
+                        size="small"
+                        onClick={() => deleteMember(index)}
+                      >
+                        <CloseSVG width={24} height={24} stroke="#F24242" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
