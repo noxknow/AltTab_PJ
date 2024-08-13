@@ -1,25 +1,23 @@
 import { Notice } from './Notice';
 import styles from './Notifications.module.scss';
+
 import AlarmSVG from '@/assets/icons/alarm.svg?react';
+import { useNotificationQuery, useCheckNotificationMutation } from '@/queries/notice';
 
 export function Notifications() {
-  const notices = [
-    {
-      id: 1,
-      content: '회의 일정이 변경되었습니다.',
-      date: '2024-08-11 09:30:00',
-    },
-    {
-      id: 2,
-      content: '새로운 메시지가 도착했습니다.',
-      date: '2024-08-11 10:15:00',
-    },
-    {
-      id: 3,
-      content: '비밀번호 변경이 필요합니다.',
-      date: '2024-08-11 11:45:00',
-    },
-  ];
+  const { data: notifications, isLoading, error } = useNotificationQuery();
+  const checkNotificationMutation = useCheckNotificationMutation();
+
+  const handleCheck = (notificationId: number, studyId: number, check: boolean) => {
+    checkNotificationMutation.mutate({
+      notificationId,
+      studyId,
+      check,
+    });
+  };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading notifications</div>;
 
   return (
     <div className={styles.main}>
@@ -28,14 +26,15 @@ export function Notifications() {
         <div>알림</div>
       </div>
       <div>
-        {notices &&
-          notices.map((notice) => (
-            <Notice
-              key={notice.id}
-              content={notice.content}
-              date={notice.date}
-            />
-          ))}
+        {notifications && notifications.notifications.map((notice) => (
+          <Notice
+            key={notice.notificationId}
+            content={`${notice.studyName}에 초대 되었습니다.`}
+            date={notice.createdAt}
+            onAccept={() => handleCheck(notice.notificationId, notice.studyId, true)}
+            onReject={() => handleCheck(notice.notificationId, notice.studyId, false)}
+          />
+        ))}
       </div>
     </div>
   );

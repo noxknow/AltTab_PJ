@@ -9,7 +9,7 @@ import { HeaderSidebar } from '@/components/Header/HeaderSidebar';
 import { ProfileModal } from '@/components/ProfileModal/ProfileModal';
 import { URL } from '@/constants/url';
 import { useGetMyInfoQuery } from '@/queries/member';
-import { useCountNotificationQuery } from '@/queries/notification';
+import { useCountNotificationQuery } from '@/queries/notice';
 
 import styles from './Header.module.scss';
 

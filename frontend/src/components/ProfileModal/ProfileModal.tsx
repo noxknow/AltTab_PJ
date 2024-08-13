@@ -4,7 +4,7 @@ import AlarmSVG from '@/assets/icons/alarm.svg?react';
 import { MemberProfile } from '@/components/StudyLeftBar/MemberProfile';
 import { Button } from '@/components/Button/Button';
 import { useLogoutQuery } from '@/queries/member';
-import { useCountNotificationQuery } from '@/queries/notification';
+import { useCountNotificationQuery } from '@/queries/notice';
 import { URL } from '@/constants/url';
 
 import styles from './ProfileModal.module.scss';
