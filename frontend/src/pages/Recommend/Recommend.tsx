@@ -33,7 +33,18 @@ export function Recommend() {
     mutation.mutate(); // POST 요청 실행
   }, [studyId]);
 
-  if (mutation.isPending) return <div>Loading...</div>;
+  // if (mutation.isPending) return <div>Loading...</div>;
+  if (mutation.isPending) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loader}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+    );
+  }
   if (mutation.isError)
     return <div>Error loading recommendations: {mutation.error?.message}</div>;
 

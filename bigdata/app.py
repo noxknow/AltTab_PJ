@@ -7,6 +7,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
+import json
 
 # .env 파일에서 환경 변수 로드
 load_dotenv()
@@ -38,6 +39,16 @@ def fetch_study_stats():
     study_stats = cursor.fetchall()
     conn.close()
     return pd.DataFrame(study_stats)
+
+def load_problems_from_json():
+    json_path = os.path.join(os.path.dirname(__file__), 'all_problems.json')
+    if not os.path.exists(json_path):
+        raise FileNotFoundError(f"JSON file not found: {json_path}")
+    with open(json_path, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+# JSON 파일에서 문제 데이터 로드
+problem_data = load_problems_from_json()
 
 @app.route('/flask', methods=['POST'])
 def recommend_route():
@@ -182,6 +193,13 @@ def recommend_route():
         'collaborative': recommendations_collaborative
     })
 
+# 새로운 엔드포인트: 문제 ID를 받아서 해당 문제의 상세 정보를 반환
+@app.route('/problem/<int:problem_id>', methods=['GET'])
+def get_problem_details(problem_id):
+    for problem in problem_data:
+        if problem["problem_id"] == str(problem_id):
+            return jsonify(problem)
+    return jsonify({"error": "Problem not found"}), 404
+
 if __name__ == '__main__':
     app.run(debug=True)
-

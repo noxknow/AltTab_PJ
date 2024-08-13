@@ -27,6 +27,11 @@ export function CompilerSidebar() {
 
   const showModal = (modalType: string) => {
     setModal(modalType);
+    if (modalType === MODAL.PROBLEM) {
+      setIsFill(false);
+      setIsModalOpen(true);
+      return;
+    }
     setIsFill(true);
     setIsModalOpen(true);
   };
