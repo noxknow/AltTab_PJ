@@ -194,7 +194,7 @@ def recommend_route():
     })
 
 # 새로운 엔드포인트: 문제 ID를 받아서 해당 문제의 상세 정보를 반환
-@app.route('/problem/<int:problem_id>', methods=['GET'])
+@app.route('/flask/problem/<int:problem_id>', methods=['GET'])
 def get_problem_details(problem_id):
     for problem in problem_data:
         if problem["problem_id"] == str(problem_id):
