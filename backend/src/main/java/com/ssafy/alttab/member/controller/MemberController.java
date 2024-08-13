@@ -40,5 +40,4 @@ public class MemberController {
     public ResponseEntity<?> searchMember(@PathVariable String name) {
         return new ResponseEntity<>(memberService.searchMember(name), HttpStatus.OK);
     }
-
 }
