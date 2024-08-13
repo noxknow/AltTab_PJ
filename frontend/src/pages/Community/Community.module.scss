@@ -5,7 +5,7 @@
   @include poppins-bold;
   margin: 0 auto;
   padding: 8rem 4rem;
-  width: 93.4rem;
+  max-width: 102rem;
   font-size: 4rem;
 }
 
@@ -23,9 +23,19 @@
 }
 
 .cardContainer {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
+  flex-wrap: wrap;
+  // justify-content: space-between;
+  // grid-template-columns: 1fr 1fr 1fr;
   gap: 3.2rem;
+
+  // @media screen and (max-width: 940px) {
+  //   grid-template-columns: 1fr 1fr;
+  // }
+
+  // @media screen and (max-width: 620px) {
+  //   grid-template-columns: 1fr;
+  // }
 }
 
 .filterContainer {
