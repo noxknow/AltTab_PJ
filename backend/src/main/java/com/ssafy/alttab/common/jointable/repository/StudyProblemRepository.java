@@ -19,4 +19,6 @@ public interface StudyProblemRepository extends JpaRepository<StudyProblem, Long
     List<StudyProblem> findByStudyOrderByDeadlineDesc(Study study);
 
     void deleteByStudyIdAndIdIn(Long studyId, List<Long> problemIds);
+
+    List<StudyProblem> findByStudyId(Long studyId);
 }

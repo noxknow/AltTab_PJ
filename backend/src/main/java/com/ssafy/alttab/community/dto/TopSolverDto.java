@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TopSolverDto {
     private Long studyId;
-    private String name;
+    private String studyName;
     private String studyDescription;
     private Long like;
     private Long totalSolve;
     private Long view;
     private LeaderMemberDto leaderMemberDto;
+    private boolean check;
 }

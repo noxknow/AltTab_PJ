@@ -42,11 +42,12 @@ public class StudyProblem {
     @Column(name = "problem_status")
     private ProblemStatus problemStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "study_schedule_id")
-    private StudySchedule studySchedule;
+    private int memberCount;
 
-    public static StudyProblem createStudyProblem(Study study, Problem problem, LocalDate deadline, String presenter) {
+    @Builder.Default
+    private int solveCount = 0;
+
+    public static StudyProblem createStudyProblem(Study study, Problem problem, LocalDate deadline, String presenter, int memberCount) {
         return StudyProblem.builder()
                 .study(study)
                 .problem(problem)
@@ -55,6 +56,11 @@ public class StudyProblem {
                 .level(problem.getLevel())
                 .tag(problem.getRepresentative())
                 .problemStatus(ProblemStatus.DONE)
+                .memberCount(memberCount)
                 .build();
+    }
+
+    public void addSolveCount() {
+        this.solveCount++;
     }
 }

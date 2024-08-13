@@ -57,6 +57,11 @@ public class StudyController {
         return new ResponseEntity<>(studyService.createStudy(username, dto), HttpStatus.OK);
     }
 
+    @GetMapping("/{studyId}/score")
+    public ResponseEntity<?> getStudyScore(@PathVariable Long studyId) throws StudyNotFoundException {
+        return new ResponseEntity<>(studyService.getStudyScore(studyId), HttpStatus.OK);
+    }
+
     @GetMapping("/schedule/{id}/{deadline}")
     public ResponseEntity<?> getSchedule(@PathVariable Long id, @PathVariable LocalDate deadline){
         return new ResponseEntity<>(studyScheduleService.getStudySchedule(id, deadline), HttpStatus.OK);
