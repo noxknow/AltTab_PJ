@@ -52,7 +52,7 @@ public class ProblemController {
         return new ResponseEntity<>(problemService.weeklyProblems(studyId, today), HttpStatus.OK);
     }
 
-    @PostMapping("/solve/{memberId}/{studyId}/{problemId}/")
+    @PostMapping("/solve/{memberId}/{studyId}/{problemId}")
     public ResponseEntity<?> solveProblem(@PathVariable Long memberId, @PathVariable Long studyId, @PathVariable Long problemId) throws StudyNotFoundException {
         problemService.solveProblem(memberId, studyId, problemId);
         return ResponseEntity.ok().build();

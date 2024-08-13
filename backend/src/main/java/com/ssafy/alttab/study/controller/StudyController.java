@@ -65,7 +65,7 @@ public class StudyController {
     }
 
     @GetMapping("/schedule/{id}/{deadline}")
-    public ResponseEntity<?> getSchedule(@PathVariable Long id, @PathVariable LocalDate deadline){
+    public ResponseEntity<?> getSchedule(@PathVariable Long id, @PathVariable LocalDate deadline) throws StudyNotFoundException {
         return new ResponseEntity<>(studyScheduleService.getStudySchedule(id, deadline), HttpStatus.OK);
     }
 
