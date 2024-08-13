@@ -124,6 +124,7 @@ public class ProblemService {
                 .orElseThrow(() -> new EntityNotFoundException("entity not found"));
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
+
         memberStudy.incrementMemberPoint(problem.getLevel());
         study.incrementStudyPoint(problem.getLevel());
         studyProblem.addSolveCount();

@@ -1,16 +1,14 @@
 import styles from './StudyStatsInfo.module.scss';
 
+import { useGetStudyScoreQuery } from '@/queries/study';
+
 type StudyStatsInfoProps = {
-  score: number;
-  solved: number;
-  ranking: number;
+  studyId: string;
 };
 
-export function StudyStatsInfo({
-  score,
-  solved,
-  ranking,
-}: StudyStatsInfoProps) {
+export function StudyStatsInfo({ studyId }: StudyStatsInfoProps) {
+  const { data: scoreData } = useGetStudyScoreQuery(studyId);
+
   function getOrdinalSuffix(ranking: number) {
     let suffix = 'th';
     if (ranking % 10 === 1 && ranking % 100 !== 11) {
@@ -25,16 +23,16 @@ export function StudyStatsInfo({
   return (
     <div className={styles.main}>
       <div className={styles.info}>
-        <div className={styles.value}>{score.toLocaleString('ko-KR')}</div>
+        <div className={styles.value}>{scoreData?.totalScore.toLocaleString('ko-KR')}</div>
         <div className={styles.label}>Score</div>
       </div>
       <div className={styles.info}>
-        <div className={styles.value}>{solved.toLocaleString('ko-KR')}</div>
+        <div className={styles.value}>{scoreData?.solveCount.toLocaleString('ko-KR')}</div>
         <div className={styles.label}>Solved</div>
       </div>
       <div className={styles.info}>
         <div className={styles.value}>
-          {ranking.toLocaleString('ko-KR') + getOrdinalSuffix(ranking)}
+          {scoreData?.rank.toLocaleString('ko-KR') + getOrdinalSuffix(scoreData?.rank || 0)}
         </div>
         <div className={styles.label}>Ranking</div>
       </div>

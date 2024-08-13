@@ -1,4 +1,4 @@
-import { studyInfo, memberInfo } from '@/types/study.ts';
+import { studyInfo, memberInfo, studyScore } from '@/types/study.ts';
 import { API } from './api';
 
 export const study = {
@@ -25,6 +25,14 @@ export const study = {
       `${study.endpoint.default}/${studyId}/members`,
     );
 
+    return data;
+  },
+
+  getStudyScore: async (studyId: string): Promise<studyScore> => {
+    const { data } = await API.get<studyScore>(
+      `${study.endpoint.default}/${studyId}/score`,
+    );
+    
     return data;
   },
 };

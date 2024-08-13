@@ -1,12 +1,13 @@
 import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
 
 import { study } from '@/services/study';
-import { studyInfo, memberInfo } from '@/types/study.ts';
+import { studyInfo, memberInfo, studyScore } from '@/types/study.ts';
 
 const studyKeys = {
   create: ['create'],
   studyInfo: ['studyInfo'],
   studyMember: ['studyMember'],
+  studyScore: ['studyScore'],
 };
 
 export const useCreateStudyQuery = () => {
@@ -27,6 +28,7 @@ export const useGetStudyInfoQuery = (studyId: string) => {
     queryKey: studyKeys.studyInfo,
     queryFn: (): Promise<studyInfo> => study.getStudyInfo(studyId),
   });
+
   return { data, isLoading };
 };
 
@@ -35,5 +37,15 @@ export const useGetStudyMemberQuery = (studyId: string) => {
     queryKey: studyKeys.studyMember,
     queryFn: (): Promise<memberInfo[]> => study.getStudyMember(studyId),
   });
+
+  return { data, isLoading };
+};
+
+export const useGetStudyScoreQuery = (studyId: string) => {
+  const { data, isLoading } = useQuery({
+    queryKey: studyKeys.studyScore,
+    queryFn: (): Promise<studyScore> => study.getStudyScore(studyId),
+  });
+
   return { data, isLoading };
 };
