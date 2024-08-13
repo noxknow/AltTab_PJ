@@ -18,7 +18,9 @@ import com.ssafy.alttab.study.dto.*;
 import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
@@ -82,36 +84,25 @@ public class StudyService {
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
         int rank = studyRepository.findStudyPointRankById(studyId);
         List<StudyProblem> studyProblemList = studyProblemRepository.findByStudyId(studyId);
+
+        Map<String, Integer> tagIndexMap = new HashMap<>();
+        tagIndexMap.put("수학", 0);
+        tagIndexMap.put("다이나믹 프로그래밍", 1);
+        tagIndexMap.put("자료 구조", 2);
+        tagIndexMap.put("구현", 3);
+        tagIndexMap.put("그래프 이론", 4);
+        tagIndexMap.put("탐색", 5);
+        tagIndexMap.put("정렬", 6);
+        tagIndexMap.put("문자열", 7);
+
         int[] tagCount = new int[8];
         for (StudyProblem studyProblem : studyProblemList) {
-            String tag = studyProblem.getTag();
-            switch (tag) {
-                case "수학":
-                    tagCount[0]++;
-                    break;
-                case "다이나믹 프로그래밍":
-                    tagCount[1]++;
-                    break;
-                case "자료 구조":
-                    tagCount[2]++;
-                    break;
-                case "구현":
-                    tagCount[3]++;
-                    break;
-                case "그래프 이론":
-                    tagCount[4]++;
-                    break;
-                case "탐색":
-                    tagCount[5]++;
-                    break;
-                case "정렬":
-                    tagCount[6]++;
-                    break;
-                case "문자열":
-                    tagCount[7]++;
-                    break;
+            Integer index = tagIndexMap.get(studyProblem.getTag());
+            if (index != null) {
+                tagCount[index]++;
             }
         }
+
         return StudyScoreResponseDto.toDto(study, tagCount, rank);
     }
 }

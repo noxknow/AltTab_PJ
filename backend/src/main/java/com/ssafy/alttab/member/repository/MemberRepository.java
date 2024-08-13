@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
+
     Optional<Member> findByName(String name);
 
-    List<Member> findByNameStartingWith(String name);
+    List<Member> findByNameContaining(String name);
 }

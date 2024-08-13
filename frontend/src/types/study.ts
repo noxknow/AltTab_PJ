@@ -39,3 +39,10 @@ export type weeklyStudies = {
   weeklyStudies: communityStudy[];
   topSolvers: communityStudy[];
 };
+
+export type studyScore = {
+  totalScore: number;
+  solveCount: number;
+  rank: number;
+  tagCount: number[];
+}

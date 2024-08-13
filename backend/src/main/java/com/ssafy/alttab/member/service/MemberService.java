@@ -70,7 +70,9 @@ public class MemberService {
     }
 
     public MemberListResponseDto searchMember(String name) {
-        List<Member> members = memberRepository.findByNameStartingWith(name);
+
+        List<Member> members = memberRepository.findByNameContaining(name);
+
         return MemberListResponseDto.builder()
                 .members(members.stream()
                         .map(MemberSearchResponseDto::toDto)
