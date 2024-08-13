@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+
 import { useMutation } from '@tanstack/react-query';
 import { recommend } from '@/services/recommend';
+import { RecommendationResponse } from '@/types/recommend';
+import { Loading } from '@/components/Loading/Loading';
+
 import { Section } from './Section';
 import styles from './Recommend.module.scss';
-import { RecommendationResponse } from '@/types/recommend';
 
 export function Recommend() {
   const { studyId } = useParams<{ studyId: string }>();
@@ -35,15 +38,7 @@ export function Recommend() {
 
   // if (mutation.isPending) return <div>Loading...</div>;
   if (mutation.isPending) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loader}>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-    );
+    return <Loading />;
   }
   if (mutation.isError)
     return <div>Error loading recommendations: {mutation.error?.message}</div>;

@@ -1,0 +1,41 @@
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.loader {
+  display: flex;
+  justify-content: space-between;
+  width: 80px;
+}
+
+.loader div {
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  animation: loader 1.2s infinite ease-in-out;
+}
+
+.loader div:nth-child(1) {
+  animation-delay: -0.24s;
+  background-color: orange;
+}
+
+.loader div:nth-child(2) {
+  animation-delay: -0.12s;
+  background-color: yellowgreen;
+}
+
+@keyframes loader {
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
