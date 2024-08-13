@@ -1,12 +1,10 @@
 package com.ssafy.alttab.study.service;
 
 import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
-import com.ssafy.alttab.common.jointable.entity.StudyProblem;
-import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
-import com.ssafy.alttab.member.entity.Member;
-import com.ssafy.alttab.problem.dto.ProblemResponseDto;
+import com.ssafy.alttab.problem.dto.ScheduleProblemResponseDto;
 import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.problem.repository.ProblemRepository;
+import com.ssafy.alttab.study.dto.DeleteScheduleProblemRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleResponseDto;
 import com.ssafy.alttab.study.entity.StudySchedule;
@@ -60,17 +58,16 @@ public class StudyScheduleService {
                 .findByStudyIdAndDeadline(requestDto.getStudyId(), requestDto.getDeadline())
                 .orElseGet(() -> StudySchedule.createNewStudySchedule(requestDto));
 
-        List<Problem> newProblems = problemRepository.findAllById(requestDto.getProblemId());
+        Problem newProblem = problemRepository.findById((requestDto.getProblemId()))
+                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for problemId: " + requestDto.getProblemId()));
 
         Set<Long> existingProblemIds = studySchedule.getScheduleProblems().stream()
                 .map(sp -> sp.getProblem().getProblemId())
                 .collect(Collectors.toSet());
 
-        for (Problem problem : newProblems) {
-            if (!existingProblemIds.contains(problem.getProblemId())) {
-                ScheduleProblem scheduleProblem = ScheduleProblem.createStudySchedule(studySchedule, problem, requestDto.getPresenter());
-                studySchedule.addScheduleProblem(scheduleProblem);
-            }
+        if (!existingProblemIds.contains(newProblem.getProblemId())) {
+            ScheduleProblem scheduleProblem = ScheduleProblem.createStudySchedule(studySchedule, newProblem, requestDto.getPresenter());
+            studySchedule.addScheduleProblem(scheduleProblem);
         }
 
         studyScheduleRepository.save(studySchedule);
@@ -78,11 +75,44 @@ public class StudyScheduleService {
         return requestDto;
     }
 
+    /**
+     * 스터디 스케줄에서 특정 문제들을 삭제
+     *
+     * @param requestDto 삭제할 목록 스케줄 조회 및 삭제할 문제번호
+     */
+    @Transactional
+    public int deleteStudyProblems(DeleteScheduleProblemRequestDto requestDto) {
+        StudySchedule studySchedule = studyScheduleRepository
+                .findByStudyIdAndDeadline(requestDto.getStudyId(), requestDto.getDeadline())
+                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + requestDto.getStudyId() + " and deadline: " + requestDto.getDeadline()));
+
+        studySchedule.deleteScheduleProblem(requestDto.getProblemId());
+
+        return 1;
+    }
+
+    /**
+     * 스터디 스케줄 삭제
+     *
+     * @param studyId
+     * @param deadline
+     */
+    @Transactional
+    public int deleteStudySchedule(Long studyId, LocalDate deadline){
+        StudySchedule studySchedule = studyScheduleRepository
+                .findByStudyIdAndDeadline(studyId, deadline)
+                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + studyId + " and deadline: " + deadline));
+
+        studyScheduleRepository.delete(studySchedule);
+
+        return 1;
+    }
+
     //== mapper ==//
 
-    private List<ProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems) {
+    private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems) {
         return studyProblems.stream()
-                .map(ProblemResponseDto::toDto)
+                .map(ScheduleProblemResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 

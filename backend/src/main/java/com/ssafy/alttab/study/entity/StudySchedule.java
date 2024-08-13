@@ -38,7 +38,7 @@ public class StudySchedule {
     @Column(name = "deadline")
     private LocalDate deadline;
 
-    @OneToMany(mappedBy = "studySchedule", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "studySchedule", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<ScheduleProblem> ScheduleProblems = new ArrayList<>();
 
@@ -51,8 +51,24 @@ public class StudySchedule {
                 .build();
     }
 
+    //== 비즈니스 로직 ==//
+
+    /**
+     * 문제 추가
+     *
+     * @param scheduleProblem 추가할 문제
+     */
     public void addScheduleProblem(ScheduleProblem scheduleProblem) {
         this.getScheduleProblems().add(scheduleProblem);
         scheduleProblem.changeStudySchedule(this);
+    }
+
+    /**
+     * 문제 삭제
+     * @param problemId 문제 번호
+     */
+    public void deleteScheduleProblem(Long problemId){
+        this.getScheduleProblems().removeIf(scheduleProblem ->
+                scheduleProblem.getProblem().getProblemId().equals(problemId));
     }
 }
