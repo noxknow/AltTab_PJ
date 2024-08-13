@@ -4,10 +4,12 @@ import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.problem.dto.ScheduleProblemResponseDto;
 import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.problem.repository.ProblemRepository;
+import com.ssafy.alttab.study.dto.DeleteScheduleProblemRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleResponseDto;
 import com.ssafy.alttab.study.entity.StudySchedule;
 import com.ssafy.alttab.study.repository.StudyScheduleRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
@@ -72,6 +74,22 @@ public class StudyScheduleService {
         studyScheduleRepository.save(studySchedule);
 
         return requestDto;
+    }
+
+    /**
+     * 스터디 스케줄에서 특정 문제들을 삭제
+     *
+     * @param requestDto 삭제할 목록 스케줄 조회 및 삭제할 문제번호
+     */
+    @Transactional
+    public int deleteStudyProblems(DeleteScheduleProblemRequestDto requestDto) {
+        StudySchedule studySchedule = studyScheduleRepository
+                .findByStudyIdAndDeadline(requestDto.getStudyId(), requestDto.getDeadline())
+                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + requestDto.getStudyId() + " and deadline: " + requestDto.getDeadline()));
+
+        studySchedule.deleteScheduleProblem(requestDto.getProblemId());
+
+        return 1;
     }
 
     //== mapper ==//
