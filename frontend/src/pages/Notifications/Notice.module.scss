@@ -1,9 +1,15 @@
 .notice {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
   border-bottom: 1px solid #e0e0e0;
   padding: 1rem;
   display: flex;
   flex-direction: row;
   gap: 2rem;
+  align-items: center;
+  background-color: #f9f9f9;
 
   &:last-child {
     border-bottom: none;
@@ -18,4 +24,13 @@
 .date {
   font-size: 1.4rem;
   color: #888;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  justify-content: flex-end;
 }
