@@ -6,7 +6,6 @@ import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.problem.dto.AddProblemsRequestDto;
 import com.ssafy.alttab.problem.dto.RemoveProblemsRequestDto;
 import com.ssafy.alttab.problem.service.ProblemService;
-import com.ssafy.alttab.study.service.StudyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +19,10 @@ import java.time.LocalDate;
 public class ProblemController {
 
     private final ProblemService problemService;
-    private final StudyService studyService;
 
     @PostMapping("/{studyId}")
     public ResponseEntity<?> addProblems(@PathVariable Long studyId,
-                                         @RequestBody AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException, MemberNotFoundException {
+                                         @RequestBody AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
         problemService.addProblems(studyId, dto);
         return ResponseEntity.ok().build();
     }
@@ -54,7 +52,7 @@ public class ProblemController {
         return new ResponseEntity<>(problemService.weeklyProblems(studyId, today), HttpStatus.OK);
     }
 
-    @PostMapping("/solve/{memberId}/{studyId}/{problemId}/")
+    @PostMapping("/solve/{memberId}/{studyId}/{problemId}")
     public ResponseEntity<?> solveProblem(@PathVariable Long memberId, @PathVariable Long studyId, @PathVariable Long problemId) throws StudyNotFoundException {
         problemService.solveProblem(memberId, studyId, problemId);
         return ResponseEntity.ok().build();

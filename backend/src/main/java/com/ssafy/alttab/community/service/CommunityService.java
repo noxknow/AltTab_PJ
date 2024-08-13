@@ -42,7 +42,7 @@ public class CommunityService {
     @Transactional
     public CommunityMainResponseDto getCommunityMain(String name) throws MemberNotFoundException {
         return CommunityMainResponseDto.builder()
-                .weeklyStudies(getWeeklyStudies())
+                .weeklyStudies(getWeeklyStudies(name))
                 .topSolvers(getTopSolversStudyList(name))
                 .build();
     }
@@ -85,16 +85,16 @@ public class CommunityService {
      * @return List<WeeklyStudyDto> 주간 인기 스터디 목록
      */
     @Transactional
-    public List<WeeklyStudyDto> getWeeklyStudies() {
+    public List<WeeklyStudyDto> getWeeklyStudies(String name) throws MemberNotFoundException {
         LocalDateTime startOfWeek = LocalDate.now().with(DayOfWeek.MONDAY).atStartOfDay();
         LocalDateTime endOfWeek = startOfWeek.plusDays(6);
-
+        Member member = memberRepository.findByName(name)
+                .orElseThrow(() -> new MemberNotFoundException(name));
         return studyRepository.findByCreatedAtBetween(startOfWeek, endOfWeek)
                 .stream()
-                .sorted(Comparator.comparing(Study::getLike, Comparator.reverseOrder())
-                        .thenComparing(Study::getView, Comparator.reverseOrder()))
+                .sorted(Comparator.comparing(Study::getFollowerCount, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
-                .map(this::mapToWeeklyStudyDto)
+                .map(study -> mapToWeeklyStudyDto(member, study))
                 .collect(Collectors.toList());
     }
 
@@ -142,7 +142,7 @@ public class CommunityService {
                 .map(study -> mapToTopFollowerDto(member, study))
                 .collect(Collectors.toList());
     }
-
+    @Transactional
     public List<FollowingStudyDto> getFollowingStudy(String username) {
         List<MemberStudy> memberStudies = memberStudyRepository.findByMemberName(username);
         return memberStudies.stream()
@@ -159,7 +159,7 @@ public class CommunityService {
      * @param study StudyInfo 엔티티
      * @return WeeklyStudyDto 변환된 DTO 객체
      */
-    private WeeklyStudyDto mapToWeeklyStudyDto(Study study) {
+    private WeeklyStudyDto mapToWeeklyStudyDto(Member member, Study study) {
         return WeeklyStudyDto.builder()
                 .studyId(study.getId())
                 .studyName(study.getStudyName())
@@ -167,6 +167,7 @@ public class CommunityService {
                 .like(study.getFollowerCount())
                 .totalSolve(study.totalSolve())
                 .leaderMemberDto(getLeaderInfo(study))
+                .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
     }
 
@@ -199,7 +200,7 @@ public class CommunityService {
                 .studyId(study.getId())
                 .studyName(study.getStudyName())
                 .studyDescription(study.getStudyDescription())
-                .like(study.getLike())
+                .like(study.getFollowerCount())
                 .totalSolve(study.totalSolve())
                 .leaderMemberDto(getLeaderInfo(study))
                 .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
@@ -211,7 +212,7 @@ public class CommunityService {
                 .studyId(study.getId())
                 .studyName(study.getStudyName())
                 .studyDescription(study.getStudyDescription())
-                .like(study.getLike())
+                .like(study.getFollowerCount())
                 .totalSolve(study.totalSolve())
                 .leaderMemberDto(getLeaderInfo(study))
                 .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -16,8 +18,10 @@ public class ScheduleProblemResponseDto {
     private String tag;
     private Long level;
     private String presenter;
+    private List<String> members;
+    private int size;
 
-    public static ScheduleProblemResponseDto toDto(ScheduleProblem scheduleProblem) {
+    public static ScheduleProblemResponseDto toDto(ScheduleProblem scheduleProblem, List<String> members, int size) {
         Problem problem = scheduleProblem.getProblem();
         return ScheduleProblemResponseDto.builder()
                 .studyScheduleId(scheduleProblem.getId())
@@ -26,6 +30,8 @@ public class ScheduleProblemResponseDto {
                 .tag(problem.getTag())
                 .level(problem.getLevel())
                 .presenter(scheduleProblem.getPresenter())
+                .members(members)
+                .size(size)
                 .build();
     }
 }

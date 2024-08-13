@@ -38,14 +38,6 @@ public class Study extends BaseTimeEntity {
     @Column(columnDefinition = "varchar(100)", nullable = false)
     private String studyDescription;
 
-    @Column(name = "view_count")
-    @Builder.Default
-    private Long view = 0L;
-
-    @Column(name = "like_count")
-    @Builder.Default
-    private Long like = 0L;
-
     @Column
     @Builder.Default
     private Long studyPoint = 0L;
