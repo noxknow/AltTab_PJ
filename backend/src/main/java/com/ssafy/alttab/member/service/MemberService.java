@@ -3,8 +3,6 @@ package com.ssafy.alttab.member.service;
 import static com.ssafy.alttab.member.entity.Member.createMember;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
-import com.ssafy.alttab.common.exception.StudyNotFoundException;
-import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
 import com.ssafy.alttab.member.dto.MemberJoinedStudiesResponseDto;
@@ -13,15 +11,12 @@ import com.ssafy.alttab.member.dto.MemberSearchResponseDto;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
-import com.ssafy.alttab.community.dto.FollowingStudyResponseDto;
 import com.ssafy.alttab.study.dto.JoinedStudyResponseDto;
 import com.ssafy.alttab.study.entity.Study;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.ssafy.alttab.study.repository.StudyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    private final StudyRepository studyRepository;
     private final MemberStudyRepository memberStudyRepository;
 
     @Transactional
@@ -84,45 +78,4 @@ public class MemberService {
                 .build();
     }
 
-    @Transactional
-    public void followStudy(String username, Long studyId) throws MemberNotFoundException, StudyNotFoundException {
-        Member member = memberRepository.findByName(username)
-                .orElseThrow(() -> new MemberNotFoundException("Member not found"));
-
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new StudyNotFoundException(studyId));
-
-        Optional<MemberStudy> optionalMemberStudy = memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER);
-
-        if (optionalMemberStudy.isPresent()) {
-            MemberStudy memberStudy = optionalMemberStudy.get();
-            member.removeMemberStudy(memberStudy);
-            study.removeMemberStudy(memberStudy);
-            memberStudyRepository.delete(memberStudy);
-        } else {
-            MemberStudy memberStudy = MemberStudy
-                    .createMemberStudy(member, study, MemberRoleStatus.FOLLOWER);
-            member.getMemberStudies().add(memberStudy);
-            study.getMemberStudies().add(memberStudy);
-            memberStudyRepository.save(memberStudy);
-        }
-    }
-
-    public List<FollowingStudyResponseDto> getFollowingStudy(String username) {
-        List<MemberStudy> memberStudies = memberStudyRepository.findByMemberName(username);
-        return memberStudies.stream()
-                .filter(memberStudy -> memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
-                .map(memberStudy -> mapToFollowingStudyDto(memberStudy.getMember(), memberStudy.getStudy()))
-                .collect(Collectors.toList());
-    }
-
-    private FollowingStudyResponseDto mapToFollowingStudyDto(Member member, Study study) {
-        return FollowingStudyResponseDto.builder()
-                .studyId(study.getId())
-                .studyName(study.getStudyName())
-                .studyDescription(study.getStudyDescription())
-                .studyFollowerCount(study.getFollowerCount())
-                .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
-                .build();
-    }
 }

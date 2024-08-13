@@ -1,6 +1,8 @@
 package com.ssafy.alttab.community.service;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
+import com.ssafy.alttab.common.exception.StudyNotFoundException;
+import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.community.dto.*;
 import com.ssafy.alttab.member.entity.Member;
@@ -15,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
@@ -40,8 +43,40 @@ public class CommunityService {
     public CommunityMainResponseDto getCommunityMain(String name) throws MemberNotFoundException {
         return CommunityMainResponseDto.builder()
                 .weeklyStudies(getWeeklyStudies())
-                .topSolvers(getTopSolvers(name))
+                .topSolvers(getTopSolversStudyList(name))
                 .build();
+    }
+
+    @Transactional
+    public AfterFollowDto followStudy(String username, Long studyId) throws MemberNotFoundException, StudyNotFoundException {
+        Member member = memberRepository.findByName(username)
+                .orElseThrow(() -> new MemberNotFoundException(username));
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyNotFoundException(studyId));
+
+        Optional<MemberStudy> optionalMemberStudy = memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER);
+
+        if (optionalMemberStudy.isPresent()) {
+            MemberStudy memberStudy = optionalMemberStudy.get();
+            member.removeMemberStudy(memberStudy);
+            study.removeMemberStudy(memberStudy);
+            memberStudyRepository.delete(memberStudy);
+            return AfterFollowDto.builder()
+                    .check(false)
+                    .like(study.getFollowerCount())
+                    .build();
+        } else {
+            MemberStudy memberStudy = MemberStudy
+                    .createMemberStudy(member, study, MemberRoleStatus.FOLLOWER);
+            member.getMemberStudies().add(memberStudy);
+            study.getMemberStudies().add(memberStudy);
+            memberStudyRepository.save(memberStudy);
+            return AfterFollowDto.builder()
+                    .check(true)
+                    .like(study.getFollowerCount())
+                    .build();
+        }
     }
 
     /**
@@ -82,14 +117,12 @@ public class CommunityService {
      * @return List<TopSolverDto> 상위 문제 해결자 목록
      */
     @Transactional
-    public List<TopSolverDto> getTopSolvers(String username) throws MemberNotFoundException {
+    public List<TopSolverDto> getTopSolversStudyList(String username) throws MemberNotFoundException {
         Member member = memberRepository.findByName(username).orElseThrow(() -> new MemberNotFoundException(username));
-
         return studyRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Study::totalSolve, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
-//                .map(this::mapToTopSolverDto)
                 .map(study -> mapToTopSolverDto(member, study))
                 .collect(Collectors.toList());
     }
@@ -102,13 +135,19 @@ public class CommunityService {
     @Transactional
     public List<TopFollowerDto> getTopFollowerStudyList(String username) throws MemberNotFoundException {
         Member member = memberRepository.findByName(username).orElseThrow(() -> new MemberNotFoundException(username));
-
         return studyRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Study::getFollowerCount, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
-//                .map(this::mapToTopFollowerDto)
                 .map(study -> mapToTopFollowerDto(member, study))
+                .collect(Collectors.toList());
+    }
+
+    public List<FollowingStudyDto> getFollowingStudy(String username) {
+        List<MemberStudy> memberStudies = memberStudyRepository.findByMemberName(username);
+        return memberStudies.stream()
+                .filter(memberStudy -> memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
+                .map(memberStudy -> mapToFollowingStudyDto(memberStudy.getMember(), memberStudy.getStudy()))
                 .collect(Collectors.toList());
     }
 
@@ -122,12 +161,11 @@ public class CommunityService {
      */
     private WeeklyStudyDto mapToWeeklyStudyDto(Study study) {
         return WeeklyStudyDto.builder()
-                .name(study.getStudyName())
                 .studyId(study.getId())
-                .like(study.getLike())
+                .studyName(study.getStudyName())
                 .studyDescription(study.getStudyDescription())
-                .follower(study.getFollowerCount())
-                .view(study.getView())
+                .like(study.getFollowerCount())
+                .totalSolve(study.totalSolve())
                 .leaderMemberDto(getLeaderInfo(study))
                 .build();
     }
@@ -140,11 +178,11 @@ public class CommunityService {
      */
     private TopFollowerDto mapToTopFollowerDto(Member member, Study study) {
         return TopFollowerDto.builder()
+                .studyId(study.getId())
                 .studyName(study.getStudyName())
-                .like(study.getLike())
                 .studyDescription(study.getStudyDescription())
-                .totalFollower(study.getFollowerCount())  // 팔로워 수로 변경
-                .view(study.getView())
+                .like(study.getFollowerCount())
+                .totalSolve(study.totalSolve())
                 .leaderMemberDto(getLeaderInfo(study))
                 .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
@@ -158,25 +196,26 @@ public class CommunityService {
      */
     private TopSolverDto mapToTopSolverDto(Member member, Study study) {
         return TopSolverDto.builder()
-                .studyName(study.getStudyName())
                 .studyId(study.getId())
-                .like(study.getLike())
+                .studyName(study.getStudyName())
                 .studyDescription(study.getStudyDescription())
+                .like(study.getLike())
                 .totalSolve(study.totalSolve())
-                .view(study.getView())
                 .leaderMemberDto(getLeaderInfo(study))
                 .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
     }
 
-    private FollowingStudyResponseDto mapToFollowingStudyDto(Member member, Study study) {
-        return FollowingStudyResponseDto.builder()
+    private FollowingStudyDto mapToFollowingStudyDto(Member member, Study study) {
+        return FollowingStudyDto.builder()
                 .studyId(study.getId())
                 .studyName(study.getStudyName())
                 .studyDescription(study.getStudyDescription())
-                .studyFollowerCount(study.getFollowerCount())
+                .like(study.getLike())
+                .totalSolve(study.totalSolve())
                 .leaderMemberDto(getLeaderInfo(study))
                 .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
     }
+
 }

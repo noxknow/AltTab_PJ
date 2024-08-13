@@ -1,7 +1,6 @@
 package com.ssafy.alttab.member.controller;
 
 import com.ssafy.alttab.common.exception.MemberNotFoundException;
-import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.util.CookieUtil;
 import com.ssafy.alttab.member.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
