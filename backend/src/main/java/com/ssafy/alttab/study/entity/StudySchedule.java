@@ -1,8 +1,6 @@
 package com.ssafy.alttab.study.entity;
 
-import com.ssafy.alttab.common.jointable.entity.StudyProblem;
-import com.ssafy.alttab.problem.dto.ProblemRequestDto;
-import com.ssafy.alttab.problem.entity.Problem;
+import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,45 +38,21 @@ public class StudySchedule {
     @Column(name = "deadline")
     private LocalDate deadline;
 
-    @Builder.Default
     @OneToMany(mappedBy = "studySchedule", cascade = CascadeType.ALL)
-    private List<StudyProblem> studyProblems = new ArrayList<>();
+    @Builder.Default
+    private List<ScheduleProblem> ScheduleProblems = new ArrayList<>();
 
     //== 생성 메서드 ==//
-    public static StudySchedule createNewSchedule(StudyScheduleRequestDto requestDto) {
-        StudySchedule schedule = StudySchedule.builder()
+    public static StudySchedule createNewStudySchedule(StudyScheduleRequestDto requestDto){
+        return StudySchedule.builder()
                 .studyId(requestDto.getStudyId())
                 .deadline(requestDto.getDeadline())
+                .ScheduleProblems(new ArrayList<>())
                 .build();
-
-        schedule.addStudyProblem(requestDto);
-        return schedule;
     }
 
-    /**
-     * problem 문제 추가
-     * @param requestDto 요청 데이터
-     */
-    public void addStudyProblem(StudyScheduleRequestDto requestDto) {
-        for (ProblemRequestDto problemDto : requestDto.getStudyProblems()) {
-            Problem problem = Problem.builder()
-                    .problemId(problemDto.getProblemId())
-                    .title(problemDto.getTitle())
-                    .tag(problemDto.getTag())
-                    .level(problemDto.getLevel())
-                    .build();
-
-            StudyProblem studyProblem = StudyProblem.builder()
-                    .studySchedule(this)
-                    .problem(problem)
-                    .presenter(problemDto.getPresenter())
-                    .build();
-
-            this.studyProblems.add(studyProblem);
-        }
-    }
-
-    public void changeDeadline(LocalDate deadline){
-        this.deadline = deadline;
+    public void addScheduleProblem(ScheduleProblem scheduleProblem) {
+        this.getScheduleProblems().add(scheduleProblem);
+        scheduleProblem.changeStudySchedule(this);
     }
 }
