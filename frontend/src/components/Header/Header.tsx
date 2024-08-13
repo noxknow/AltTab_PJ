@@ -9,6 +9,7 @@ import { HeaderSidebar } from '@/components/Header/HeaderSidebar';
 import { ProfileModal } from '@/components/ProfileModal/ProfileModal';
 import { URL } from '@/constants/url';
 import { useGetMyInfoQuery } from '@/queries/member';
+import { useCountNotificationQuery } from '@/queries/notification';
 
 import styles from './Header.module.scss';
 
@@ -17,6 +18,7 @@ export function Header() {
   const [isModal, setIsModal] = useState(false);
   // TODO : 사용자 로그인 상태 처리
   const { data: userInfo, isLogin } = useGetMyInfoQuery();
+  const { data: notificationCount } = useCountNotificationQuery();
 
   const showSidebar = () => {
     setIsVisible(true);
@@ -62,6 +64,9 @@ export function Header() {
               alt="userProfile"
               className={styles.profileImg}
             />
+            {notificationCount && notificationCount > 0 && (
+              <div className={styles.notificationDot}></div>
+            )}
           </button>
         </div>
       ) : (

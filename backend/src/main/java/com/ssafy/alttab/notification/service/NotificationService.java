@@ -42,7 +42,6 @@ public class NotificationService {
         Member member = memberRepository.findByName(username)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
-        System.out.println(member.getNotifications().size());
         return member.getNotifications().size();
     }
 
