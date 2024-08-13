@@ -1,12 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { member } from '@/services/member';
-import { memberInfo, joinedStudies } from '@/types/study.ts';
+import { memberInfo, joinedStudies,searchedMembers } from '@/types/study.ts';
 
 const memberKeys = {
   studies: ['studies'],
   info: ['info'],
   logout: ['logout'],
+  name: ['name'],
 };
 
 export const useGetMyInfoQuery = () => {
@@ -37,4 +38,13 @@ export const useLogoutQuery = () => {
       });
     },
   });
+};
+
+export const useGetMembersByNameQuery = (name: string) => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: memberKeys.name,
+    queryFn: (): Promise<searchedMembers> => member.getMembersByName(name),
+    enabled: false,
+  });
+  return { data, isLoading, refetch };
 };

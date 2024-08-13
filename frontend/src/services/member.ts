@@ -1,8 +1,9 @@
-import { memberInfo, joinedStudies } from '@/types/study.ts';
+import { memberInfo, joinedStudies, searchedMembers } from '@/types/study.ts';
 import { API } from './api';
 
 export const member = {
   endpoint: {
+    default: '/member',
     studies: '/member/studies',
     info: '/member/info',
     logout: '/member/logout',
@@ -22,5 +23,13 @@ export const member = {
 
   logout: async () => {
     await API.post(`${member.endpoint.logout}`);
+  },
+
+  getMembersByName: async (name: string) => {
+    const { data } = await API.get<searchedMembers>(
+      `${member.endpoint.default}/${name}`,
+    );
+
+    return data;
   },
 };
