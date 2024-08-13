@@ -1,10 +1,7 @@
 package com.ssafy.alttab.study.service;
 
 import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
-import com.ssafy.alttab.common.jointable.entity.StudyProblem;
-import com.ssafy.alttab.member.dto.MemberInfoResponseDto;
-import com.ssafy.alttab.member.entity.Member;
-import com.ssafy.alttab.problem.dto.ProblemResponseDto;
+import com.ssafy.alttab.problem.dto.ScheduleProblemResponseDto;
 import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.problem.repository.ProblemRepository;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
@@ -60,17 +57,16 @@ public class StudyScheduleService {
                 .findByStudyIdAndDeadline(requestDto.getStudyId(), requestDto.getDeadline())
                 .orElseGet(() -> StudySchedule.createNewStudySchedule(requestDto));
 
-        List<Problem> newProblems = problemRepository.findAllById(requestDto.getProblemId());
+        Problem newProblem = problemRepository.findById((requestDto.getProblemId()))
+                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for problemId: " + requestDto.getProblemId()));
 
         Set<Long> existingProblemIds = studySchedule.getScheduleProblems().stream()
                 .map(sp -> sp.getProblem().getProblemId())
                 .collect(Collectors.toSet());
 
-        for (Problem problem : newProblems) {
-            if (!existingProblemIds.contains(problem.getProblemId())) {
-                ScheduleProblem scheduleProblem = ScheduleProblem.createStudySchedule(studySchedule, problem, requestDto.getPresenter());
-                studySchedule.addScheduleProblem(scheduleProblem);
-            }
+        if (!existingProblemIds.contains(newProblem.getProblemId())) {
+            ScheduleProblem scheduleProblem = ScheduleProblem.createStudySchedule(studySchedule, newProblem, requestDto.getPresenter());
+            studySchedule.addScheduleProblem(scheduleProblem);
         }
 
         studyScheduleRepository.save(studySchedule);
@@ -80,9 +76,9 @@ public class StudyScheduleService {
 
     //== mapper ==//
 
-    private List<ProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems) {
+    private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems) {
         return studyProblems.stream()
-                .map(ProblemResponseDto::toDto)
+                .map(ScheduleProblemResponseDto::toDto)
                 .collect(Collectors.toList());
     }
 
