@@ -65,14 +65,14 @@ public class NotificationService {
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
         if (notificationRequestDto.isCheck()) {
-            Study study = studyRepository.findById(notificationRequestDto.getNotificationId())
+            Study study = studyRepository.findById(notificationRequestDto.getStudyId())
                     .orElseThrow(() -> new StudyNotFoundException(notificationRequestDto.getStudyId()));
 
             MemberStudy memberStudy = createMemberStudy(member, study, MEMBER);
             memberStudyRepository.save(memberStudy);
             study.addMemberStudy(memberStudy);
         }
-
+        System.out.println(4);
         member.getNotifications().removeIf(notification -> notification.getId().equals(notificationRequestDto.getNotificationId()));
     }
 }
