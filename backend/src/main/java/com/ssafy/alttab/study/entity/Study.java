@@ -48,7 +48,11 @@ public class Study extends BaseTimeEntity {
 
     @Column
     @Builder.Default
-    private Long point = 0L;
+    private Long studyPoint = 0L;
+
+    @Column
+    @Builder.Default
+    private Long solveCount = 0L;
 
     @Column(name = "member_study")
     @Builder.Default
@@ -119,5 +123,13 @@ public class Study extends BaseTimeEntity {
 
     public void removeMemberStudy(MemberStudy memberStudy) {
         this.memberStudies.remove(memberStudy);
+    }
+
+    public void incrementStudyPoint(Long value) {
+        this.studyPoint += value;
+    }
+
+    public void incrementSolveCount() {
+        this.studyPoint++;
     }
 }

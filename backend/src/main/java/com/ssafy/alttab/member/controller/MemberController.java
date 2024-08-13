@@ -42,25 +42,4 @@ public class MemberController {
         return new ResponseEntity<>(memberService.searchMember(name), HttpStatus.OK);
     }
 
-    @PostMapping("/follow/{studyId}")
-    public ResponseEntity<?> follow(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) throws StudyNotFoundException, MemberNotFoundException {
-        memberService.follow(userDetails.getUsername(), studyId);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/follow/{studyId}/test")
-    public ResponseEntity<?> followTest(String userDetails, @PathVariable Long studyId) throws StudyNotFoundException, MemberNotFoundException {
-        memberService.follow(userDetails, studyId);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/follow")
-    public ResponseEntity<?> getFollowStudyList(@AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(memberService.getFollowStudyList(userDetails.getUsername()), HttpStatus.OK);
-    }
-
-    @GetMapping("/follow/test")
-    public ResponseEntity<?> getFollowStudyListTest(String userDetails) {
-        return new ResponseEntity<>(memberService.getFollowStudyList(userDetails), HttpStatus.OK);
-    }
 }

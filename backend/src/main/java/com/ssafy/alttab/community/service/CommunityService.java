@@ -21,8 +21,6 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.ssafy.alttab.member.enums.MemberRoleStatus.FOLLOWER;
-
 @Service
 @RequiredArgsConstructor
 @Builder
@@ -39,10 +37,10 @@ public class CommunityService {
      * @return CommunityMainResponseDto 커뮤니티 메인 페이지 데이터
      */
     @Transactional
-    public CommunityMainResponseDto getCommunityMain() {
+    public CommunityMainResponseDto getCommunityMain(String name) throws MemberNotFoundException {
         return CommunityMainResponseDto.builder()
                 .weeklyStudies(getWeeklyStudies())
-                .topSolvers(getTopSolvers())
+                .topSolvers(getTopSolvers(name))
                 .build();
     }
 
@@ -84,12 +82,15 @@ public class CommunityService {
      * @return List<TopSolverDto> 상위 문제 해결자 목록
      */
     @Transactional
-    public List<TopSolverDto> getTopSolvers() {
+    public List<TopSolverDto> getTopSolvers(String username) throws MemberNotFoundException {
+        Member member = memberRepository.findByName(username).orElseThrow(() -> new MemberNotFoundException(username));
+
         return studyRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Study::totalSolve, Comparator.reverseOrder()))
                 .limit(TOP_LIMIT)
-                .map(this::mapToTopSolverDto)
+//                .map(this::mapToTopSolverDto)
+                .map(study -> mapToTopSolverDto(member, study))
                 .collect(Collectors.toList());
     }
 
@@ -139,7 +140,7 @@ public class CommunityService {
      */
     private TopFollowerDto mapToTopFollowerDto(Member member, Study study) {
         return TopFollowerDto.builder()
-                .name(study.getStudyName())
+                .studyName(study.getStudyName())
                 .like(study.getLike())
                 .studyDescription(study.getStudyDescription())
                 .totalFollower(study.getFollowerCount())  // 팔로워 수로 변경
@@ -155,15 +156,27 @@ public class CommunityService {
      * @param study StudyInfo 엔티티
      * @return TopSolverDto 변환된 DTO 객체
      */
-    private TopSolverDto mapToTopSolverDto(Study study) {
+    private TopSolverDto mapToTopSolverDto(Member member, Study study) {
         return TopSolverDto.builder()
-                .name(study.getStudyName())
+                .studyName(study.getStudyName())
                 .studyId(study.getId())
                 .like(study.getLike())
                 .studyDescription(study.getStudyDescription())
                 .totalSolve(study.totalSolve())
                 .view(study.getView())
                 .leaderMemberDto(getLeaderInfo(study))
+                .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
+                .build();
+    }
+
+    private FollowingStudyResponseDto mapToFollowingStudyDto(Member member, Study study) {
+        return FollowingStudyResponseDto.builder()
+                .studyId(study.getId())
+                .studyName(study.getStudyName())
+                .studyDescription(study.getStudyDescription())
+                .studyFollowerCount(study.getFollowerCount())
+                .leaderMemberDto(getLeaderInfo(study))
+                .check(memberStudyRepository.findByMemberAndStudyAndRole(member, study, MemberRoleStatus.FOLLOWER).isPresent())
                 .build();
     }
 }
