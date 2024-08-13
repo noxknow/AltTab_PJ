@@ -4,28 +4,29 @@ import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.problem.dto.ProblemRequestDto;
 import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@ToString
 public class StudySchedule {
 
     @Id
@@ -33,18 +34,25 @@ public class StudySchedule {
     @Column(name = "study_schedule_id")
     private Long id;
 
-    @Column(name = "start_name")
-    private LocalDateTime startDay;
+    @Column(name = "study_id")
+    private Long studyId;
 
-    @OneToMany(mappedBy = "studySchedule", fetch = FetchType.LAZY)
+    @Column(name = "deadline")
+    private LocalDate deadline;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "studySchedule", cascade = CascadeType.ALL)
     private List<StudyProblem> studyProblems = new ArrayList<>();
 
     //== 생성 메서드 ==//
     public static StudySchedule createNewSchedule(StudyScheduleRequestDto requestDto) {
-        return StudySchedule.builder()
-                .startDay(requestDto.getStartDate())
-                .studyProblems(new ArrayList<>())
+        StudySchedule schedule = StudySchedule.builder()
+                .studyId(requestDto.getStudyId())
+                .deadline(requestDto.getDeadline())
                 .build();
+
+        schedule.addStudyProblem(requestDto);
+        return schedule;
     }
 
     /**
@@ -52,28 +60,25 @@ public class StudySchedule {
      * @param requestDto 요청 데이터
      */
     public void addStudyProblem(StudyScheduleRequestDto requestDto) {
-        List<Long> existingProblemIds = this.studyProblems.stream()
-                .map(sp -> sp.getProblem().getProblemId())
-                .toList();
+        for (ProblemRequestDto problemDto : requestDto.getStudyProblems()) {
+            Problem problem = Problem.builder()
+                    .problemId(problemDto.getProblemId())
+                    .title(problemDto.getTitle())
+                    .tag(problemDto.getTag())
+                    .level(problemDto.getLevel())
+                    .build();
 
-        for (ProblemRequestDto problemDto : requestDto.getProblemRequestDtos()) {
-            if (!existingProblemIds.contains(problemDto.getProblemId())) {
-                Problem problem = Problem.builder()
-                        .problemId(problemDto.getProblemId())
-                        .title(problemDto.getTitle())
-                        .tag(problemDto.getTag())
-                        .level(problemDto.getLevel())
-                        .build();
+            StudyProblem studyProblem = StudyProblem.builder()
+                    .studySchedule(this)
+                    .problem(problem)
+                    .presenter(problemDto.getPresenter())
+                    .build();
 
-                StudyProblem studyProblem = StudyProblem.builder()
-                        .studySchedule(this)
-                        .problem(problem)
-                        .presenter(problemDto.getPresenter())
-                        .deadline(problemDto.getDeadline())
-                        .build();
-
-                this.studyProblems.add(studyProblem);
-            }
+            this.studyProblems.add(studyProblem);
         }
+    }
+
+    public void changeDeadline(LocalDate deadline){
+        this.deadline = deadline;
     }
 }
