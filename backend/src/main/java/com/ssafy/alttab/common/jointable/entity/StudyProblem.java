@@ -30,10 +30,6 @@ public class StudyProblem {
     @JoinColumn(name = "problem_id")
     private Problem problem;
 
-    @ManyToOne
-    @JoinColumn(name = "study_schedule_id")
-    private StudySchedule studySchedule;
-
     private LocalDate deadline;
     private String presenter;
     private Long level;
@@ -42,6 +38,10 @@ public class StudyProblem {
     @Enumerated(EnumType.STRING)
     @Column(name = "problem_status")
     private ProblemStatus problemStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "study_schedule_id")
+    private StudySchedule studySchedule;
 
     public static StudyProblem createStudyProblem(Study study, Problem problem, LocalDate deadline, String presenter) {
         return StudyProblem.builder()
