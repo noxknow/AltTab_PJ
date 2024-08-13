@@ -78,4 +78,9 @@ public class StudyController {
     public ResponseEntity<?> deleteScheduleProblem(@RequestBody DeleteScheduleProblemRequestDto requestDto){
         return new ResponseEntity<>(studyScheduleService.deleteStudyProblems(requestDto), HttpStatus.OK);
     }
+
+    @DeleteMapping("/schedule/{studyId}/{deadline}")
+    public ResponseEntity<?> deleteStudySchedule(@PathVariable Long studyId, @PathVariable LocalDate deadline){
+        return new ResponseEntity<>(studyScheduleService.deleteStudySchedule(studyId, deadline), HttpStatus.OK);
+    }
 }
