@@ -6,6 +6,8 @@ export const community = {
     default: '/community/main',
     solve: '/community/top/solve',
     follower: '/community/top/follower',
+    follow: '/community/follow',
+    myFollow: '/community/my/follow',
   },
 
   getWeeklyStudies: async (): Promise<weeklyStudies> => {
@@ -28,6 +30,20 @@ export const community = {
     const { data } = await API.get<communityStudy[]>(
       `${community.endpoint.follower}`,
     );
+
+    return data;
+  },
+
+  getFollowingStudies: async () => {
+    const { data } = await API.get<communityStudy[]>(
+      `${community.endpoint.myFollow}`,
+    );
+
+    return data;
+  },
+
+  follow: async (studyId: string) => {
+    const { data } = await API.post(`${community.endpoint.follow}/${studyId}`);
 
     return data;
   },

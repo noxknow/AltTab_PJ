@@ -22,7 +22,7 @@ export type joinedStudies = {
 
 export type communityStudy = {
   studyId: number;
-  name: string;
+  studyName: string;
   studyDescription: string;
   like: number;
   follower?: number;
@@ -33,6 +33,7 @@ export type communityStudy = {
     name: string;
     avatarUrl: string;
   };
+  check?: boolean;
 };
 
 export type weeklyStudies = {

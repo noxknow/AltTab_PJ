@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
 
 import { community } from '@/services/community';
 import { communityStudy, weeklyStudies } from '@/types/study.ts';
@@ -7,6 +7,8 @@ const studyKeys = {
   weekly: ['weekly'],
   solve: ['solve'],
   follower: ['follower'],
+  following: ['following'],
+  follow: ['follow'],
 };
 
 export const useGetWeeklyStudiesQuery = () => {
@@ -33,4 +35,26 @@ export const useGetTopFollowerStudiesQuery = () => {
     enabled: false,
   });
   return { data, isLoading, refetch };
+};
+
+export const useGetFollowingStudiesQuery = () => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: studyKeys.following,
+    queryFn: (): Promise<communityStudy[]> => community.getFollowingStudies(),
+    enabled: false,
+  });
+  return { data, isLoading, refetch };
+};
+
+export const useFollowQuery = () => {
+  const queryClient = new QueryClient();
+
+  return useMutation({
+    mutationFn: (studyId: string) => community.follow(studyId),
+    onSuccess: (_, studyId) => {
+      queryClient.invalidateQueries({
+        queryKey: [...studyKeys.follow, studyId],
+      });
+    },
+  });
 };
