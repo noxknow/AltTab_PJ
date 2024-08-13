@@ -83,4 +83,9 @@ public class StudyController {
     public ResponseEntity<?> deleteStudySchedule(@PathVariable Long studyId, @PathVariable LocalDate deadline){
         return new ResponseEntity<>(studyScheduleService.deleteStudySchedule(studyId, deadline), HttpStatus.OK);
     }
+
+    @GetMapping("/schedule/deadline/{yearMonth}")
+    public ResponseEntity<?> getDeadlines(@PathVariable LocalDate yearMonth){
+        return new ResponseEntity<>(studyScheduleService.findDeadlines(yearMonth), HttpStatus.OK);
+    }
 }
