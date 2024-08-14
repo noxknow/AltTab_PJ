@@ -55,11 +55,11 @@ public class SecurityConfig {
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .authorizationEndpoint(authorizationEndpoint ->
-//                                authorizationEndpoint.baseUri("/api/oauth2/authorization"))
-                                authorizationEndpoint.baseUri("/oauth2/authorization"))
+                                authorizationEndpoint.baseUri("/api/oauth2/authorization"))
+//                                authorizationEndpoint.baseUri("/oauth2/authorization"))
                         .redirectionEndpoint(redirectionEndpoint ->
-//                                redirectionEndpoint.baseUri("/api/login/oauth2/code/*"))
-                                redirectionEndpoint.baseUri("/login/oauth2/code/*"))
+                                redirectionEndpoint.baseUri("/api/login/oauth2/code/*"))
+//                                redirectionEndpoint.baseUri("/login/oauth2/code/*"))
                         .successHandler(oAuth2LoginSuccessHandler)
                 )
                 .sessionManagement(session -> session
