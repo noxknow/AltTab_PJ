@@ -18,14 +18,15 @@ export function AttendanceInfo({ eventclickarg }: AttendanceInfoProps) {
   return (
     <div className={styles.main}>
       <div className={styles.header}>
-        {date ? format(date, 'yyyy-MM-dd h:mm a') : ''}
+        {date ? format(date, 'yyyy-MM-dd') : ''}
       </div>
       <div className={styles.members}>
-        {participants.map((participant, index) => (
-          <div className={styles.member} key={index}>
-            {participant}
-          </div>
-        ))}
+        {participants &&
+          participants.map((participant, index) => (
+            <div className={styles.member} key={index}>
+              {participant}
+            </div>
+          ))}
       </div>
     </div>
   );

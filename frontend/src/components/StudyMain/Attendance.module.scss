@@ -8,14 +8,15 @@
   justify-content: space-between;
   align-items: center;
   height: 30rem;
-  width: 80rem;
+  width: 90%;
+  gap: 1rem;
 }
 
 .top {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 80rem;
+  width: 100%;
 }
 
 .header {
