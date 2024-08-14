@@ -1,17 +1,12 @@
 import axios from 'axios';
-
 import { URL } from '@/constants/url';
-import { ProblemDetailsResponse } from '@/types/problem';
-
-const baseURL = URL.RECOMMEND;
-const headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json',
-};
 
 const problemAPI = axios.create({
-  baseURL,
-  headers,
+  baseURL: URL.RECOMMEND,
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  },
   withCredentials: true,
 });
 
@@ -20,12 +15,11 @@ export const problemService = {
     default: '/flask',
   },
 
-  getProblemDetails: async (
-    problemId: number,
-  ): Promise<ProblemDetailsResponse> => {
+  getProblemDetails: async (problemId: number): Promise<string> => {
     const { data } = await problemAPI.get(
       `${problemService.endpoint.default}/problem/${problemId}`,
     );
     return data;
   },
 };
+
