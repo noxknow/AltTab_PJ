@@ -1,13 +1,12 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 import mysql.connector
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.feature_extraction.text import TfidfVectorizer
+from flask_cors import CORS
+from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
-from flask_cors import CORS
-import json
 
 # .env 파일에서 환경 변수 로드
 load_dotenv()
@@ -15,6 +14,7 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
+# MySQL 데이터베이스 연결 함수
 def get_db_connection():
     conn = mysql.connector.connect(
         host=os.getenv('DB_HOST'),
@@ -24,6 +24,16 @@ def get_db_connection():
     )
     return conn
 
+# MongoDB 연결 설정 (환경 변수에서 가져옴)
+mongo_uri = os.getenv('MONGO_URI')
+db_name = os.getenv('MONGO_DB_NAME')
+collection_name = os.getenv('MONGO_COLLECTION_NAME')
+
+client = MongoClient(mongo_uri)
+db = client[db_name]
+collection = db[collection_name]
+
+# 추천 관련 함수들
 def fetch_study_scores():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
@@ -138,13 +148,19 @@ def recommend_route():
         'least_common_representative': recommendations_least_common
     })
 
-# 새로운 엔드포인트: 문제 ID를 받아서 해당 문제의 상세 정보를 반환
 @app.route('/flask/problem/<int:problem_id>', methods=['GET'])
-def get_problem_details(problem_id):
-    for problem in problem_data:
-        if problem["problem_id"] == str(problem_id):
-            return jsonify(problem)
-    return jsonify({"error": "Problem not found"}), 404
+def get_problem_html(problem_id):
+    try:
+        # MongoDB에서 문제 ID로 HTML을 검색
+        problem = collection.find_one({"problem_id": str(problem_id)})
+        if not problem:
+            abort(404, description="Problem not found")
+
+        # HTML 데이터를 반환
+        return problem['html'], 200, {'Content-Type': 'text/html'}
+    except Exception as e:
+        print(f"Error fetching problem: {e}")
+        abort(500, description="Internal Server Error")
 
 if __name__ == '__main__':
     app.run(debug=True)
