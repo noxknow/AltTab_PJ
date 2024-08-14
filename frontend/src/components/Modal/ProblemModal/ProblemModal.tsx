@@ -51,6 +51,9 @@ export function ProblemModal() {
         <CloseSVG width={24} height={24} stroke="#F24242" />
       </button>
       <h2 className={styles.problemTitle}>문제번호 : {problemId}</h2>
+      <div className={styles.backjunbutton}>
+        <button onClick={handleOpenInNewTab}>백준에서 문제 보기</button>
+      </div>
       <div className={styles.problemContent}>
         <h3 className={styles.sectionTitle}>문제 설명</h3>
         <p className={styles.descriptionText}>{problemData.description}</p>
@@ -72,9 +75,6 @@ export function ProblemModal() {
         <pre className={styles.sampleOutputText}>
           {problemData.sample_output}
         </pre>
-      </div>
-      <div className={styles.backjunbutton}>
-        <button onClick={handleOpenInNewTab}>백준에서 문제 보기</button>
       </div>
     </div>
   );

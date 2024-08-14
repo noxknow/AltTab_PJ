@@ -54,6 +54,11 @@ export function NewStudy() {
       if (!newMember) {
         return prevMembers;
       }
+      if (
+        prevMembers.some((member) => member.memberId === newMember.memberId)
+      ) {
+        return prevMembers;
+      }
       const newMembers = [...prevMembers, newMember];
       setSearchResult(null);
       setSearchValue('');

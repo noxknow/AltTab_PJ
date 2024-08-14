@@ -10,18 +10,17 @@
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
 }
 
 .profile_card_title {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
   gap: 0.8rem;
 }
 
 .profile_card_body {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 1.4rem;
 }
@@ -67,6 +66,13 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
+
+  .like_number {
+    @include poppins-bold;
+    color: #667085;
+    font-size: 1.6rem;
+    line-height: 1.8rem;
+  }
 }
 
 .description {
