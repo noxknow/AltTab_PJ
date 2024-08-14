@@ -20,25 +20,13 @@ export function Header() {
   const { data: userInfo, isLogin } = useGetMyInfoQuery();
   const { data: notificationCount } = useCountNotificationQuery();
 
-  const showSidebar = () => {
-    setIsVisible(true);
-  };
-
-  const hideSidebar = () => {
-    setIsVisible(false);
-  };
-
   const handleLogin = () => {
     window.location.href = `${URL.LOGIN}/oauth2/authorization/github`;
   };
 
   return (
     <header className={styles.header}>
-      <HeaderSidebar
-        isVisible={isVisible}
-        showSidebar={showSidebar}
-        hideSidebar={hideSidebar}
-      />
+      <HeaderSidebar isVisible={isVisible} />
       <div className={`${styles.header_item} ${styles.left_item}`}>
         <button
           className={styles.button}
