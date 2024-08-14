@@ -12,7 +12,7 @@ public interface StudyScheduleRepository extends JpaRepository<StudySchedule, Lo
     @EntityGraph(attributePaths = {"ScheduleProblems", "ScheduleProblems.problem"})
     Optional<StudySchedule> findByStudyIdAndDeadline(Long studyId, LocalDate deadline);
 
-    List<StudySchedule> findAllByDeadlineBetween(LocalDate startDate, LocalDate endDate);
+    List<StudySchedule> findAllByStudyIdAndDeadlineBetween(Long studyId, LocalDate startDate, LocalDate endDate);
 
     Optional<StudySchedule> findFirstByDeadlineGreaterThanEqualOrderByDeadlineAsc(LocalDate date);
 }

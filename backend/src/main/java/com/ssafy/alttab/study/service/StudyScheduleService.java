@@ -119,13 +119,13 @@ public class StudyScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public DeadlinesResponseDto findDeadlines(LocalDate yearMonth){
+    public DeadlinesResponseDto findDeadlines(Long studyId, LocalDate yearMonth){
         YearMonth currentYearMonth = YearMonth.from(yearMonth);
         LocalDate startOfMonth = currentYearMonth.atDay(1);
         LocalDate endOfMonth = currentYearMonth.atEndOfMonth();
 
         List<StudySchedule> studySchedules = studyScheduleRepository
-                .findAllByDeadlineBetween(startOfMonth, endOfMonth);
+                .findAllByStudyIdAndDeadlineBetween(studyId, startOfMonth, endOfMonth);
 
         List<LocalDate> deadlines = studySchedules.stream()
                 .map(StudySchedule::getDeadline)
@@ -133,6 +133,7 @@ public class StudyScheduleService {
                 .collect(Collectors.toList());
 
         return DeadlinesResponseDto.builder()
+                .studyId(studyId)
                 .deadlines(deadlines)
                 .build();
     }

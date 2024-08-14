@@ -10,5 +10,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 public class DeadlinesResponseDto {
-    List<LocalDate> deadlines;
+    private Long studyId;
+    private List<LocalDate> deadlines;
 }
