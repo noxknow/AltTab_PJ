@@ -53,7 +53,9 @@ export function Compiler() {
   }, [data]);
 
   useEffect(() => {
-    setHighlightedCode(highlightCode(codeText, 'java'));
+    if (codeText) {
+      setHighlightedCode(highlightCode(codeText, 'java'));
+    }
     resizeCodeArea();
   }, [codeText]);
 
