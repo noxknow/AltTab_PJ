@@ -10,7 +10,6 @@ import lombok.Getter;
 @Builder
 public class StudyScheduleRequestDto {
     private Long studyId;
-    private LocalDate deadline;
-    private String presenter;
     private Long problemId;
+    private LocalDate deadline;
 }

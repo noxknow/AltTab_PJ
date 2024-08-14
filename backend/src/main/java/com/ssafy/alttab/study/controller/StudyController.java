@@ -1,6 +1,5 @@
 package com.ssafy.alttab.study.controller;
 
-import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.study.dto.DeleteScheduleProblemRequestDto;
 import com.ssafy.alttab.study.dto.MakeStudyRequestDto;
@@ -36,44 +35,43 @@ public class StudyController {
     private final StudyScheduleService studyScheduleService;
 
     @GetMapping("/{studyId}")
-    public ResponseEntity<?> getStudyInfo(@PathVariable Long studyId) throws StudyNotFoundException {
+    public ResponseEntity<?> getStudyInfo(@PathVariable Long studyId) {
         return new ResponseEntity<>(studyService.getStudyInfo(studyId), HttpStatus.OK);
     }
 
     @GetMapping("/{studyId}/members")
-    public ResponseEntity<?> getStudyMembers(@PathVariable Long studyId) throws StudyNotFoundException {
+    public ResponseEntity<?> getStudyMembers(@PathVariable Long studyId) {
         return new ResponseEntity<>(studyService.getStudyMembers(studyId), HttpStatus.OK);
     }
 
     @PutMapping("/{studyId}")
     public ResponseEntity<?> updateStudyInfo(@PathVariable Long studyId,
-                                             @RequestBody StudyInfoRequestDto dto) throws StudyNotFoundException {
+                                             @RequestBody StudyInfoRequestDto dto) {
         return new ResponseEntity<>(studyService.updateStudyInfo(studyId, dto), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> createStudy(@AuthenticationPrincipal UserDetails userDetails, @RequestBody MakeStudyRequestDto dto) throws MemberNotFoundException {
+    public ResponseEntity<?> createStudy(@AuthenticationPrincipal UserDetails userDetails,
+                                         @RequestBody MakeStudyRequestDto dto) {
         return new ResponseEntity<>(studyService.createStudy(userDetails.getUsername(), dto), HttpStatus.OK);
     }
 
-    @PostMapping("/test")
-    public ResponseEntity<?> createStudyTest(String username, @RequestBody MakeStudyRequestDto dto) throws MemberNotFoundException {
-        return new ResponseEntity<>(studyService.createStudy(username, dto), HttpStatus.OK);
-    }
-
     @GetMapping("/{studyId}/score")
-    public ResponseEntity<?> getStudyScore(@PathVariable Long studyId) throws StudyNotFoundException {
+    public ResponseEntity<?> getStudyScore(@PathVariable Long studyId) {
         return new ResponseEntity<>(studyService.getStudyScore(studyId), HttpStatus.OK);
     }
 
-    @GetMapping("/schedule/{id}/{deadline}")
-    public ResponseEntity<?> getSchedule(@PathVariable Long id, @PathVariable LocalDate deadline) throws StudyNotFoundException {
-        return new ResponseEntity<>(studyScheduleService.getStudySchedule(id, deadline), HttpStatus.OK);
+    @GetMapping("/schedule/{studyId}/{deadline}")
+    public ResponseEntity<?> getSchedule(@AuthenticationPrincipal UserDetails userDetails,
+                                         @PathVariable Long studyId,
+                                         @PathVariable LocalDate deadline) {
+        return new ResponseEntity<>(studyScheduleService.getStudySchedule(userDetails.getUsername(), studyId, deadline), HttpStatus.OK);
     }
 
     @PostMapping("/schedule/update")
-    public ResponseEntity<?> updateSchedule(@RequestBody StudyScheduleRequestDto requestDto) {
-        return new ResponseEntity<>(studyScheduleService.updateOrCreateStudySchedule(requestDto), HttpStatus.OK);
+    public ResponseEntity<?> updateSchedule(@AuthenticationPrincipal UserDetails userDetails,
+                                            @RequestBody StudyScheduleRequestDto requestDto) {
+        return new ResponseEntity<>(studyScheduleService.updateOrCreateStudySchedule(userDetails.getUsername(),requestDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/schedule/problem/delete")
@@ -82,7 +80,8 @@ public class StudyController {
     }
 
     @DeleteMapping("/schedule/{studyId}/{deadline}")
-    public ResponseEntity<?> deleteStudySchedule(@PathVariable Long studyId, @PathVariable LocalDate deadline) {
+    public ResponseEntity<?> deleteStudySchedule(@PathVariable Long studyId,
+                                                 @PathVariable LocalDate deadline) {
         return new ResponseEntity<>(studyScheduleService.deleteStudySchedule(studyId, deadline), HttpStatus.OK);
     }
 
@@ -92,19 +91,28 @@ public class StudyController {
     }
 
     @GetMapping("/schedule/recent")
-    public ResponseEntity<?> getRecentSchedule(){
-        return new ResponseEntity<>(studyScheduleService.findRecentStudySchedule(), HttpStatus.OK);
+    public ResponseEntity<?> getRecentSchedule(@AuthenticationPrincipal UserDetails userDetails) {
+        return new ResponseEntity<>(studyScheduleService.findRecentStudySchedule(userDetails.getUsername()), HttpStatus.OK);
     }
 
     @PostMapping("/attend/{studyId}/{todayDate}")
-    public ResponseEntity<?> attendStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId, @PathVariable LocalDate todayDate) {
+    public ResponseEntity<?> attendStudy(@AuthenticationPrincipal UserDetails userDetails,
+                                         @PathVariable Long studyId,
+                                         @PathVariable LocalDate todayDate) {
         studyService.attendStudy(userDetails.getUsername(), studyId, todayDate);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/attend/{studyId}/{todayDate}")
-    public ResponseEntity<?> getAttendStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId, @PathVariable LocalDate todayDate) {
+    public ResponseEntity<?> getAttendStudy(@AuthenticationPrincipal UserDetails userDetails,
+                                            @PathVariable Long studyId,
+                                            @PathVariable LocalDate todayDate) {
         studyService.getAttendStudy(userDetails.getUsername(), studyId, todayDate);
-        return new ResponseEntity<>(studyService.getAttendStudy(userDetails.getUsername(), studyId, todayDate),HttpStatus.OK);
+        return new ResponseEntity<>(studyService.getAttendStudy(userDetails.getUsername(), studyId, todayDate), HttpStatus.OK);
+    }
+
+    @GetMapping("/problems/{studyId}")
+    public ResponseEntity<?> getProblems(@PathVariable Long studyId) throws StudyNotFoundException {
+        return new ResponseEntity<>(studyService.getProblems(studyId), HttpStatus.OK);
     }
 }

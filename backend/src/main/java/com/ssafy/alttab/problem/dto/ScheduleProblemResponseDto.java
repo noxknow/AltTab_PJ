@@ -20,8 +20,9 @@ public class ScheduleProblemResponseDto {
     private String presenter;
     private List<String> members;
     private int size;
+    private boolean check;
 
-    public static ScheduleProblemResponseDto toDto(ScheduleProblem scheduleProblem, List<String> members, int size) {
+    public static ScheduleProblemResponseDto toDto(ScheduleProblem scheduleProblem, List<String> members, int size, String username) {
         Problem problem = scheduleProblem.getProblem();
         return ScheduleProblemResponseDto.builder()
                 .studyScheduleId(scheduleProblem.getId())
@@ -32,6 +33,7 @@ public class ScheduleProblemResponseDto {
                 .presenter(scheduleProblem.getPresenter())
                 .members(members)
                 .size(size)
+                .check(!members.contains(username))
                 .build();
     }
 }
