@@ -1,8 +1,8 @@
 package com.ssafy.alttab.problem.dto;
 
-import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.problem.entity.Problem;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,10 +13,11 @@ import lombok.Getter;
 public class ProblemResponseDto {
     private Long studyProblemId;
     private Long problemId;
-    private String title; // 문제 제목
-    private String tag; // 문제 태그
-    private Long level; // 티어
-    private String presenter; // 발표자
+    private String title;
+    private String tag;
+    private Long level;
+    private String presenter;
+    private LocalDate deadline;
 
     public static ProblemResponseDto toDto(StudyProblem studyProblem) {
         Problem problem = studyProblem.getProblem();
@@ -27,18 +28,7 @@ public class ProblemResponseDto {
                 .tag(problem.getTag())
                 .level(problem.getLevel())
                 .presenter(studyProblem.getPresenter())
-                .build();
-    }
-
-    public static ProblemResponseDto toDto(ScheduleProblem studyProblem) {
-        Problem problem = studyProblem.getProblem();
-        return ProblemResponseDto.builder()
-                .studyProblemId(studyProblem.getId())
-                .problemId(problem.getProblemId())
-                .title(problem.getTitle())
-                .tag(problem.getTag())
-                .level(problem.getLevel())
-                .presenter(studyProblem.getPresenter())
+                .deadline(studyProblem.getDeadline())
                 .build();
     }
 }
