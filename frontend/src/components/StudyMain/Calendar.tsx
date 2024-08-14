@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
@@ -6,29 +7,51 @@ import { AttendanceInfo } from './AttendanceInfo';
 import './Calendar.scss';
 import { EventClickArg, DatesSetArg } from '@fullcalendar/core/index.js';
 import { v4 } from 'uuid';
+import { useClickedDate } from '@/hooks/useClickedDate';
+import { format } from 'date-fns';
+import {
+  useDeleteProblemQuery,
+  useDeleteScheduleQuery,
+  useGetSchedulesQuery,
+  usePostProblemQuery,
+} from '@/queries/schedule';
 
 type EventData = {
   id: string;
   title: string;
   start: string;
-  participants: string[];
 };
-
-const data: EventData[] = [
-  {
-    id: '1',
-    title: 'Study',
-    start: '2024-08-09',
-    participants: ['재영', '승호', '경헌', '지원', '종권', '치왕'],
-  },
-];
 
 export function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState<EventClickArg | null>(
     null,
   );
-  const [events, setEvents] = useState(data);
+  const [events, setEvents] = useState<EventData[]>();
+  const { studyId } = useParams<{ studyId: string }>();
+  const { clickedDate, setClickedDate } = useClickedDate();
+  const postProblemMutation = usePostProblemQuery();
+  const deleteScheduleMutation = useDeleteScheduleQuery(studyId!, clickedDate);
+  const deleteProblemMutation = useDeleteProblemQuery();
+  const [yearMonth, setYearMonth] = useState(format(new Date(), 'yyyy-MM-dd'));
+  const { refetch } = useGetSchedulesQuery(yearMonth);
 
+  const refetchSchedules = useCallback(async () => {
+    const { data: schedules } = await refetch();
+    if (schedules) {
+      setEvents(convertDatesToEventData(schedules!.deadlines));
+    }
+  }, []);
+
+  const convertDatesToEventData = (dates: string[]): EventData[] =>
+    dates.map((date) => ({
+      id: v4(),
+      title: 'Study',
+      start: date,
+    }));
+
+  useEffect(() => {
+    refetchSchedules();
+  }, [yearMonth]);
   const headerOptions = {
     left: 'today',
     center: 'title',
@@ -36,6 +59,7 @@ export function Calendar() {
   };
 
   const handleEventClick = (eventclickarg: EventClickArg) => {
+    setClickedDate(format(eventclickarg!.event!.start!, 'yyyy-MM-dd'));
     if (eventclickarg.event.id === selectedEvent?.event.id) {
       setSelectedEvent(null);
     } else {
@@ -43,29 +67,38 @@ export function Calendar() {
     }
   };
 
-  const handleDateClick = (dateclickarg: DateClickArg) => {
-    const updatedEvents = events.filter(
+  const handleDateClick = async (dateclickarg: DateClickArg) => {
+    const updatedEvents = events?.filter(
       (event) => event.start === dateclickarg.dateStr,
     );
-    if (updatedEvents.length === 1) {
-      const remainingEvents = events.filter(
+    if (updatedEvents?.length === 1) {
+      const remainingEvents = events?.filter(
         (event) => event.start !== dateclickarg.dateStr,
       );
       setEvents(remainingEvents);
+      deleteScheduleMutation.mutate();
     } else {
-      const newEvent: EventData = {
-        id: v4(),
-        title: 'Study',
-        start: dateclickarg.dateStr,
-        participants: [],
+      const scheduleForm = {
+        studyId: parseInt(studyId!, 10),
+        deadline: dateclickarg.dateStr,
+        presenter: '',
+        problemId: 1000,
       };
-      setEvents([...events, newEvent]);
+      await postProblemMutation.mutateAsync(scheduleForm, {
+        onSuccess: () => {
+          const problemForm = {
+            studyId: parseInt(studyId!, 10),
+            deadline: dateclickarg.dateStr,
+            problemId: 1000,
+          };
+          deleteProblemMutation.mutate(problemForm);
+        },
+      });
     }
+    refetchSchedules();
   };
   const handleDatesSet = (arg: DatesSetArg) => {
-    console.log(
-      `Current view: ${arg.start.getFullYear()}년 ${arg.start.getMonth() + 1}월`,
-    );
+    setYearMonth(format(arg.start, 'yyyy-MM-dd'));
   };
   return (
     <div className="calendar">

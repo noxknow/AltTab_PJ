@@ -65,10 +65,8 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
      * @param refreshToken
      */
     private void setTokenCookies(HttpServletResponse response, String accessToken, String refreshToken) {
-        ResponseCookie accessTokenCookie = createCookie("access_token", accessToken,
-                jwtUtil.extractExpiration(accessToken).getTime());
-        ResponseCookie refreshTokenCookie = createCookie("refresh_token", refreshToken,
-                jwtUtil.extractExpiration(refreshToken).getTime());
+        ResponseCookie accessTokenCookie = createCookie("access_token", accessToken);
+        ResponseCookie refreshTokenCookie = createCookie("refresh_token", refreshToken);
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
@@ -77,15 +75,13 @@ public class OAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
     /**
      * @param name
      * @param value
-     * @param maxAge
      * @return
      */
-    private ResponseCookie createCookie(String name, String value, long maxAge) {
+    private ResponseCookie createCookie(String name, String value) {
         return ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(true)
                 .sameSite("Strict")
-                .maxAge(maxAge)
                 .path("/")
                 .build();
     }

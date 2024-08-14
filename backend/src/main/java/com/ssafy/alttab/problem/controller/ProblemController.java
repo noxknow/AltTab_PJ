@@ -1,6 +1,5 @@
 package com.ssafy.alttab.problem.controller;
 
-import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.ProblemNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.problem.dto.AddProblemsRequestDto;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,6 +37,12 @@ public class ProblemController {
                                             @RequestBody RemoveProblemsRequestDto dto) throws StudyNotFoundException {
         problemService.removeProblems(studyId, dto);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{problemInfo}")
+    public ResponseEntity<List<String>> searchProblems(@PathVariable("problemInfo") String problemInfo) {
+
+        return problemService.searchProblems(problemInfo);
     }
 
     @GetMapping("/{studyId}/{option}/{target}")

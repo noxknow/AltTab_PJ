@@ -1,9 +1,9 @@
 import CalendarSVG from '@/assets/icons/calendar.svg?react';
-import { format, differenceInDays } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import styles from './StudySchedule.module.scss';
 
 type StudyScheduleProps = {
-  date: Date;
+  date: string;
 };
 
 export function StudySchedule({ date }: StudyScheduleProps) {
@@ -15,11 +15,9 @@ export function StudySchedule({ date }: StudyScheduleProps) {
         </div>
         <div>Schedule</div>
       </div>
-      <div className={styles.mid}>
-        Next Study : {format(date, 'yyyy-MM-dd h:mm a')}
-      </div>
+      <div className={styles.mid}>Next Study : {date}</div>
       <div className={styles.bottom}>
-        D - {differenceInDays(date, new Date())}
+        D - {differenceInDays(new Date(date), new Date()) + 1}
       </div>
     </div>
   );

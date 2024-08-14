@@ -11,12 +11,7 @@ import {
 } from '@hello-pangea/dnd';
 import ReactDOM from 'react-dom';
 import { useCreateBlocksQuery, useGetBlocksQuery } from '@/queries/solutions';
-
-export type Block = {
-  id: string;
-  text: string;
-  option: string;
-};
+import { Block } from '@/types/solution';
 
 export function EditorPage() {
   const initialBlock = { id: v4(), text: '', option: 'content' };
@@ -27,16 +22,14 @@ export function EditorPage() {
   const { studyId, problemId } = useParams();
   const { refetch } = useGetBlocksQuery(studyId!, problemId!);
 
-  const createBlocksMutation = useCreateBlocksQuery(
-    studyId!,
-    problemId!,
-    blocks,
-  );
+  const createBlocksMutation = useCreateBlocksQuery(studyId!, problemId!, {
+    blocks: blocks,
+  });
 
   const refetchBlocks = useCallback(async () => {
     const { data } = await refetch();
     if (data) {
-      setBlocks(data);
+      setBlocks(data.blocks);
     }
   }, []);
 

@@ -1,47 +1,60 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/Button/Button';
 import SearchSVG from '@/assets/icons/search.svg?react';
 import PencilSVG from '@/assets/icons/pencil.svg?react';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import styles from './ProblemInputModal.module.scss';
+import { usePostProblemQuery } from '@/queries/schedule';
+import { useClickedDate } from '@/hooks/useClickedDate';
+import { useParams } from 'react-router-dom';
+import { useGetMyInfoQuery } from '@/queries/member';
 
 type ProblemInputModalProps = {
   open: boolean;
   onClose: () => void;
+  refetchSchedule: () => Promise<void>;
 };
 
-export function ProblemInputModal({ open, onClose }: ProblemInputModalProps) {
+export function ProblemInputModal({
+  open,
+  onClose,
+  refetchSchedule,
+}: ProblemInputModalProps) {
+  if (!open) return null;
+
   const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState<string[]>([]);
-  const [selectedResult, setSelectedResult] = useState<string | null>(null);
+  const [results, setResults] = useState<number[]>([]);
+  const [selectedResult, setSelectedResult] = useState<number>(0);
+  const { clickedDate } = useClickedDate();
+  const postProblemMutation = usePostProblemQuery();
+  const { data: userInfo } = useGetMyInfoQuery();
+  const { studyId } = useParams<{ studyId: string }>();
 
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newKeyword = event.target.value;
     setKeyword(newKeyword);
 
-    const dummyResults = newKeyword
-      ? Array.from(
-          { length: 5 },
-          (_, index) => `${newKeyword} Result ${index + 1}`,
-        )
-      : [];
+    const dummyResults = Array.from({ length: 10 }, (_, index) => 1000 + index);
 
     setResults(dummyResults);
   };
 
-  const handleResultClick = (result: string) => {
+  const handleResultClick = (result: number) => {
     setSelectedResult(result);
   };
 
-  const handleRegisterClick = () => {
-    if (selectedResult) {
-      console.log('Selected Result:', selectedResult);
-    } else {
-      console.log('No result selected');
+  const handleRegisterClick = async () => {
+    if (selectedResult && studyId) {
+      const form = {
+        studyId: parseInt(studyId, 10),
+        deadline: clickedDate,
+        presenter: userInfo?.name || '',
+        problemId: selectedResult,
+      };
+      await postProblemMutation.mutateAsync(form);
+      refetchSchedule();
     }
   };
-
-  if (!open) return null;
 
   return (
     <div className={styles.overlay}>
@@ -82,9 +95,10 @@ export function ProblemInputModal({ open, onClose }: ProblemInputModalProps) {
             )}
           </div>
           <Button
+            className={styles.register}
             color="green"
             fill={true}
-            size="long"
+            size="small"
             onClick={handleRegisterClick}
           >
             등록하기

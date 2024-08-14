@@ -1,6 +1,6 @@
 import { useQuery, useMutation, QueryClient } from '@tanstack/react-query';
 import { solutions } from '@/services/solutions';
-import { Block } from '@/components/Editor/EditorPage';
+import { blockInfo } from '@/types/solution';
 
 const blocksKeys = {
   create: ['create'],
@@ -10,7 +10,7 @@ const blocksKeys = {
 export const useCreateBlocksQuery = (
   studyId: string,
   problemId: string,
-  blocks: Block[],
+  blocks: blockInfo,
 ) => {
   const queryClient = new QueryClient();
 
@@ -27,7 +27,7 @@ export const useCreateBlocksQuery = (
 export const useGetBlocksQuery = (studyId: string, problemId: string) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: blocksKeys.getBlocks,
-    queryFn: (): Promise<Block[]> => solutions.getBlocks(studyId, problemId),
+    queryFn: (): Promise<blockInfo> => solutions.getBlocks(studyId, problemId),
   });
   return { data, isLoading, refetch };
 };

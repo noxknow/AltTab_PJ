@@ -12,10 +12,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Problem {
+
     @Id
+    @Column(name = "problem_id")
     private Long problemId;
+
     private String title;
+
     private String tag;
+
     private Long level;
+
     private String representative;
+
+    private String problemIdTitle;
 }

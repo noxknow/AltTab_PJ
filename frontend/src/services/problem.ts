@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import { URL } from '@/constants/url';
-import { ProblemDetailsResponse } from '@/types/problem'; // 문제 상세 정보에 대한 타입 정의
+import { ProblemDetailsResponse } from '@/types/problem';
 
 const baseURL = URL.RECOMMEND;
 const headers = {
@@ -20,7 +20,6 @@ export const problemService = {
     default: '/flask',
   },
 
-  // 문제 상세 정보를 가져오는 함수
   getProblemDetails: async (
     problemId: number,
   ): Promise<ProblemDetailsResponse> => {

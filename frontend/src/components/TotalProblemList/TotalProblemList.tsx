@@ -41,7 +41,7 @@ export function TotalProblemList() {
           <input type="text" placeholder="검색" />
         </div>
       </div>
-      <ProblemList styleType="big" />
+      <ProblemList styleType="big" studyInfo={null} />
     </div>
   );
 }
