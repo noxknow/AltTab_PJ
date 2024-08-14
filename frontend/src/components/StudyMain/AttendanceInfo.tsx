@@ -1,25 +1,31 @@
-import { EventClickArg } from '@fullcalendar/core/index.js';
-import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styles from './AttendanceInfo.module.scss';
+import { useGetAttendances } from '@/queries/attendance';
+import { useParams } from 'react-router-dom';
+import { useClickedDate } from '@/hooks/useClickedDate';
 
-type AttendanceInfoProps = {
-  eventclickarg: EventClickArg;
-};
+export function AttendanceInfo() {
+  const { clickedDate } = useClickedDate();
+  const { studyId } = useParams<{ studyId: string }>();
 
-export function AttendanceInfo({ eventclickarg }: AttendanceInfoProps) {
-  const date = eventclickarg.event.start;
+  const { refetch } = useGetAttendances(parseInt(studyId!), clickedDate);
 
-  const [participants, setParticipants] = useState<string[]>([]);
+  const [participants, setParticipants] = useState<string[]>();
+
+  const refetchAttendances = useCallback(async () => {
+    const { data } = await refetch();
+    if (data) {
+      setParticipants(data.members);
+    }
+  }, []);
+
   useEffect(() => {
-    setParticipants(eventclickarg.event.extendedProps.participants);
-  }, [eventclickarg.event.extendedProps.participants]);
+    refetchAttendances();
+  }, [clickedDate]);
 
   return (
     <div className={styles.main}>
-      <div className={styles.header}>
-        {date ? format(date, 'yyyy-MM-dd') : ''}
-      </div>
+      <div className={styles.header}>{clickedDate}</div>
       <div className={styles.members}>
         {participants &&
           participants.map((participant, index) => (

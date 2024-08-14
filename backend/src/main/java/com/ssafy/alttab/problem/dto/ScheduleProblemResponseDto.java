@@ -33,7 +33,7 @@ public class ScheduleProblemResponseDto {
                 .presenter(scheduleProblem.getPresenter())
                 .members(members)
                 .size(size)
-                .check(!members.contains(username))
+                .check(members.contains(username))
                 .build();
     }
 }

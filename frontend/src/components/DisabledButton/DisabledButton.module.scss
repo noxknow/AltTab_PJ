@@ -3,7 +3,7 @@
 
 .button {
   @include poppins-semibold;
-  padding: 0.2rem;
+  padding: 0.25rem;
   border-radius: 0.5rem;
   cursor: default;
 }
@@ -30,4 +30,94 @@
   color: $white;
   background-color: $red;
   border: 2px solid $red;
+}
+
+.yellow {
+  color: $black;
+  background-color: $yellow;
+  border: 2px solid $yellow;
+}
+
+.purple {
+  color: $white;
+  background-color: $purple;
+  border: 2px solid $purple;
+}
+
+.orange {
+  color: $black;
+  background-color: #ffa500;
+  border: 2px solid #ffa500;
+}
+
+.pink {
+  color: $white;
+  background-color: #ffc0cb;
+  border: 2px solid #ffc0cb;
+}
+
+.teal {
+  color: $white;
+  background-color: #008080;
+  border: 2px solid #008080;
+}
+
+.indigo {
+  color: $white;
+  background-color: #4b0082;
+  border: 2px solid #4b0082;
+}
+
+.cyan {
+  color: $black;
+  background-color: #00ffff;
+  border: 2px solid #00ffff;
+}
+
+.lime {
+  color: $black;
+  background-color: #00ff00;
+  border: 2px solid #00ff00;
+}
+
+.bronze {
+  color: $white;
+  background-color: #cd7f32;
+  border: 2px solid #cd7f32;
+}
+
+.silver {
+  color: $black;
+  background-color: #c0c0c0;
+  border: 2px solid #c0c0c0;
+}
+
+.gold {
+  color: $black;
+  background-color: #ffd700;
+  border: 2px solid #ffd700;
+}
+
+.platinum {
+  color: $black;
+  background-color: #e5e4e2;
+  border: 2px solid #e5e4e2;
+}
+
+.diamond {
+  color: $white;
+  background-color: #b9f2ff;
+  border: 2px solid #b9f2ff;
+}
+
+.ruby {
+  color: $white;
+  background-color: #e0115f;
+  border: 2px solid #e0115f;
+}
+
+.gray {
+  color: $white;
+  background-color: #808080;
+  border: 2px solid #808080;
 }

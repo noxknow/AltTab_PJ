@@ -23,9 +23,6 @@ type EventData = {
 };
 
 export function Calendar() {
-  const [selectedEvent, setSelectedEvent] = useState<EventClickArg | null>(
-    null,
-  );
   const [events, setEvents] = useState<EventData[]>();
   const { studyId } = useParams<{ studyId: string }>();
   const { setClickedDate } = useClickedDate();
@@ -52,6 +49,7 @@ export function Calendar() {
   useEffect(() => {
     refetchSchedules();
   }, [yearMonth]);
+
   const headerOptions = {
     left: 'today',
     center: 'title',
@@ -60,11 +58,6 @@ export function Calendar() {
 
   const handleEventClick = (eventclickarg: EventClickArg) => {
     setClickedDate(format(eventclickarg!.event!.start!, 'yyyy-MM-dd'));
-    if (eventclickarg.event.id === selectedEvent?.event.id) {
-      setSelectedEvent(null);
-    } else {
-      setSelectedEvent(eventclickarg);
-    }
   };
 
   const handleDateClick = async (dateclickarg: DateClickArg) => {
@@ -114,7 +107,7 @@ export function Calendar() {
         datesSet={handleDatesSet}
         showNonCurrentDates={false}
       />
-      {selectedEvent && <AttendanceInfo eventclickarg={selectedEvent} />}
+      <AttendanceInfo />
     </div>
   );
 }

@@ -1,8 +1,11 @@
 import { PieChart } from '@/components/ProblemList/PieChart';
 import styles from './ProgressModal.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import CheckedBoxSVG from '@/assets/icons/checkedbox.svg?react';
 import UnCheckedBoxSVG from '@/assets/icons/uncheckedbox.svg?react';
+import { useSolveProblemQuery } from '@/queries/problems';
+import { useGetMyInfoQuery } from '@/queries/member';
 
 type ProgressModalProps = {
   style?: React.CSSProperties;
@@ -10,18 +13,35 @@ type ProgressModalProps = {
   modalInfo: {
     percentage: number;
     people: string[];
+    check: boolean;
+    problemId: number;
   };
+  refetchSchedule: () => Promise<void>;
 };
 
 export function ProgressModal({
   style,
   setIsModal,
   modalInfo,
+  refetchSchedule,
 }: ProgressModalProps) {
-  const [isSolved, setIsSolved] = useState(false);
-  const handleSolved = () => {
-    setIsSolved(!isSolved);
+  const { studyId } = useParams<{ studyId: string }>();
+  const { data: userInfo } = useGetMyInfoQuery();
+  const [isSolved, setIsSolved] = useState(modalInfo.check);
+  const solveProblemMutation = useSolveProblemQuery(
+    userInfo!.memberId,
+    parseInt(studyId!),
+    modalInfo.problemId,
+  );
+  const handleSolved = async () => {
+    await solveProblemMutation.mutateAsync();
+    refetchSchedule();
+    setIsSolved(true);
   };
+
+  useEffect(() => {
+    setIsSolved(modalInfo.check);
+  }, [modalInfo]);
 
   return (
     <div
@@ -36,7 +56,7 @@ export function ProgressModal({
           </div>
           <div>{modalInfo.percentage}</div>
           {isSolved ? (
-            <CheckedBoxSVG onClick={handleSolved} fill="#66CD00" />
+            <CheckedBoxSVG fill="#66CD00" />
           ) : (
             <UnCheckedBoxSVG onClick={handleSolved} fill="#66CD00" />
           )}

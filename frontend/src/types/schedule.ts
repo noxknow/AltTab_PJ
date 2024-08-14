@@ -20,6 +20,7 @@ export type studyProblemDetail = {
   presenter: string;
   members: string[];
   size: number;
+  check: boolean;
 };
 
 export type deleteProblemForm = {
