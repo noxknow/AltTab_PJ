@@ -35,15 +35,15 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
   const handleMouseEnter = (
     e: React.MouseEvent<HTMLDivElement>,
     progress: number,
+    members: string[],
   ) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setModalPosition({
       top: rect.top + window.scrollY,
       left: rect.left + window.scrollX,
     });
-    const data = ['Person1', 'Person1', 'Person1', 'Person1', 'Person1'];
     setIsModal(true);
-    setModalInfo({ percentage: progress, people: data });
+    setModalInfo({ percentage: progress, people: members });
   };
 
   const handleMouseLeave = () => {
@@ -110,13 +110,21 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
               <td>
                 <div
                   className={styles.progress}
-                  onMouseEnter={(e) => handleMouseEnter(e, 70)}
+                  onMouseEnter={(e) =>
+                    handleMouseEnter(
+                      e,
+                      (problem.members.length / problem.size) * 100,
+                      problem.members,
+                    )
+                  }
                   onMouseLeave={handleMouseLeave}
                 >
                   <div>
-                    <PieChart percentage={70} />
+                    <PieChart
+                      percentage={(problem.members.length / problem.size) * 100}
+                    />
                   </div>
-                  <div>{70}</div>
+                  <div>{(problem.members.length / problem.size) * 100}</div>
                 </div>
               </td>
               <td>
@@ -124,7 +132,7 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
               </td>
               <td>
                 <div className={styles.category}>
-                  {problem.tag.split(',').map((cat, catIndex) => (
+                  {problem.tag.split(';').map((cat, catIndex) => (
                     <span key={catIndex}>
                       <DisabledButton color="blue">{cat.trim()}</DisabledButton>
                     </span>
