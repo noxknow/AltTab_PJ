@@ -40,11 +40,10 @@ public class ProblemController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{studyId}/{problemInfo}")
-    public ResponseEntity<SearchProblemListResponseDto> searchProblems(@PathVariable("studyId") Long studyId,
-                                                                       @PathVariable("problemInfo") String problemInfo) throws StudyNotFoundException, ProblemNotFoundException {
+    @GetMapping("/{problemInfo}")
+    public ResponseEntity<SearchProblemListResponseDto> searchProblems(@PathVariable("problemInfo") String problemInfo) {
 
-        return problemService.searchProblems(studyId, problemInfo);
+        return problemService.searchProblems(problemInfo);
     }
 
     @GetMapping("/{studyId}/{option}/{target}")
