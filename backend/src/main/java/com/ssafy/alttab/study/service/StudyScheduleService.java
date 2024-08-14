@@ -141,6 +141,21 @@ public class StudyScheduleService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public StudyScheduleResponseDto findRecentStudySchedule(){
+        LocalDate today = LocalDate.now();
+
+        StudySchedule recentSchedule = studyScheduleRepository.findFirstByDeadlineGreaterThanEqualOrderByDeadlineAsc(today)
+                .orElseThrow(() -> new EntityNotFoundException("No future study schedules found"));
+
+        return StudyScheduleResponseDto.builder()
+                .studyId(recentSchedule.getStudyId())
+                .deadline(recentSchedule.getDeadline())
+                .studyProblems(mapToStudyProblems(recentSchedule.getScheduleProblems()))
+                .build();
+    }
+
+
     //== mapper ==//
     private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems, Long studyId) throws StudyNotFoundException {
         Study study = studyRepository.findById(studyId).orElseThrow(()-> new StudyNotFoundException(studyId));
