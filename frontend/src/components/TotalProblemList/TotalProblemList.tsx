@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ProblemList } from '@/components/ProblemList/ProblemList';
+// import { ProblemList } from '@/components/ProblemList/ProblemList';
 import styles from './TotalProblemList.module.scss';
 import SearchSVG from '@/assets/icons/search.svg?react';
 
@@ -41,7 +41,7 @@ export function TotalProblemList() {
           <input type="text" placeholder="검색" />
         </div>
       </div>
-      <ProblemList styleType="big" studyInfo={null} />
+      {/* <ProblemList styleType="big" studyInfo={null} /> */}
     </div>
   );
 }
