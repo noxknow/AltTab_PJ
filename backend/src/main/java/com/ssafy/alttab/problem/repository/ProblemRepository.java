@@ -9,7 +9,5 @@ import java.util.List;
 @Repository
 public interface ProblemRepository extends JpaRepository<Problem, Long> {
 
-    List<Problem> findByProblemIdContaining(String problemInfo);
-
-    List<Problem> findByTitleContaining(String problemInfo);
+    List<Problem> findByProblemIdTitleContaining(String problemInfo);
 }

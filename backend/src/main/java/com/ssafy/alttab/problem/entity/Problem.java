@@ -24,4 +24,6 @@ public class Problem {
     private Long level;
 
     private String representative;
+
+    private String problemIdTitle;
 }
