@@ -89,7 +89,7 @@ public class ProblemService {
     }
 
     @Transactional
-    public ResponseEntity<SearchProblemListResponseDto> searchProblems(Long studyId, String problemInfo) {
+    public ResponseEntity<SearchProblemListResponseDto> searchProblems(String problemInfo) {
 
         List<Problem> problemsById = problemRepository.findByProblemIdContaining(problemInfo);
         List<Problem> problemsByTitle = problemRepository.findByTitleContaining(problemInfo);
