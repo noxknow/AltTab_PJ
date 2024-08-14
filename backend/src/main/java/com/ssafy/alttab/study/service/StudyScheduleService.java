@@ -1,6 +1,5 @@
 package com.ssafy.alttab.study.service;
 
-import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
@@ -9,6 +8,7 @@ import com.ssafy.alttab.problem.entity.Problem;
 import com.ssafy.alttab.problem.entity.Status;
 import com.ssafy.alttab.problem.repository.ProblemRepository;
 import com.ssafy.alttab.problem.repository.StatusRepository;
+import com.ssafy.alttab.study.dto.DeadlinesResponseDto;
 import com.ssafy.alttab.study.dto.DeleteScheduleProblemRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleResponseDto;
@@ -17,13 +17,11 @@ import com.ssafy.alttab.study.entity.StudySchedule;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import com.ssafy.alttab.study.repository.StudyScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,7 +46,7 @@ public class StudyScheduleService {
      * @return StudyScheduleResponseDto 스터디 스케줄 정보를 담은 DTO
      */
     @Transactional(readOnly = true)
-    public StudyScheduleResponseDto getStudySchedule(Long studyId, LocalDate deadline) throws StudyNotFoundException {
+    public StudyScheduleResponseDto getStudySchedule(Long studyId, LocalDate deadline)  {
         StudySchedule studySchedule = studyScheduleRepository
                 .findByStudyIdAndDeadline(studyId, deadline)
                 .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + studyId + " and deadline: " + deadline));
@@ -71,13 +69,13 @@ public class StudyScheduleService {
                 .orElseGet(() -> StudySchedule.createNewStudySchedule(requestDto));
 
         Problem newProblem = problemRepository.findById((requestDto.getProblemId()))
-                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for problemId: " + requestDto.getProblemId()));
+                .orElseThrow(() -> new EntityNotFoundException("Problem not found for problemId: " + requestDto.getProblemId()));
 
-        Set<Long> existingProblemIds = studySchedule.getScheduleProblems().stream()
-                .map(sp -> sp.getProblem().getProblemId())
-                .collect(Collectors.toSet());
+        boolean problemAlreadyExists = studySchedule.getScheduleProblems().stream()
+                .anyMatch(sp -> sp.getProblem().getProblemId().equals(newProblem.getProblemId())
+                        && sp.getStudySchedule().getDeadline().equals(requestDto.getDeadline()));
 
-        if (!existingProblemIds.contains(newProblem.getProblemId())) {
+        if (!problemAlreadyExists) {
             ScheduleProblem scheduleProblem = ScheduleProblem.createStudySchedule(studySchedule, newProblem, requestDto.getPresenter());
             studySchedule.addScheduleProblem(scheduleProblem);
         }
@@ -120,9 +118,43 @@ public class StudyScheduleService {
         return 1;
     }
 
+    @Transactional(readOnly = true)
+    public DeadlinesResponseDto findDeadlines(LocalDate yearMonth){
+        YearMonth currentYearMonth = YearMonth.from(yearMonth);
+        LocalDate startOfMonth = currentYearMonth.atDay(1);
+        LocalDate endOfMonth = currentYearMonth.atEndOfMonth();
+
+        List<StudySchedule> studySchedules = studyScheduleRepository
+                .findAllByDeadlineBetween(startOfMonth, endOfMonth);
+
+        List<LocalDate> deadlines = studySchedules.stream()
+                .map(StudySchedule::getDeadline)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return DeadlinesResponseDto.builder()
+                .deadlines(deadlines)
+                .build();
+    }
+
+    @Transactional(readOnly = true)
+    public StudyScheduleResponseDto findRecentStudySchedule(){
+        LocalDate today = LocalDate.now();
+
+        StudySchedule recentSchedule = studyScheduleRepository.findFirstByDeadlineGreaterThanEqualOrderByDeadlineAsc(today)
+                .orElseThrow(() -> new EntityNotFoundException("No future study schedules found"));
+
+        return StudyScheduleResponseDto.builder()
+                .studyId(recentSchedule.getStudyId())
+                .deadline(recentSchedule.getDeadline())
+                .studyProblems(mapToStudyProblems(recentSchedule.getScheduleProblems(), recentSchedule.getStudyId()))
+                .build();
+    }
+
+
     //== mapper ==//
-    private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems, Long studyId) throws StudyNotFoundException {
-        Study study = studyRepository.findById(studyId).orElseThrow(()-> new StudyNotFoundException(studyId));
+    private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems, Long studyId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(()-> new EntityNotFoundException("Study schedule not found for studyId: " + studyId));
         int size = study.getStudyProblems().size();
         return studyProblems.stream()
                 .map(studyProblem -> {

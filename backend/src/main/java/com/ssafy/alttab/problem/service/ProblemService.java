@@ -45,12 +45,22 @@ public class ProblemService {
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
         int memberCount = memberStudyRepository.findByStudy(study).size();
         LocalDate deadline = dto.getDeadline();
+
         for (AddProblemRequestDto problemDto : dto.getProblemIds()) {
             Long problemId = problemDto.getProblemId();
             Problem problem = problemRepository.findById(problemId)
                     .orElseThrow(() -> new ProblemNotFoundException(problemId));
-            study.addStudyProblem(createStudyProblem(study, problem, deadline, problemDto.getPresenter(), memberCount));
+
+            boolean isDuplicate = study.getStudyProblems().stream()
+                    .anyMatch(sp -> sp.getProblem().getProblemId().equals(problemId) &&
+                            sp.getDeadline().equals(deadline));
+
+            if (!isDuplicate) {
+                StudyProblem newStudyProblem = createStudyProblem(study, problem, deadline, problemDto.getPresenter(), memberCount);
+                study.addStudyProblem(newStudyProblem);
+            }
         }
+
         studyRepository.save(study);
     }
 
