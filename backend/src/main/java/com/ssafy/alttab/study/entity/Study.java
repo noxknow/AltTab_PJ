@@ -13,7 +13,6 @@ import com.ssafy.alttab.study.enums.ProblemStatus;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,7 +50,7 @@ public class Study extends BaseTimeEntity {
     @Builder.Default
     private List<MemberStudy> memberStudies = new ArrayList<>();
 
-    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<StudyProblem> studyProblems = new ArrayList<>();
 
@@ -85,18 +84,6 @@ public class Study extends BaseTimeEntity {
         return memberStudies.stream()
                 .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
                 .count();
-    }
-
-    /**
-     * 스터디를 팔로우하는 모든 멤버의 목록을 반환합니다.
-     *
-     * @return 팔로워 멤버 목록
-     */
-    public List<Member> getFollowers() {
-        return memberStudies.stream()
-                .filter(ms -> ms.getRole() == MemberRoleStatus.FOLLOWER)
-                .map(MemberStudy::getMember)
-                .collect(Collectors.toList());
     }
 
     public void updateStudy(StudyInfoRequestDto dto) {

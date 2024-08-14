@@ -1,6 +1,5 @@
 package com.ssafy.alttab.problem.service;
 
-import com.ssafy.alttab.common.exception.ProblemNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.common.jointable.entity.StudyProblem;
@@ -20,7 +19,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +26,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.ssafy.alttab.common.jointable.entity.StudyProblem.createStudyProblem;
 import static com.ssafy.alttab.problem.entity.Status.createStatus;
 
 @Service
@@ -42,51 +39,51 @@ public class ProblemService {
     private final StatusRepository statusRepository;
     private final MemberRepository memberRepository;
 
-    @Transactional
-    public void addProblems(Long studyId, AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new StudyNotFoundException(studyId));
-        int memberCount = memberStudyRepository.findByStudy(study).size();
-        LocalDate deadline = dto.getDeadline();
+//    @Transactional
+//    public void addProblems(Long studyId, AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
+//        Study study = studyRepository.findById(studyId)
+//                .orElseThrow(() -> new StudyNotFoundException(studyId));
+//        int memberCount = memberStudyRepository.findByStudy(study).size();
+//        LocalDate deadline = dto.getDeadline();
+//
+//        for (AddProblemRequestDto problemDto : dto.getProblemIds()) {
+//            Long problemId = problemDto.getProblemId();
+//            Problem problem = problemRepository.findById(problemId)
+//                    .orElseThrow(() -> new ProblemNotFoundException(problemId));
+//
+//            boolean isDuplicate = study.getStudyProblems().stream()
+//                    .anyMatch(sp -> sp.getProblem().getProblemId().equals(problemId) &&
+//                            sp.getDeadline().equals(deadline));
+//
+//            if (!isDuplicate) {
+//                StudyProblem newStudyProblem = createStudyProblem(study, problem, deadline, problemDto.getPresenter(), memberCount);
+//                study.addStudyProblem(newStudyProblem);
+//            }
+//        }
+//
+//        studyRepository.save(study);
+//    }
 
-        for (AddProblemRequestDto problemDto : dto.getProblemIds()) {
-            Long problemId = problemDto.getProblemId();
-            Problem problem = problemRepository.findById(problemId)
-                    .orElseThrow(() -> new ProblemNotFoundException(problemId));
+//    @Transactional
+//    public ProblemListResponseDto getProblems(Long studyId) throws StudyNotFoundException {
+//        Study study = studyRepository.findById(studyId)
+//                .orElseThrow(() -> new StudyNotFoundException(studyId));
+//        return ProblemListResponseDto.builder()
+//                .problemList(studyProblemRepository.findByStudyOrderByDeadlineDesc(study).stream()
+//                        .map(ProblemResponseDto::toDto)
+//                        .collect(Collectors.toList()))
+//                .build();
+//    }
 
-            boolean isDuplicate = study.getStudyProblems().stream()
-                    .anyMatch(sp -> sp.getProblem().getProblemId().equals(problemId) &&
-                            sp.getDeadline().equals(deadline));
-
-            if (!isDuplicate) {
-                StudyProblem newStudyProblem = createStudyProblem(study, problem, deadline, problemDto.getPresenter(), memberCount);
-                study.addStudyProblem(newStudyProblem);
-            }
-        }
-
-        studyRepository.save(study);
-    }
-
-    @Transactional
-    public ProblemListResponseDto getProblems(Long studyId) throws StudyNotFoundException {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new StudyNotFoundException(studyId));
-        return ProblemListResponseDto.builder()
-                .problemList(studyProblemRepository.findByStudyOrderByDeadlineDesc(study).stream()
-                        .map(ProblemResponseDto::toDto)
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
-    @Transactional
-    public void removeProblems(Long studyId, RemoveProblemsRequestDto dto) throws StudyNotFoundException {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new StudyNotFoundException(studyId));
-        List<Long> psIds = dto.getProblemStudyIds();
-        studyProblemRepository.deleteByStudyIdAndIdIn(studyId, psIds);
-        study.getStudyProblems().removeIf(studyProblem -> psIds.contains(studyProblem.getId()));
-        studyRepository.save(study);
-    }
+//    @Transactional
+//    public void removeProblems(Long studyId, RemoveProblemsRequestDto dto) throws StudyNotFoundException {
+//        Study study = studyRepository.findById(studyId)
+//                .orElseThrow(() -> new StudyNotFoundException(studyId));
+//        List<Long> psIds = dto.getProblemStudyIds();
+//        studyProblemRepository.deleteByStudyIdAndIdIn(studyId, psIds);
+//        study.getStudyProblems().removeIf(studyProblem -> psIds.contains(studyProblem.getId()));
+//        studyRepository.save(study);
+//    }
 
     @Transactional
     public ResponseEntity<SearchProblemListDto> searchProblems(String problemInfo) {

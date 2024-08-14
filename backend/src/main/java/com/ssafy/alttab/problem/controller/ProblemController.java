@@ -21,24 +21,19 @@ public class ProblemController {
 
     private final ProblemService problemService;
 
-    @PostMapping("/{studyId}")
-    public ResponseEntity<?> addProblems(@PathVariable Long studyId,
-                                         @RequestBody AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
-        problemService.addProblems(studyId, dto);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping("/{studyId}")
+//    public ResponseEntity<?> addProblems(@PathVariable Long studyId,
+//                                         @RequestBody AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
+//        problemService.addProblems(studyId, dto);
+//        return ResponseEntity.ok().build();
+//    }
 
-    @GetMapping("/{studyId}")
-    public ResponseEntity<?> getProblems(@PathVariable Long studyId) throws StudyNotFoundException {
-        return new ResponseEntity<>(problemService.getProblems(studyId), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{studyId}")
-    public ResponseEntity<?> removeProblems(@PathVariable Long studyId,
-                                            @RequestBody RemoveProblemsRequestDto dto) throws StudyNotFoundException {
-        problemService.removeProblems(studyId, dto);
-        return ResponseEntity.ok().build();
-    }
+//    @DeleteMapping("/{studyId}")
+//    public ResponseEntity<?> removeProblems(@PathVariable Long studyId,
+//                                            @RequestBody RemoveProblemsRequestDto dto) throws StudyNotFoundException {
+//        problemService.removeProblems(studyId, dto);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/search/{problemInfo}")
     public ResponseEntity<SearchProblemListDto> searchProblems(@PathVariable("problemInfo") String problemInfo) {

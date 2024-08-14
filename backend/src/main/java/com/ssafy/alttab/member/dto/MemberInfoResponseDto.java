@@ -13,12 +13,12 @@ public class MemberInfoResponseDto {
     private String avatarUrl;
     private Long memberPoint;
 
-    public static MemberInfoResponseDto toDto(Member member, Long mp) {
+    public static MemberInfoResponseDto toDto(Member member, Long memberPoint) {
         return MemberInfoResponseDto.builder()
                 .memberId(member.getId())
                 .name(member.getName())
                 .avatarUrl(member.getAvatarUrl())
-                .memberPoint(mp)
+                .memberPoint(memberPoint)
                 .build();
     }
 }
