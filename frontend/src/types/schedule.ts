@@ -18,6 +18,8 @@ export type studyProblemDetail = {
   tag: string;
   level: number;
   presenter: string;
+  members: string[];
+  size: number;
 };
 
 export type deleteProblemForm = {

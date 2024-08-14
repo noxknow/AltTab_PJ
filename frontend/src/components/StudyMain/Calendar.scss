@@ -13,9 +13,17 @@
 }
 
 .fc-day-sun {
-  color: red;
+  div {
+    a {
+      color: red;
+    }
+  }
 }
 
 .fc-day-sat {
-  color: blue;
+  div {
+    a {
+      color: blue;
+    }
+  }
 }
