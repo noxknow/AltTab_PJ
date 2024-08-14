@@ -12,7 +12,7 @@ export function CommunityProfile({
   isLink = true,
 }: {
   study: communityStudy;
-  isLink: boolean;
+  isLink?: boolean;
 }) {
   const [likeCount, setLikeCount] = useState<number>();
   const [check, setCheck] = useState<boolean>();
@@ -25,7 +25,7 @@ export function CommunityProfile({
   }, [study]);
 
   const onClickFollow = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+    e.stopPropagation();
     const data = await follow.mutateAsync(study.studyId.toString());
     setLikeCount(data.like);
     setCheck(data.check);
