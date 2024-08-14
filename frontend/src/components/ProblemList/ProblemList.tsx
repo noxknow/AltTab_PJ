@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import stylesSmall from './ProblemListStyleSmall.module.scss';
 import stylesBig from './ProblemListStyleBig.module.scss';
 import { DisabledButton } from '@/components/DisabledButton/DisabledButton';
@@ -8,64 +10,45 @@ import TitleSVG from '@/assets/icons/title.svg?react';
 import WeekSVG from '@/assets/icons/week.svg?react';
 import CategorySVG from '@/assets/icons/category.svg?react';
 import PersonSVG from '@/assets/icons/person.svg?react';
+import { ProgressModal } from '@/components/ProgressModal/ProgressModal';
+import { studyProblemDetails } from '@/types/schedule';
+import { NavLink } from 'react-router-dom';
 
 type ProblemListProps = {
   styleType: 'small' | 'big';
+  studyInfo: studyProblemDetails | null | undefined;
 };
 
-export function ProblemList({ styleType }: ProblemListProps) {
+export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
   const styles = styleType === 'small' ? stylesSmall : stylesBig;
+  const [isModal, setIsModal] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
+  const [modalInfo, setModalInfo] = useState<{
+    percentage: number;
+    people: string[];
+  }>({
+    percentage: 0,
+    people: [],
+  });
+  const { studyId } = useParams<{ studyId: string }>();
 
-  const data = [
-    {
-      week: 7,
-      title: '구슬 탈출 2',
-      person: '이재영',
-      progress: 50,
-      difficulty: 'G4',
-      category: ['구현', '그래프 탐색', '시뮬레이션'],
-    },
-    {
-      week: 7,
-      title: '구슬 탈출 2',
-      person: '이재영',
-      progress: 60,
-      difficulty: 'G4',
-      category: ['구현', '그래프 탐색', '시뮬레이션'],
-    },
-    {
-      week: 7,
-      title: '구슬 탈출 2',
-      person: '이재영',
-      progress: 70,
-      difficulty: 'G4',
-      category: ['구현', '그래프 탐색', '시뮬레이션'],
-    },
-    {
-      week: 7,
-      title: '구슬 탈출 2',
-      person: '이재영',
-      progress: 80,
-      difficulty: 'G4',
-      category: ['구현', '그래프 탐색', '시뮬레이션'],
-    },
-    {
-      week: 7,
-      title: '구슬 탈출 2',
-      person: '이재영',
-      progress: 50,
-      difficulty: 'G4',
-      category: ['구현', '그래프 탐색', '시뮬레이션'],
-    },
-    {
-      week: 7,
-      title: '구슬 탈출 2',
-      person: '이재영',
-      progress: 50,
-      difficulty: 'G4',
-      category: ['구현', '그래프 탐색', '시뮬레이션'],
-    },
-  ];
+  const handleMouseEnter = (
+    e: React.MouseEvent<HTMLDivElement>,
+    progress: number,
+  ) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setModalPosition({
+      top: rect.top + window.scrollY,
+      left: rect.left + window.scrollX,
+    });
+    const data = ['Person1', 'Person1', 'Person1', 'Person1', 'Person1'];
+    setIsModal(true);
+    setModalInfo({ percentage: progress, people: data });
+  };
+
+  const handleMouseLeave = () => {
+    setIsModal(false);
+  };
 
   return (
     <div className={styles.table}>
@@ -75,7 +58,7 @@ export function ProblemList({ styleType }: ProblemListProps) {
             <th>
               <div className={styles.icon}>
                 <WeekSVG />
-                <span>Week</span>
+                <span>Date</span>
               </div>
             </th>
             <th>
@@ -111,31 +94,39 @@ export function ProblemList({ styleType }: ProblemListProps) {
           </tr>
         </thead>
         <tbody>
-          {data.map((problem, index) => (
+          {studyInfo?.studyProblems.map((problem, index) => (
             <tr key={index}>
               <td>
-                <DisabledButton>Week {problem.week}</DisabledButton>
+                <DisabledButton>{studyInfo.deadline}</DisabledButton>
               </td>
-              <td>{problem.title}</td>
-              <td>{problem.person}</td>
               <td>
-                <div className={styles.progress}>
+                <NavLink to={`/compiler/${studyId}/${problem.problemId}`}>
                   <div>
-                    <PieChart percentage={problem.progress} />
+                    {problem.problemId}. {problem.title}
                   </div>
-                  <div>{problem.progress}</div>
+                </NavLink>
+              </td>
+              <td>{problem.presenter}</td>
+              <td>
+                <div
+                  className={styles.progress}
+                  onMouseEnter={(e) => handleMouseEnter(e, 70)}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <div>
+                    <PieChart percentage={70} />
+                  </div>
+                  <div>{70}</div>
                 </div>
               </td>
               <td>
-                <DisabledButton color="green">
-                  {problem.difficulty}
-                </DisabledButton>
+                <DisabledButton color="green">{problem.level}</DisabledButton>
               </td>
               <td>
                 <div className={styles.category}>
-                  {problem.category.map((cat, catIndex) => (
+                  {problem.tag.split(',').map((cat, catIndex) => (
                     <span key={catIndex}>
-                      <DisabledButton color="blue">{cat}</DisabledButton>
+                      <DisabledButton color="blue">{cat.trim()}</DisabledButton>
                     </span>
                   ))}
                 </div>
@@ -144,6 +135,17 @@ export function ProblemList({ styleType }: ProblemListProps) {
           ))}
         </tbody>
       </table>
+      {isModal && (
+        <ProgressModal
+          setIsModal={setIsModal}
+          style={{
+            position: 'absolute',
+            top: modalPosition.top,
+            left: modalPosition.left,
+          }}
+          modalInfo={modalInfo}
+        />
+      )}
     </div>
   );
 }
