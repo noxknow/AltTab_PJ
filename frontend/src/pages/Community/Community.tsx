@@ -11,7 +11,6 @@ import {
 } from '@/queries/community';
 import { useGetMyInfoQuery } from '@/queries/member';
 import { communityStudy } from '@/types/study';
-import { Loading } from '@/components/Loading/Loading';
 
 import styles from './Community.module.scss';
 
@@ -19,7 +18,6 @@ export function Community() {
   const [filter, setFilter] = useState(FILTER.SOLVED);
   const [weeklyStudies, setWeeklyStudies] = useState<communityStudy[]>([]);
   const [communityStudies, setCommunityStudies] = useState<communityStudy[]>();
-  const [isLoading, setIsLoading] = useState(false);
   const solved = classNames(styles.filter, {
     [styles.selected]: filter === FILTER.SOLVED,
   });
@@ -58,11 +56,9 @@ export function Community() {
         setCommunityStudies(FollowingStudies!);
         break;
     }
-    setIsLoading(false);
   }, [filter]);
 
   useEffect(() => {
-    setIsLoading(true);
     getCommunityStudies();
   }, [filter]);
 
@@ -72,42 +68,36 @@ export function Community() {
 
   return (
     <div className={styles.container}>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <div className={styles.weeklyStudies}>
-            <div>금주의 스터디</div>
-            <div className={styles.cardContainer}>
-              {weeklyStudies &&
-                weeklyStudies.map((study, index) => (
-                  <CommunityProfile key={index} study={study} />
-                ))}
-            </div>
-          </div>
-          <div className={styles.topStudies}>
-            <div className={styles.filterContainer}>
-              <button name={FILTER.SOLVED} onClick={handleFilterClick}>
-                <div className={solved}>푼 문제 수</div>
-              </button>
-              <button name={FILTER.FOLLOWER} onClick={handleFilterClick}>
-                <div className={follower}>팔로워 수</div>
-              </button>
-              {isLogin && (
-                <button name={FILTER.FOLLOWING} onClick={handleFilterClick}>
-                  <div className={following}>팔로잉</div>
-                </button>
-              )}
-            </div>
-            <div className={styles.cardContainer}>
-              {communityStudies &&
-                communityStudies.map((study, index) => (
-                  <CommunityProfile key={index} study={study} />
-                ))}
-            </div>
-          </div>
-        </>
-      )}
+      <div className={styles.weeklyStudies}>
+        <div>금주의 스터디</div>
+        <div className={styles.cardContainer}>
+          {weeklyStudies &&
+            weeklyStudies.map((study, index) => (
+              <CommunityProfile key={index} study={study} />
+            ))}
+        </div>
+      </div>
+      <div className={styles.topStudies}>
+        <div className={styles.filterContainer}>
+          <button name={FILTER.SOLVED} onClick={handleFilterClick}>
+            <div className={solved}>푼 문제 수</div>
+          </button>
+          <button name={FILTER.FOLLOWER} onClick={handleFilterClick}>
+            <div className={follower}>팔로워 수</div>
+          </button>
+          {isLogin && (
+            <button name={FILTER.FOLLOWING} onClick={handleFilterClick}>
+              <div className={following}>팔로잉</div>
+            </button>
+          )}
+        </div>
+        <div className={styles.cardContainer}>
+          {communityStudies &&
+            communityStudies.map((study, index) => (
+              <CommunityProfile key={index} study={study} />
+            ))}
+        </div>
+      </div>
     </div>
   );
 }
