@@ -7,6 +7,7 @@ import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
 import com.ssafy.alttab.common.jointable.repository.StudyProblemRepository;
 import com.ssafy.alttab.member.dto.MemberResponseDto;
+import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.problem.dto.*;
 import com.ssafy.alttab.problem.entity.Problem;
@@ -17,6 +18,7 @@ import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +26,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.ssafy.alttab.common.jointable.entity.StudyProblem.createStudyProblem;
 import static com.ssafy.alttab.problem.entity.Status.createStatus;
@@ -84,6 +87,24 @@ public class ProblemService {
         study.getStudyProblems().removeIf(studyProblem -> psIds.contains(studyProblem.getId()));
         studyRepository.save(study);
     }
+
+    @Transactional
+    public ResponseEntity<SearchProblemListResponseDto> searchProblems(String problemInfo) {
+
+        List<Problem> problemsById = problemRepository.findByProblemIdContaining(problemInfo);
+        List<Problem> problemsByTitle = problemRepository.findByTitleContaining(problemInfo);
+
+        List<Problem> problems = Stream.concat(problemsById.stream(), problemsByTitle.stream())
+                .distinct()
+                .toList();
+
+        return ResponseEntity.ok().body(SearchProblemListResponseDto.builder()
+                .problems(problems.stream()
+                        .map(SearchProblemResponseDto::toDto)
+                        .collect(Collectors.toList()))
+                .build());
+    }
+
 
     public ProblemListResponseDto queryProblems(Long studyId, Long option, String target) throws StudyNotFoundException {
         Study study = studyRepository.findById(studyId)

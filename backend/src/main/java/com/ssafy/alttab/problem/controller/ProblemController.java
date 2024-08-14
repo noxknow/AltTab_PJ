@@ -5,6 +5,7 @@ import com.ssafy.alttab.common.exception.ProblemNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.problem.dto.AddProblemsRequestDto;
 import com.ssafy.alttab.problem.dto.RemoveProblemsRequestDto;
+import com.ssafy.alttab.problem.dto.SearchProblemListResponseDto;
 import com.ssafy.alttab.problem.service.ProblemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,12 @@ public class ProblemController {
                                             @RequestBody RemoveProblemsRequestDto dto) throws StudyNotFoundException {
         problemService.removeProblems(studyId, dto);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/{problemInfo}")
+    public ResponseEntity<SearchProblemListResponseDto> searchProblems(@PathVariable("problemInfo") String problemInfo) {
+
+        return problemService.searchProblems(problemInfo);
     }
 
     @GetMapping("/{studyId}/{option}/{target}")
