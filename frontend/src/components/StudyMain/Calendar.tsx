@@ -28,12 +28,12 @@ export function Calendar() {
   );
   const [events, setEvents] = useState<EventData[]>();
   const { studyId } = useParams<{ studyId: string }>();
-  const { clickedDate, setClickedDate } = useClickedDate();
+  const { setClickedDate } = useClickedDate();
   const postProblemMutation = usePostProblemQuery();
-  const deleteScheduleMutation = useDeleteScheduleQuery(studyId!, clickedDate);
+  const { mutateAsync: deleteScheduleMutation } = useDeleteScheduleQuery();
   const deleteProblemMutation = useDeleteProblemQuery();
   const [yearMonth, setYearMonth] = useState(format(new Date(), 'yyyy-MM-dd'));
-  const { refetch } = useGetSchedulesQuery(yearMonth);
+  const { refetch } = useGetSchedulesQuery(studyId!, yearMonth);
 
   const refetchSchedules = useCallback(async () => {
     const { data: schedules } = await refetch();
@@ -72,34 +72,35 @@ export function Calendar() {
       (event) => event.start === dateclickarg.dateStr,
     );
     if (updatedEvents?.length === 1) {
-      const remainingEvents = events?.filter(
-        (event) => event.start !== dateclickarg.dateStr,
-      );
-      setEvents(remainingEvents);
-      deleteScheduleMutation.mutate();
+      await deleteScheduleMutation({
+        studyId: studyId!,
+        deadline: dateclickarg.dateStr,
+      });
     } else {
       const scheduleForm = {
-        studyId: parseInt(studyId!, 10),
+        studyId: parseInt(studyId!),
         deadline: dateclickarg.dateStr,
         presenter: '',
         problemId: 1000,
       };
       await postProblemMutation.mutateAsync(scheduleForm, {
-        onSuccess: () => {
+        onSuccess: async () => {
           const problemForm = {
             studyId: parseInt(studyId!, 10),
             deadline: dateclickarg.dateStr,
             problemId: 1000,
           };
-          deleteProblemMutation.mutate(problemForm);
+          await deleteProblemMutation.mutateAsync(problemForm);
         },
       });
     }
     refetchSchedules();
   };
+
   const handleDatesSet = (arg: DatesSetArg) => {
     setYearMonth(format(arg.start, 'yyyy-MM-dd'));
   };
+
   return (
     <div className="calendar">
       <FullCalendar

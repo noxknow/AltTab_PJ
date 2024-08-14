@@ -38,11 +38,17 @@ export const useGetScheduleQuery = (studyId: string, deadline: string) => {
   return { data, isLoading, refetch };
 };
 
-export const useDeleteScheduleQuery = (studyId: string, deadline: string) => {
+export const useDeleteScheduleQuery = () => {
   const queryClient = new QueryClient();
 
   return useMutation({
-    mutationFn: () => schedule.deleteSchedule(studyId, deadline),
+    mutationFn: ({
+      studyId,
+      deadline,
+    }: {
+      studyId: string;
+      deadline: string;
+    }) => schedule.deleteSchedule(studyId, deadline),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: scheduleKeys.deleteSchedule,
@@ -63,10 +69,11 @@ export const useDeleteProblemQuery = () => {
   });
 };
 
-export const useGetSchedulesQuery = (yearMonth: string) => {
+export const useGetSchedulesQuery = (studyId: string, yearMonth: string) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: scheduleKeys.getSchedules,
-    queryFn: (): Promise<schedules> => schedule.getSchedules(yearMonth),
+    queryFn: (): Promise<schedules> =>
+      schedule.getSchedules(studyId, yearMonth),
   });
   return { data, isLoading, refetch };
 };
