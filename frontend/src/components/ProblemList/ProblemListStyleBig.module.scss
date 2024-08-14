@@ -1,4 +1,7 @@
+@import '@/styles/theme.module.scss';
+
 .table {
+  @include scrollable-container;
   overflow-y: auto;
   font-size: 1.3rem;
   font-weight: 800;
