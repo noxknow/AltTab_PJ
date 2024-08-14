@@ -140,8 +140,8 @@ public class ProblemService {
     }
 
     public void solveProblem(Long memberId, Long studyId, Long problemId) throws StudyNotFoundException {
-        StudyProblem studyProblem = studyProblemRepository.findById(studyId)
-                .orElseThrow(() -> new StudyNotFoundException(studyId));
+//        StudyProblem studyProblem = studyProblemRepository.findById(studyId)
+//                .orElseThrow(() -> new StudyNotFoundException(studyId));
         MemberStudy memberStudy = memberStudyRepository.findByMemberIdAndStudyId(memberId, studyId)
                 .orElseThrow(() -> new EntityNotFoundException("entity not found"));
         Problem problem = problemRepository.findById(problemId)
@@ -151,7 +151,7 @@ public class ProblemService {
 
         memberStudy.incrementMemberPoint(problem.getLevel());
         study.incrementStudyPoint(problem.getLevel());
-        studyProblem.addSolveCount();
+//        studyProblem.addSolveCount();
         study.incrementSolveCount();
         statusRepository.save(createStatus(memberId, studyId, problemId));
     }
