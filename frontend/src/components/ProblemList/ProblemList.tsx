@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams, NavLink } from 'react-router-dom';
 import stylesSmall from './ProblemListStyleSmall.module.scss';
 import stylesBig from './ProblemListStyleBig.module.scss';
 import { DisabledButton } from '@/components/DisabledButton/DisabledButton';
@@ -12,43 +12,93 @@ import CategorySVG from '@/assets/icons/category.svg?react';
 import PersonSVG from '@/assets/icons/person.svg?react';
 import { ProgressModal } from '@/components/ProgressModal/ProgressModal';
 import { studyProblemDetails } from '@/types/schedule';
-import { NavLink } from 'react-router-dom';
+import { useChangeColor } from '@/hooks/useChangeColor';
 
 type ProblemListProps = {
   styleType: 'small' | 'big';
   studyInfo: studyProblemDetails | null | undefined;
+  refetchSchedule: () => Promise<void>;
 };
 
-export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
+export function ProblemList({
+  styleType,
+  studyInfo,
+  refetchSchedule,
+}: ProblemListProps) {
   const styles = styleType === 'small' ? stylesSmall : stylesBig;
   const [isModal, setIsModal] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [modalInfo, setModalInfo] = useState<{
     percentage: number;
     people: string[];
-  }>({
-    percentage: 0,
-    people: [],
-  });
+    check: boolean;
+    problemId: number;
+  } | null>(null);
   const { studyId } = useParams<{ studyId: string }>();
 
-  const handleMouseEnter = (
-    e: React.MouseEvent<HTMLDivElement>,
-    progress: number,
-    members: string[],
-  ) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setModalPosition({
-      top: rect.top + window.scrollY,
-      left: rect.left + window.scrollX,
-    });
-    setIsModal(true);
-    setModalInfo({ percentage: progress, people: members });
-  };
+  const {
+    tagColors,
+    getDifficultyColor,
+    getDifficultyLabel,
+    getDeadlineColor,
+  } = useChangeColor(studyInfo);
 
-  const handleMouseLeave = () => {
+  const handleMouseEnter = useCallback(
+    (
+      e: React.MouseEvent<HTMLDivElement>,
+      progress: number,
+      members: string[],
+      check: boolean,
+      problemId: number,
+    ) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      setModalPosition({
+        top: rect.top + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
+      setIsModal(true);
+      setModalInfo({
+        percentage: progress,
+        people: members,
+        check: check,
+        problemId: problemId,
+      });
+    },
+    [],
+  );
+
+  const handleMouseLeave = useCallback(() => {
     setIsModal(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    if (studyInfo && isModal && modalInfo) {
+      const updatedProblem = studyInfo.studyProblems.find(
+        (p) => p.problemId === modalInfo.problemId,
+      );
+      if (updatedProblem) {
+        setModalInfo((prevInfo) => {
+          if (
+            prevInfo &&
+            (prevInfo.percentage !==
+              (updatedProblem.members.length / updatedProblem.size) * 100 ||
+              prevInfo.check !== updatedProblem.check ||
+              JSON.stringify(prevInfo.people) !==
+                JSON.stringify(updatedProblem.members))
+          ) {
+            return {
+              percentage:
+                (updatedProblem.members.length / updatedProblem.size) * 100,
+              people: updatedProblem.members,
+              check: updatedProblem.check,
+              problemId: updatedProblem.problemId,
+            };
+          }
+          return prevInfo;
+        });
+      }
+    }
+  }, [studyInfo, isModal, modalInfo]);
 
   return (
     <div className={styles.table}>
@@ -97,7 +147,9 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
           {studyInfo?.studyProblems.map((problem, index) => (
             <tr key={index}>
               <td>
-                <DisabledButton>{studyInfo.deadline}</DisabledButton>
+                <DisabledButton color={getDeadlineColor()}>
+                  {studyInfo.deadline}
+                </DisabledButton>
               </td>
               <td>
                 <NavLink to={`/compiler/${studyId}/${problem.problemId}`}>
@@ -115,6 +167,8 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
                       e,
                       (problem.members.length / problem.size) * 100,
                       problem.members,
+                      problem.check,
+                      problem.problemId,
                     )
                   }
                   onMouseLeave={handleMouseLeave}
@@ -124,17 +178,24 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
                       percentage={(problem.members.length / problem.size) * 100}
                     />
                   </div>
-                  <div>{(problem.members.length / problem.size) * 100}</div>
+                  <div>
+                    {((problem.members.length / problem.size) * 100).toFixed(0)}
+                    %
+                  </div>
                 </div>
               </td>
               <td>
-                <DisabledButton color="green">{problem.level}</DisabledButton>
+                <DisabledButton color={getDifficultyColor(problem.level)}>
+                  {getDifficultyLabel(problem.level)}
+                </DisabledButton>
               </td>
               <td>
                 <div className={styles.category}>
                   {problem.tag.split(';').map((cat, catIndex) => (
                     <span key={catIndex}>
-                      <DisabledButton color="blue">{cat.trim()}</DisabledButton>
+                      <DisabledButton color={tagColors[cat.trim()]}>
+                        {cat.trim()}
+                      </DisabledButton>
                     </span>
                   ))}
                 </div>
@@ -143,7 +204,7 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
           ))}
         </tbody>
       </table>
-      {isModal && (
+      {isModal && modalInfo && (
         <ProgressModal
           setIsModal={setIsModal}
           style={{
@@ -152,6 +213,7 @@ export function ProblemList({ styleType, studyInfo }: ProblemListProps) {
             left: modalPosition.left,
           }}
           modalInfo={modalInfo}
+          refetchSchedule={refetchSchedule}
         />
       )}
     </div>

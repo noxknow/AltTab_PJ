@@ -2,11 +2,11 @@
 @import '@/styles/theme.module.scss';
 .main {
   @include poppins-regular;
+  align-self: flex-start;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  height: 25rem;
+  gap: 2rem;
 }
 
 .header {
@@ -17,8 +17,7 @@
 .members {
   display: flex;
   flex-direction: column;
-  height: 20rem;
-  justify-content: space-between;
+  gap: 2rem;
 }
 .member {
   font-size: 1.5rem;
