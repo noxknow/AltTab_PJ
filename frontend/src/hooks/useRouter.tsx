@@ -29,7 +29,11 @@ export const useRouter = () =>
             </CompilerProvider>
           ),
         },
-        { path: 'study/:studyId', element: <Study /> },
+        {
+          path: 'study/:studyId',
+          element: <Study />,
+          errorElement: <NoStudy />,
+        },
         { path: 'problems/:studyId', element: <StudyProblems /> },
         { path: 'noStudy', element: <NoStudy /> },
         { path: 'newStudy', element: <NewStudy /> },
