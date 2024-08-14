@@ -40,7 +40,7 @@ public class ProblemController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{problemInfo}")
+    @GetMapping("/search/{problemInfo}")
     public ResponseEntity<SearchProblemListDto> searchProblems(@PathVariable("problemInfo") String problemInfo) {
 
         return problemService.searchProblems(problemInfo);
