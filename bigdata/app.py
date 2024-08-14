@@ -24,173 +24,118 @@ def get_db_connection():
     )
     return conn
 
-def fetch_problems():
+def fetch_study_scores():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT * FROM problem')
+    cursor.execute('SELECT study_id, study_point + solve_count as score FROM Study')
+    study_scores = cursor.fetchall()
+    conn.close()
+    return pd.DataFrame(study_scores)
+
+def fetch_study_problems(study_id):
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute('''
+        SELECT p.problem_id, p.title, p.level, p.tag, p.representative
+        FROM StudyProblem sp
+        JOIN Problem p ON sp.problem_id = p.problem_id
+        WHERE sp.study_id = %s
+    ''', (study_id,))
     problems = cursor.fetchall()
     conn.close()
     return pd.DataFrame(problems)
 
-def fetch_study_stats():
+def fetch_problems_by_level_range(min_level, max_level, limit=2):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT study_id, view_count, like_count FROM study')
-    study_stats = cursor.fetchall()
+    cursor.execute('''
+        SELECT problem_id, title, level, tag, representative
+        FROM Problem
+        WHERE level BETWEEN %s AND %s
+        ORDER BY RAND()
+        LIMIT %s
+    ''', (min_level, max_level, limit))
+    problems = cursor.fetchall()
     conn.close()
-    return pd.DataFrame(study_stats)
+    return pd.DataFrame(problems)
 
-def load_problems_from_json():
-    json_path = os.path.join(os.path.dirname(__file__), 'all_problems.json')
-    if not os.path.exists(json_path):
-        raise FileNotFoundError(f"JSON file not found: {json_path}")
-    with open(json_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+def recommend_by_representative(representative, solved_problem_ids, df_problems_unsolved):
+    vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
+    X = vectorizer.fit_transform(df_problems_unsolved['representative'])
+    model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
 
-# JSON 파일에서 문제 데이터 로드
-problem_data = load_problems_from_json()
+    vec = vectorizer.transform([representative])
+    distances, indices = model.kneighbors(vec)
+    recommended = df_problems_unsolved.iloc[indices[0]]
+
+    recommended = recommended[~recommended['problem_id'].isin(solved_problem_ids)]
+
+    if recommended.empty:
+        return []
+
+    return recommended.head(5).to_dict(orient='records')
 
 @app.route('/flask', methods=['POST'])
 def recommend_route():
     content = request.json
     study_id = content['study_id']
     
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
+    # 현재 스터디의 점수 및 모든 스터디의 점수 불러오기
+    df_study_scores = fetch_study_scores()
+    study_score = df_study_scores[df_study_scores['study_id'] == study_id]['score'].values[0]
     
-    # 대표자별 문제 풀린 횟수 집계
-    cursor.execute('''
-        SELECT problem.representative, COUNT(*) as count 
-        FROM study_problem
-        JOIN problem ON study_problem.problem_id = problem.problem_id
-        WHERE study_problem.study_id = %s
-        GROUP BY problem.representative
-    ''', (study_id,))
-    problem_counts = cursor.fetchall()
+    # 추천 문제 목록 초기화
+    recommendations = pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag', 'representative'])
     
-    if not problem_counts:
-        return jsonify({
-            'most_common_representative': [],
-            'least_common_representative': [],
-            'collaborative': []
-        }), 200
-
-    representative_counts = pd.DataFrame(problem_counts)
-    most_common_representative = representative_counts.loc[representative_counts['count'].idxmax()]['representative']
-    least_common_representative = representative_counts.loc[representative_counts['count'].idxmin()]['representative']
-    
-    df_problems = fetch_problems()
-    study_stats = fetch_study_stats()
-    
-    # 현재 스터디가 이미 푼 문제 ID 목록 가져오기
-    cursor.execute('SELECT problem_id FROM study_problem WHERE study_id = %s', (study_id,))
-    solved_problems = cursor.fetchall()
-    conn.close()
-    
-    solved_problem_ids = set(pd.DataFrame(solved_problems)['problem_id'])
+    df_problems = fetch_study_problems(study_id)
+    solved_problem_ids = df_problems['problem_id'].values
     df_problems_unsolved = df_problems[~df_problems['problem_id'].isin(solved_problem_ids)]
     
-    # TF-IDF와 Nearest Neighbors를 사용한 문제 추천
-    vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
-    X = vectorizer.fit_transform(df_problems_unsolved['representative'])
-    model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
-    
-    def recommend_by_representative(representative):
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
+    if study_score <= 2000:
+        # 5 이하의 스터디인 경우
+        recommendations = pd.concat([
+            recommendations,
+            fetch_problems_by_level_range(15, 20, 1),
+            fetch_problems_by_level_range(10, 15, 2),
+            fetch_problems_by_level_range(5, 10, 1),
+            fetch_problems_by_level_range(1, 5, 1)
+        ])
+    elif study_score <= 4000:
+        # 2000 이하의 스터디인 경우
+        recommendations = pd.concat([
+            recommendations,
+            fetch_problems_by_level_range(10, 15, 2),
+            fetch_problems_by_level_range(5, 10, 2),
+            fetch_problems_by_level_range(1, 5, 1)
+        ])
+    else:
+        # 2000 이상의 스터디인 경우 (기본 로직)
+        study_scores_matrix = df_study_scores.drop(columns=['study_id'])
+        study_index = df_study_scores[df_study_scores['study_id'] == study_id].index[0]
+        cosine_sim = cosine_similarity(study_scores_matrix)
+        similarity_scores = pd.Series(cosine_sim[study_index]).sort_values(ascending=False)
+        similar_studies = df_study_scores.iloc[similarity_scores.index[1:6]]['study_id'].values
         
-        vec = vectorizer.transform([representative])
-        distances, indices = model.kneighbors(vec)
-        recommended = df_problems_unsolved.iloc[indices[0]]
+        solved_problems = fetch_study_problems(study_id)['problem_id'].values
         
-        # 다른 스터디들이 많이 푼 문제 우선 추천
-        cursor.execute('''
-            SELECT sp.problem_id, COUNT(*) as count
-            FROM study_problem sp
-            JOIN study s ON sp.study_id = s.study_id
-            WHERE sp.problem_id IN (%s)
-            GROUP BY sp.problem_id
-            ORDER BY count DESC
-        ''', (','.join(map(str, recommended['problem_id'].tolist())),))
-        frequent_problems = cursor.fetchall()
-        cursor.close()
-        conn.close()
+        for similar_study_id in similar_studies:
+            similar_study_problems = fetch_study_problems(similar_study_id)
+            unsolved_problems = similar_study_problems[~similar_study_problems['problem_id'].isin(solved_problems)]
+            recommendations = pd.concat([recommendations, unsolved_problems])
         
-        if frequent_problems:
-            frequent_problem_ids = [fp['problem_id'] for fp in frequent_problems]
-            recommended = recommended.set_index('problem_id').loc[frequent_problem_ids].reset_index()
-        
-        recommended = recommended.sort_values(by='level', ascending=False).head(5)
-        
-        # 만약 추천할 문제가 5개 미만일 경우, 마지막 문제로 5개를 채움
-        while len(recommended) < 5:
-            recommended = pd.concat([recommended, recommended.iloc[[-1]]]).head(5)
-        
-        return recommended.to_dict(orient='records')
+        recommendations = recommendations.drop_duplicates(subset='problem_id').sort_values(by=['level'], ascending=False).head(5)
     
-    # 1. 가장 많이 풀린 대표자에 맞는 문제 5가지
-    recommendations_most_common = recommend_by_representative(most_common_representative)
-    
-    # 2. 가장 적게 풀린 대표자에 맞는 문제 5가지
-    recommendations_least_common = recommend_by_representative(least_common_representative)
-    
-    # 3. 유사한 스터디 그룹이 푼 문제 중 현재 스터디가 풀지 않은 문제 5가지
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT study_id, problem_id FROM study_problem')
-    solutions = cursor.fetchall()
-    conn.close()
-    
-    df_solutions = pd.DataFrame(solutions)
-    study_problem_matrix = pd.pivot_table(df_solutions, index='study_id', columns='problem_id', aggfunc='size', fill_value=0)
-    
-    cosine_sim = cosine_similarity(study_problem_matrix)
-    study_indices = pd.Series(study_problem_matrix.index)
-    study_index = study_indices[study_indices == study_id].index[0]
-    similarity_scores = pd.Series(cosine_sim[study_index]).sort_values(ascending=False)
-    similar_studies = list(similarity_scores.iloc[1:].index)
-    
-    study_problems = set(study_problem_matrix.loc[study_id][study_problem_matrix.loc[study_id] > 0].index)
-    recommendations_collaborative = []
-    for idx in similar_studies:
-        similar_study_problems = set(study_problem_matrix.iloc[idx][study_problem_matrix.iloc[idx] > 0].index)
-        unsolved_problems = list(similar_study_problems - study_problems)
-        if unsolved_problems:
-            conn = get_db_connection()
-            cursor = conn.cursor(dictionary=True)
-            format_strings = ','.join(['%s'] * len(unsolved_problems))
-            cursor.execute(f'''
-                SELECT p.*, sp.study_id FROM problem p
-                JOIN study_problem sp ON p.problem_id = sp.problem_id
-                WHERE p.problem_id IN ({format_strings})
-            ''', tuple(unsolved_problems))
-            recommended_problems = cursor.fetchall()
-            conn.close()
-            
-            df_recommended = pd.DataFrame(recommended_problems)
-            df_recommended_unsolved = df_recommended[~df_recommended['problem_id'].isin(solved_problem_ids)]
-            
-            # 점수 부여 로직
-            df_recommended_unsolved = df_recommended_unsolved.merge(study_stats, on='study_id', how='left')
-            df_recommended_unsolved['score'] = df_recommended_unsolved['level'] * (
-                1 + df_recommended_unsolved['view_count'] / 1000 + df_recommended_unsolved['like_count'] / 500
-            )
-            recommendations_collaborative.extend(
-                df_recommended_unsolved.sort_values(by='score', ascending=False).head(5).to_dict(orient='records')
-            )
-        
-        if len(recommendations_collaborative) >= 5:
-            recommendations_collaborative = recommendations_collaborative[:5]
-            break
-    
-    # 만약 5개 미만이면 같은 문제 반복하여 5개 채우기
-    if len(recommendations_collaborative) < 5:
-        recommendations_collaborative = recommendations_collaborative * (5 // len(recommendations_collaborative)) + recommendations_collaborative[:5 % len(recommendations_collaborative)]
+    # 대표자별 문제 추천 추가
+    most_common_representative = df_problems['representative'].mode().iloc[0]
+    least_common_representative = df_problems['representative'].value_counts().idxmin()
+
+    recommendations_most_common = recommend_by_representative(most_common_representative, solved_problem_ids, df_problems_unsolved)
+    recommendations_least_common = recommend_by_representative(least_common_representative, solved_problem_ids, df_problems_unsolved)
     
     return jsonify({
+        'recommendations': recommendations.to_dict(orient='records'),
         'most_common_representative': recommendations_most_common,
-        'least_common_representative': recommendations_least_common,
-        'collaborative': recommendations_collaborative
+        'least_common_representative': recommendations_least_common
     })
 
 # 새로운 엔드포인트: 문제 ID를 받아서 해당 문제의 상세 정보를 반환
