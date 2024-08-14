@@ -50,7 +50,7 @@ public class StudyScheduleService {
      * @return StudyScheduleResponseDto 스터디 스케줄 정보를 담은 DTO
      */
     @Transactional(readOnly = true)
-    public StudyScheduleResponseDto getStudySchedule(Long studyId, LocalDate deadline) throws StudyNotFoundException {
+    public StudyScheduleResponseDto getStudySchedule(Long studyId, LocalDate deadline)  {
         StudySchedule studySchedule = studyScheduleRepository
                 .findByStudyIdAndDeadline(studyId, deadline)
                 .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + studyId + " and deadline: " + deadline));
@@ -151,14 +151,14 @@ public class StudyScheduleService {
         return StudyScheduleResponseDto.builder()
                 .studyId(recentSchedule.getStudyId())
                 .deadline(recentSchedule.getDeadline())
-                .studyProblems(mapToStudyProblems(recentSchedule.getScheduleProblems()))
+                .studyProblems(mapToStudyProblems(recentSchedule.getScheduleProblems(), recentSchedule.getStudyId()))
                 .build();
     }
 
 
     //== mapper ==//
-    private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems, Long studyId) throws StudyNotFoundException {
-        Study study = studyRepository.findById(studyId).orElseThrow(()-> new StudyNotFoundException(studyId));
+    private List<ScheduleProblemResponseDto> mapToStudyProblems(List<ScheduleProblem> studyProblems, Long studyId) {
+        Study study = studyRepository.findById(studyId).orElseThrow(()-> new EntityNotFoundException("Study schedule not found for studyId: " + studyId));
         int size = study.getStudyProblems().size();
         return studyProblems.stream()
                 .map(studyProblem -> {
