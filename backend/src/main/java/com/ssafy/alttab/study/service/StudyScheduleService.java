@@ -1,6 +1,5 @@
 package com.ssafy.alttab.study.service;
 
-import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.member.entity.Member;
 import com.ssafy.alttab.member.repository.MemberRepository;
@@ -18,14 +17,11 @@ import com.ssafy.alttab.study.entity.StudySchedule;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import com.ssafy.alttab.study.repository.StudyScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
-
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -73,13 +69,13 @@ public class StudyScheduleService {
                 .orElseGet(() -> StudySchedule.createNewStudySchedule(requestDto));
 
         Problem newProblem = problemRepository.findById((requestDto.getProblemId()))
-                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for problemId: " + requestDto.getProblemId()));
+                .orElseThrow(() -> new EntityNotFoundException("Problem not found for problemId: " + requestDto.getProblemId()));
 
-        Set<Long> existingProblemIds = studySchedule.getScheduleProblems().stream()
-                .map(sp -> sp.getProblem().getProblemId())
-                .collect(Collectors.toSet());
+        boolean problemAlreadyExists = studySchedule.getScheduleProblems().stream()
+                .anyMatch(sp -> sp.getProblem().getProblemId().equals(newProblem.getProblemId())
+                        && sp.getStudySchedule().getDeadline().equals(requestDto.getDeadline()));
 
-        if (!existingProblemIds.contains(newProblem.getProblemId())) {
+        if (!problemAlreadyExists) {
             ScheduleProblem scheduleProblem = ScheduleProblem.createStudySchedule(studySchedule, newProblem, requestDto.getPresenter());
             studySchedule.addScheduleProblem(scheduleProblem);
         }
