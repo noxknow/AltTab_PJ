@@ -9,8 +9,9 @@ import {
   useGetUpcomingScheduleQuery,
 } from '@/queries/schedule';
 import { studyProblemDetails } from '@/types/schedule';
-import { useParams } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import { useClickedDate } from '@/hooks/useClickedDate';
+import RobotSVG from '@/assets/icons/robot.svg?react';
 
 export function WeeklyProblems() {
   const [isModal, setIsModal] = useState(false);
@@ -40,7 +41,7 @@ export function WeeklyProblems() {
 
   useEffect(() => {
     refetchSchedule();
-  }, [clickedDate]);
+  }, [clickedDate, studyId]);
 
   return (
     <div className={styles.main}>
@@ -49,11 +50,23 @@ export function WeeklyProblems() {
           <ProblemSVG />
           <div>이 주의 문제</div>
         </div>
-        <button className={styles.button} onClick={() => setIsModal(true)}>
-          <PlusSVG />
-        </button>
+        <div className={styles.right}>
+          <NavLink to={`/recommend/${studyId}`}>
+            <div className={styles.recommendContainer}>
+              <RobotSVG className={styles.icon} />
+              <span className={styles.recommendText}>AI 추천 문제</span>
+            </div>
+          </NavLink>
+          <button className={styles.button} onClick={() => setIsModal(true)}>
+            <PlusSVG />
+          </button>
+        </div>
       </div>
-      <ProblemList styleType="small" studyInfo={studyInfo} />
+      <ProblemList
+        styleType="small"
+        studyInfo={studyInfo}
+        refetchSchedule={refetchSchedule}
+      />
       <ProblemInputModal
         open={isModal}
         onClose={() => setIsModal(false)}
