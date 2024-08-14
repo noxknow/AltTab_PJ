@@ -8,4 +8,3 @@ mysql-connector-python
 python-dotenv
 flask-cors
 pymongo
-dotenv
