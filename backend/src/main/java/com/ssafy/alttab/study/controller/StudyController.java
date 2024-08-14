@@ -88,4 +88,9 @@ public class StudyController {
     public ResponseEntity<?> getDeadlines(@PathVariable LocalDate yearMonth){
         return new ResponseEntity<>(studyScheduleService.findDeadlines(yearMonth), HttpStatus.OK);
     }
+
+    @GetMapping("/schedule/recent")
+    public ResponseEntity<?> getRecentSchedule(){
+        return new ResponseEntity<>(studyScheduleService.findRecentStudySchedule(), HttpStatus.OK);
+    }
 }
