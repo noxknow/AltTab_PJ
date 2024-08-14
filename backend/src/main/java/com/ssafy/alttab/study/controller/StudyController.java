@@ -8,7 +8,9 @@ import com.ssafy.alttab.study.dto.StudyInfoRequestDto;
 import com.ssafy.alttab.study.dto.StudyScheduleRequestDto;
 import com.ssafy.alttab.study.service.StudyScheduleService;
 import com.ssafy.alttab.study.service.StudyService;
+
 import java.time.LocalDate;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -70,17 +72,17 @@ public class StudyController {
     }
 
     @PostMapping("/schedule/update")
-    public ResponseEntity<?> updateSchedule(@RequestBody StudyScheduleRequestDto requestDto){
+    public ResponseEntity<?> updateSchedule(@RequestBody StudyScheduleRequestDto requestDto) {
         return new ResponseEntity<>(studyScheduleService.updateOrCreateStudySchedule(requestDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/schedule/problem/delete")
-    public ResponseEntity<?> deleteScheduleProblem(@RequestBody DeleteScheduleProblemRequestDto requestDto){
+    public ResponseEntity<?> deleteScheduleProblem(@RequestBody DeleteScheduleProblemRequestDto requestDto) {
         return new ResponseEntity<>(studyScheduleService.deleteStudyProblems(requestDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/schedule/{studyId}/{deadline}")
-    public ResponseEntity<?> deleteStudySchedule(@PathVariable Long studyId, @PathVariable LocalDate deadline){
+    public ResponseEntity<?> deleteStudySchedule(@PathVariable Long studyId, @PathVariable LocalDate deadline) {
         return new ResponseEntity<>(studyScheduleService.deleteStudySchedule(studyId, deadline), HttpStatus.OK);
     }
 
@@ -92,5 +94,17 @@ public class StudyController {
     @GetMapping("/schedule/recent")
     public ResponseEntity<?> getRecentSchedule(){
         return new ResponseEntity<>(studyScheduleService.findRecentStudySchedule(), HttpStatus.OK);
+    }
+
+    @PostMapping("/attend/{studyId}/{todayDate}")
+    public ResponseEntity<?> attendStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId, @PathVariable LocalDate todayDate) {
+        studyService.attendStudy(userDetails.getUsername(), studyId, todayDate);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/attend/{studyId}/{todayDate}")
+    public ResponseEntity<?> getAttendStudy(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId, @PathVariable LocalDate todayDate) {
+        studyService.getAttendStudy(userDetails.getUsername(), studyId, todayDate);
+        return new ResponseEntity<>(studyService.getAttendStudy(userDetails.getUsername(), studyId, todayDate),HttpStatus.OK);
     }
 }

@@ -16,15 +16,20 @@ import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.notification.service.NotificationService;
 import com.ssafy.alttab.study.dto.*;
 import com.ssafy.alttab.study.entity.Study;
+import com.ssafy.alttab.study.entity.StudyRollBook;
 import com.ssafy.alttab.study.repository.StudyRepository;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ssafy.alttab.study.repository.StudyRollBookRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +42,7 @@ public class StudyService {
     private final MemberRepository memberRepository;
     private final NotificationService notificationService;
     private final StudyProblemRepository studyProblemRepository;
+    private final StudyRollBookRepository studyRollBookRepository;
 
     public StudyInfoResponseDto getStudyInfo(Long studyId) throws StudyNotFoundException {
         Study study = studyRepository.findById(studyId)
@@ -105,5 +111,24 @@ public class StudyService {
         }
 
         return StudyScoreResponseDto.toDto(study, tagCount, rank);
+    }
+
+    public void attendStudy(String username, Long studyId, LocalDate todayDate) {
+        studyRollBookRepository.save(StudyRollBook.createStudyRollBook(username,studyId,todayDate));
+    }
+
+    public StudyAttendDto getAttendStudy(String username, Long studyId, LocalDate todayDate) {
+        List<StudyRollBook> studyRollBooks = studyRollBookRepository.findByStudyIdAndTodayDate(studyId, todayDate);
+        List<String> members = studyRollBooks.stream()
+                .map(StudyRollBook::getMemberName)
+                .toList();
+        return StudyAttendDto.builder()
+                .members(members)
+                .attendCheck(attendCheck(members, username))
+                .build();
+    }
+
+    private boolean attendCheck(List<String> members, String name) {
+        return !members.contains(name);
     }
 }
