@@ -7,10 +7,11 @@ const problemKeys = {
 };
 
 export const useSearchProblemsQuery = (problemInfo: string) => {
-    const { data, isLoading } = useQuery({
+    const { data, isLoading, refetch } = useQuery({
     queryKey: problemKeys.search,
     queryFn: (): Promise<SearchProblemListResponse> => problem.searchProblems(problemInfo),
+    enabled: false,
   });
 
-  return { data, isLoading };
+  return { data, isLoading, refetch };
 };

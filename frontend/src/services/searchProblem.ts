@@ -3,7 +3,7 @@ import { SearchProblemListResponse } from '@/types/problem';
 
 export const problem = {
   endpoint: {
-    default: '/problem',
+    default: '/problem/search',
   },
 
   searchProblems: async (problemInfo: string): Promise<SearchProblemListResponse> => {

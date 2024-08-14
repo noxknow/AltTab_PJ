@@ -8,8 +8,9 @@ export type ProblemDetailsResponse = {
 };
 
 export type SearchProblemResponse = {
-  problem_id: string;
-  problem_title: string;
+  problemId: string;
+  title: string;
+  problemIdTitle: string;
 };
 
 export type SearchProblemListResponse = {

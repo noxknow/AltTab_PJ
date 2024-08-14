@@ -89,15 +89,15 @@ public class ProblemService {
     }
 
     @Transactional
-    public ResponseEntity<List<String>> searchProblems(String problemInfo) {
+    public ResponseEntity<SearchProblemListDto> searchProblems(String problemInfo) {
 
         List<Problem> problems = problemRepository.findByProblemIdTitleContaining(problemInfo);
 
-        List<String> problemIdTitles = problems.stream()
-                .map(Problem::getProblemIdTitle)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().body(problemIdTitles);
+        return ResponseEntity.ok().body(SearchProblemListDto.builder()
+                .problems(problems.stream()
+                        .map(SearchProblemResponseDto::toDto)
+                        .collect(Collectors.toList()))
+                .build());
     }
 
 

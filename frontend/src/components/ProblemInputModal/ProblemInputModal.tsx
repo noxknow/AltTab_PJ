@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { Button } from '@/components/Button/Button';
 import SearchSVG from '@/assets/icons/search.svg?react';
 import PencilSVG from '@/assets/icons/pencil.svg?react';
 import CloseSVG from '@/assets/icons/close.svg?react';
-import styles from './ProblemInputModal.module.scss';
 import { usePostProblemQuery } from '@/queries/schedule';
 import { useClickedDate } from '@/hooks/useClickedDate';
-import { useParams } from 'react-router-dom';
 import { useGetMyInfoQuery } from '@/queries/member';
+import { useSearchProblemsQuery } from '@/queries/searchProblem';
+import { useDebounce } from '@/hooks/useDebounce';
+import { SearchProblemResponse } from '@/types/problem';
+
+import styles from './ProblemInputModal.module.scss';
+
 
 type ProblemInputModalProps = {
   open: boolean;
   onClose: () => void;
   refetchSchedule: () => Promise<void>;
 };
+
+const DEBOUNCE_DELAY = 1000;
 
 export function ProblemInputModal({
   open,
@@ -23,23 +31,38 @@ export function ProblemInputModal({
   if (!open) return null;
 
   const [keyword, setKeyword] = useState('');
-  const [results, setResults] = useState<number[]>([]);
-  const [selectedResult, setSelectedResult] = useState<number>(0);
+  const [searchResults, setSearchResults] = useState<SearchProblemResponse[] | null>(null);
+  const [selectedResult, setSelectedResult] = useState<string>('');
+  const { studyId } = useParams<{ studyId: string }>();
+
   const { clickedDate } = useClickedDate();
   const postProblemMutation = usePostProblemQuery();
   const { data: userInfo } = useGetMyInfoQuery();
-  const { studyId } = useParams<{ studyId: string }>();
+  const { isLoading, refetch } = useSearchProblemsQuery(keyword);
+  const debouncedQuery = useDebounce(keyword, DEBOUNCE_DELAY);
+
+  const getKeyWordsById = useCallback(async () => {
+    if (keyword === '') {
+      setSearchResults(null);
+      return;
+    }
+    const { data } = await refetch();
+    if (data && data.problems) {
+      setSearchResults(data.problems);
+    }
+  }, [keyword]);
+
+
+  useEffect(() => {
+    getKeyWordsById();
+  }, [debouncedQuery]);
 
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newKeyword = event.target.value;
     setKeyword(newKeyword);
-
-    const dummyResults = Array.from({ length: 10 }, (_, index) => 1000 + index);
-
-    setResults(dummyResults);
   };
 
-  const handleResultClick = (result: number) => {
+  const handleResultClick = (result: string) => {
     setSelectedResult(result);
   };
 
@@ -49,10 +72,11 @@ export function ProblemInputModal({
         studyId: parseInt(studyId, 10),
         deadline: clickedDate,
         presenter: userInfo?.name || '',
-        problemId: selectedResult,
+        problemId: parseInt(selectedResult, 10),
       };
       await postProblemMutation.mutateAsync(form);
       refetchSchedule();
+      onClose();
     }
   };
 
@@ -79,15 +103,17 @@ export function ProblemInputModal({
           </button>
 
           <div className={styles.result}>
-            {results.length > 0 ? (
-              results.map((result, index) => (
+            {isLoading ? (
+              <div>검색 중...</div>
+            ) : searchResults && searchResults.length > 0 ? (
+              searchResults.map((result) => (
                 <div
-                  key={index}
-                  className={`${styles.resultItem} ${selectedResult === result ? styles.selected : ''}`}
-                  onClick={() => handleResultClick(result)}
+                  key={result.problemId}
+                  className={`${styles.resultItem} ${selectedResult === result.problemId ? styles.selected : ''}`}
+                  onClick={() => handleResultClick(result.problemId)}
                 >
                   <PencilSVG />
-                  {result}
+                  {result.problemIdTitle}
                 </div>
               ))
             ) : (
@@ -100,6 +126,7 @@ export function ProblemInputModal({
             fill={true}
             size="small"
             onClick={handleRegisterClick}
+            disabled={!selectedResult}
           >
             등록하기
           </Button>
