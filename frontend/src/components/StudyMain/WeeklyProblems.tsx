@@ -14,6 +14,7 @@ import { studyProblemDetails } from '@/types/schedule';
 import { NavLink, useParams } from 'react-router-dom';
 import { useClickedDate } from '@/hooks/useClickedDate';
 import RobotSVG from '@/assets/icons/robot.svg?react';
+import ProblemsSVG from '@/assets/icons/problems.svg?react';
 
 export function WeeklyProblems() {
   const [isModal, setIsModal] = useState(false);
@@ -56,6 +57,12 @@ export function WeeklyProblems() {
           <div>이 주의 문제</div>
         </div>
         <div className={styles.right}>
+          <NavLink to={`/problems/${studyId}`}>
+            <div className={styles.recommendContainer}>
+              <ProblemsSVG className={styles.icon} />
+              <span className={styles.recommendText}>전체 문제</span>
+            </div>
+          </NavLink>
           <NavLink to={`/recommend/${studyId}`}>
             <div className={styles.recommendContainer}>
               <RobotSVG className={styles.icon} />
