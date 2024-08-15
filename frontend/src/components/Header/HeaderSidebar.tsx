@@ -11,15 +11,10 @@ import styles from './Header.module.scss';
 
 type HeaderSidebarProps = {
   isVisible: boolean;
-  showSidebar: () => void;
   hideSidebar: () => void;
 };
 
-export function HeaderSidebar({
-  isVisible,
-  showSidebar,
-  hideSidebar,
-}: HeaderSidebarProps) {
+export function HeaderSidebar({ isVisible, hideSidebar }: HeaderSidebarProps) {
   const { data } = useGetMyStudiesQuery();
 
   const sibebarClass = classNames(styles.headerSidebar, {
@@ -28,11 +23,7 @@ export function HeaderSidebar({
   });
 
   return (
-    <div
-      className={styles.headerSidebarContainer}
-      onMouseEnter={showSidebar}
-      onMouseLeave={hideSidebar}
-    >
+    <div className={styles.headerSidebarContainer} onMouseLeave={hideSidebar}>
       <div className={sibebarClass}>
         <div className={styles.itemWrapper}>
           <div className={styles.sidebarItem}>
@@ -52,8 +43,12 @@ export function HeaderSidebar({
               <TodayStudySVG /> 금주의 스터디
             </div>
           </NavLink>
-          <div className={styles.sidebarItem}><RecommendSVG /> 문제 추천</div>
-          <div className={styles.sidebarItem}><ListSVG /> 전체 문제리스트</div>
+          <div className={styles.sidebarItem}>
+            <RecommendSVG /> 문제 추천
+          </div>
+          <div className={styles.sidebarItem}>
+            <ListSVG /> 전체 문제리스트
+          </div>
         </div>
       </div>
     </div>

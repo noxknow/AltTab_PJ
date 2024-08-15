@@ -17,6 +17,7 @@ export function Button({ color, fill, size, ...rest }: ButtonProps) {
     [styles.large]: size === 'large',
     [styles.small]: size === 'small',
     [styles.long]: size === 'long',
+    [styles.disabled]: disabled,
   });
 
   return (

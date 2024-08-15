@@ -15,6 +15,8 @@ export const useGetWeeklyStudiesQuery = () => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: studyKeys.weekly,
     queryFn: (): Promise<weeklyStudies> => community.getWeeklyStudies(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
   return { data, isLoading, refetch };
 };
