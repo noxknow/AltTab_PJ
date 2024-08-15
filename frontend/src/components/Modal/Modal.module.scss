@@ -9,6 +9,8 @@
   background-color: $white;
   border: 1px solid $gray;
   z-index: 200;
+  overflow-y: auto;
+  @include scrollable-container;
 
   @media screen and (max-width: 880px) {
     // width: 80%;

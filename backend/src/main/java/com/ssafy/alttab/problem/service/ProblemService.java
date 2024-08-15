@@ -104,7 +104,7 @@ public class ProblemService {
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
         List<ProblemResponseDto> problems = switch (option.intValue()) {
             case 1 -> {
-                List<StudyProblem> studyProblems = studyProblemRepository.findByStudyAndTag(study, target);
+                List<StudyProblem> studyProblems = studyProblemRepository.findByStudyAndProblemTagContaining(study, target);
                 yield studyProblems.stream()
                         .map(ProblemResponseDto::toDto)
                         .collect(Collectors.toList());
@@ -117,6 +117,12 @@ public class ProblemService {
             }
             case 3 -> {
                 List<StudyProblem> studyProblems = studyProblemRepository.findByStudyAndPresenter(study, target);
+                yield studyProblems.stream()
+                        .map(ProblemResponseDto::toDto)
+                        .collect(Collectors.toList());
+            }
+            case 4 -> {
+                List<StudyProblem> studyProblems = studyProblemRepository.findByStudyAndProblemTitleContaining(study, target);
                 yield studyProblems.stream()
                         .map(ProblemResponseDto::toDto)
                         .collect(Collectors.toList());
