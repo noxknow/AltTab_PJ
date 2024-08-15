@@ -13,9 +13,15 @@ type ProfileModalProps = {
   setIsModal: (isOpen: boolean) => void;
   url: string;
   name: string;
+  point: number;
 };
 
-export function ProfileModal({ setIsModal, url, name }: ProfileModalProps) {
+export function ProfileModal({
+  setIsModal,
+  url,
+  name,
+  point,
+}: ProfileModalProps) {
   const { mutateAsync: logout } = useLogoutQuery();
   const { data: notificationCount } = useCountNotificationQuery();
 
@@ -34,7 +40,7 @@ export function ProfileModal({ setIsModal, url, name }: ProfileModalProps) {
         <div className={styles.modal}>
           <div className={styles.content}>
             <div className={styles.header}>내 정보</div>
-            <MemberProfile url={url} name={name} point={100} />
+            <MemberProfile url={url} name={name} point={point} />
             <div className={styles.notice}>
               <NavLink to="/notifications" className={styles.notifications}>
                 <div className={styles.alarm}>

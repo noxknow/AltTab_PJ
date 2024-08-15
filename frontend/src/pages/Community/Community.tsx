@@ -28,7 +28,8 @@ export function Community() {
   const following = classNames(styles.filter, {
     [styles.selected]: filter === FILTER.FOLLOWING,
   });
-  const { data: initialStudies } = useGetWeeklyStudiesQuery();
+  const { data: initialStudies, refetch: getWeeklyStudies } =
+    useGetWeeklyStudiesQuery();
   const { refetch: getTopSolvedStudies } = useGetTopSolvedStudiesQuery();
   const { refetch: getTopFollowerStudies } = useGetTopFollowerStudiesQuery();
   const { refetch: getFollowingStudies } = useGetFollowingStudiesQuery();
@@ -43,6 +44,9 @@ export function Community() {
   }, [initialStudies]);
 
   const getCommunityStudies = useCallback(async () => {
+    const { data: WeeklyStudies } = await getWeeklyStudies();
+    setWeeklyStudies(WeeklyStudies!.weeklyStudies);
+
     switch (filter) {
       case FILTER.SOLVED:
         const { data: TopSolvedStudies } = await getTopSolvedStudies();
@@ -57,11 +61,15 @@ export function Community() {
         setCommunityStudies(FollowingStudies!);
         break;
     }
-  }, [filter]);
+  }, [filter, getTopSolvedStudies, getTopFollowerStudies, getFollowingStudies]);
 
   useEffect(() => {
     getCommunityStudies();
-  }, [filter]);
+  }, [filter, getCommunityStudies]);
+
+  const handleFollowUpdate = useCallback(() => {
+    getCommunityStudies();
+  }, [getCommunityStudies]);
 
   const handleFilterClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     setFilter(e.currentTarget.name);
@@ -74,7 +82,11 @@ export function Community() {
         <div className={styles.cardContainer}>
           {weeklyStudies &&
             weeklyStudies.map((study, index) => (
-              <CommunityProfile key={index} study={study} />
+              <CommunityProfile
+                key={index}
+                study={study}
+                onFollowUpdate={handleFollowUpdate}
+              />
             ))}
         </div>
       </div>
@@ -95,7 +107,11 @@ export function Community() {
         <div className={styles.cardContainer}>
           {communityStudies &&
             communityStudies.map((study, index) => (
-              <CommunityProfile key={index} study={study} />
+              <CommunityProfile
+                key={index}
+                study={study}
+                onFollowUpdate={handleFollowUpdate}
+              />
             ))}
         </div>
       </div>

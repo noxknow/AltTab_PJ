@@ -10,9 +10,11 @@ import { communityStudy } from '@/types/study';
 export function CommunityProfile({
   study,
   isLink = true,
+  onFollowUpdate,
 }: {
   study: communityStudy;
   isLink?: boolean;
+  onFollowUpdate: () => void;
 }) {
   const [likeCount, setLikeCount] = useState<number>();
   const [check, setCheck] = useState<boolean>();
@@ -30,6 +32,7 @@ export function CommunityProfile({
     const data = await follow.mutateAsync(study.studyId.toString());
     setLikeCount(data.like);
     setCheck(data.check);
+    onFollowUpdate();
   };
 
   const handleClick = () => {
