@@ -6,7 +6,44 @@
   flex-direction: row;
   padding: 2rem 0rem 0rem 12rem;
   justify-content: space-between;
-  height: 66rem;
+  height: 100vh;
+  position: relative;
+}
+
+.backgroundImage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 30%;
+  height: 70vh;
+  object-fit: contain;
+  z-index: -2;
+  border-radius: 10rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: -1;
+}
+
+.image {
+  -webkit-user-drag: none;
+  max-width: 57rem;
+  max-height: 61rem;
+  z-index: -1;
+  border-radius: 1rem;
+}
+
+.main_left, .main_right {
+  position: relative;
+  z-index: 1;
 }
 
 .main_left {
@@ -27,11 +64,4 @@
 
 .highlighted {
   color: green;
-}
-
-.image {
-  -webkit-user-drag: none;
-  max-width: 57rem;
-  max-height: 61rem;
-  z-index: -1;
 }

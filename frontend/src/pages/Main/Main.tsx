@@ -1,9 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 
 import { CommunityProfile } from '@/components/CommunityProfile/CommunityProfile';
-import styles from './Main.module.scss';
 import { Button } from '@/components/Button/Button';
 import MAIN_IMAGE from '@/assets/images/LandingPage.png';
+import backgroundImage from '@/assets/images/background-removebg.png';
+
+import styles from './Main.module.scss';
 
 export function MainPage() {
   const navigate = useNavigate();
@@ -14,6 +16,8 @@ export function MainPage() {
 
   return (
     <div className={styles.main}>
+      <img src={backgroundImage} alt="Background" className={styles.backgroundImage} />
+      <div className={styles.overlay}></div>
       <div className={styles.main_left}>
         <div className={styles.title}>
           <div>ALTTAB</div>
