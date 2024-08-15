@@ -11,7 +11,6 @@ import { useClickedDate } from '@/hooks/useClickedDate';
 import { format } from 'date-fns';
 import {
   useDeleteProblemQuery,
-  useDeleteScheduleQuery,
   useGetSchedulesQuery,
   usePostProblemQuery,
 } from '@/queries/schedule';
@@ -27,7 +26,6 @@ export function Calendar() {
   const { studyId } = useParams<{ studyId: string }>();
   const { setClickedDate } = useClickedDate();
   const postProblemMutation = usePostProblemQuery();
-  const { mutateAsync: deleteScheduleMutation } = useDeleteScheduleQuery();
   const deleteProblemMutation = useDeleteProblemQuery();
   const [yearMonth, setYearMonth] = useState(format(new Date(), 'yyyy-MM-dd'));
   const { refetch } = useGetSchedulesQuery(studyId!, yearMonth);
@@ -61,14 +59,12 @@ export function Calendar() {
   };
 
   const handleDateClick = async (dateclickarg: DateClickArg) => {
+    setClickedDate(format(dateclickarg.dateStr, 'yyyy-MM-dd'));
     const updatedEvents = events?.filter(
       (event) => event.start === dateclickarg.dateStr,
     );
     if (updatedEvents?.length === 1) {
-      await deleteScheduleMutation({
-        studyId: studyId!,
-        deadline: dateclickarg.dateStr,
-      });
+      return;
     } else {
       const scheduleForm = {
         studyId: parseInt(studyId!),
@@ -107,7 +103,7 @@ export function Calendar() {
         datesSet={handleDatesSet}
         showNonCurrentDates={false}
       />
-      <AttendanceInfo />
+      <AttendanceInfo events={events} refetchSchedules={refetchSchedules} />
     </div>
   );
 }

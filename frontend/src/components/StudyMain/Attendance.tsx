@@ -32,9 +32,7 @@ export function Attendance() {
           </Button>
         </div>
       </div>
-      <div>
-        <Calendar />
-      </div>
+      <Calendar />
     </div>
   );
 }
