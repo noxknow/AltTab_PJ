@@ -18,6 +18,9 @@ import com.ssafy.alttab.study.entity.Study;
 import com.ssafy.alttab.study.repository.StudyRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,62 +44,23 @@ public class ProblemService {
     private final StatusRepository statusRepository;
     private final MemberRepository memberRepository;
 
-//    @Transactional
-//    public void addProblems(Long studyId, AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
-//        Study study = studyRepository.findById(studyId)
-//                .orElseThrow(() -> new StudyNotFoundException(studyId));
-//        int memberCount = memberStudyRepository.findByStudy(study).size();
-//        LocalDate deadline = dto.getDeadline();
-//
-//        for (AddProblemRequestDto problemDto : dto.getProblemIds()) {
-//            Long problemId = problemDto.getProblemId();
-//            Problem problem = problemRepository.findById(problemId)
-//                    .orElseThrow(() -> new ProblemNotFoundException(problemId));
-//
-//            boolean isDuplicate = study.getStudyProblems().stream()
-//                    .anyMatch(sp -> sp.getProblem().getProblemId().equals(problemId) &&
-//                            sp.getDeadline().equals(deadline));
-//
-//            if (!isDuplicate) {
-//                StudyProblem newStudyProblem = createStudyProblem(study, problem, deadline, problemDto.getPresenter(), memberCount);
-//                study.addStudyProblem(newStudyProblem);
-//            }
-//        }
-//
-//        studyRepository.save(study);
-//    }
-
-//    @Transactional
-//    public ProblemListResponseDto getProblems(Long studyId) throws StudyNotFoundException {
-//        Study study = studyRepository.findById(studyId)
-//                .orElseThrow(() -> new StudyNotFoundException(studyId));
-//        return ProblemListResponseDto.builder()
-//                .problemList(studyProblemRepository.findByStudyOrderByDeadlineDesc(study).stream()
-//                        .map(ProblemResponseDto::toDto)
-//                        .collect(Collectors.toList()))
-//                .build();
-//    }
-
-//    @Transactional
-//    public void removeProblems(Long studyId, RemoveProblemsRequestDto dto) throws StudyNotFoundException {
-//        Study study = studyRepository.findById(studyId)
-//                .orElseThrow(() -> new StudyNotFoundException(studyId));
-//        List<Long> psIds = dto.getProblemStudyIds();
-//        studyProblemRepository.deleteByStudyIdAndIdIn(studyId, psIds);
-//        study.getStudyProblems().removeIf(studyProblem -> psIds.contains(studyProblem.getId()));
-//        studyRepository.save(study);
-//    }
-
     @Transactional
-    public ResponseEntity<SearchProblemListDto> searchProblems(String problemInfo) {
+    public ResponseEntity<SearchProblemListDto> searchProblems(String problemInfo, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Problem> problemPage = problemRepository.findByProblemIdTitleContainingOrdered(problemInfo, pageable);
 
-        List<Problem> problems = problemRepository.findByProblemIdTitleContaining(problemInfo);
+        List<SearchProblemResponseDto> problems = problemPage.getContent().stream()
+                .map(SearchProblemResponseDto::toDto)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(SearchProblemListDto.builder()
-                .problems(problems.stream()
-                        .map(SearchProblemResponseDto::toDto)
-                        .collect(Collectors.toList()))
-                .build());
+        SearchProblemListDto responseDto = SearchProblemListDto.builder()
+                .problems(problems)
+                .currentPage(problemPage.getNumber())
+                .totalItems(problemPage.getTotalElements())
+                .totalPages(problemPage.getTotalPages())
+                .build();
+
+        return ResponseEntity.ok().body(responseDto);
     }
 
 

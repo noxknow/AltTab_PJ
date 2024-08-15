@@ -21,24 +21,12 @@ public class ProblemController {
 
     private final ProblemService problemService;
 
-//    @PostMapping("/{studyId}")
-//    public ResponseEntity<?> addProblems(@PathVariable Long studyId,
-//                                         @RequestBody AddProblemsRequestDto dto) throws StudyNotFoundException, ProblemNotFoundException {
-//        problemService.addProblems(studyId, dto);
-//        return ResponseEntity.ok().build();
-//    }
-
-//    @DeleteMapping("/{studyId}")
-//    public ResponseEntity<?> removeProblems(@PathVariable Long studyId,
-//                                            @RequestBody RemoveProblemsRequestDto dto) throws StudyNotFoundException {
-//        problemService.removeProblems(studyId, dto);
-//        return ResponseEntity.ok().build();
-//    }
-
     @GetMapping("/search/{problemInfo}")
-    public ResponseEntity<SearchProblemListDto> searchProblems(@PathVariable("problemInfo") String problemInfo) {
+    public ResponseEntity<SearchProblemListDto> searchProblems(@PathVariable("problemInfo") String problemInfo,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "15") int size) {
 
-        return problemService.searchProblems(problemInfo);
+        return problemService.searchProblems(problemInfo, page, size);
     }
 
     @GetMapping("/{studyId}/{option}/{target}")

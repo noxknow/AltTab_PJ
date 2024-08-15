@@ -6,10 +6,10 @@ const problemKeys = {
   search: ['search'],
 };
 
-export const useSearchProblemsQuery = (problemInfo: string) => {
-    const { data, isLoading, refetch } = useQuery({
-    queryKey: problemKeys.search,
-    queryFn: (): Promise<SearchProblemListResponse> => problem.searchProblems(problemInfo),
+export const useSearchProblemsQuery = (problemInfo: string, page: number, size: number) => {
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: [...problemKeys.search, problemInfo, page, size],
+    queryFn: (): Promise<SearchProblemListResponse> => problem.searchProblems(problemInfo, page, size),
     enabled: false,
   });
 

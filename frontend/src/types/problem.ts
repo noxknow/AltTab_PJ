@@ -15,4 +15,7 @@ export type SearchProblemResponse = {
 
 export type SearchProblemListResponse = {
   problems: SearchProblemResponse[];
+  currentPage: number;
+  totalItems: number;
+  totalPages: number;
 };
