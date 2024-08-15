@@ -48,6 +48,7 @@ public class MemberService {
                 .memberId(member.getId())
                 .name(member.getName())
                 .avatarUrl(member.getAvatarUrl())
+                .memberPoint(member.getTotalPoint())
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package com.ssafy.alttab.problem.service;
 
+import com.ssafy.alttab.common.exception.MemberNotFoundException;
 import com.ssafy.alttab.common.exception.StudyNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.MemberStudy;
 import com.ssafy.alttab.common.jointable.entity.StudyProblem;
@@ -146,21 +147,20 @@ public class ProblemService {
     }
 
     public void solveProblem(Long memberId, Long studyId, Long problemId) throws StudyNotFoundException {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("member not found"));
         MemberStudy memberStudy = memberStudyRepository.findByMemberIdAndStudyId(memberId, studyId)
                 .orElseThrow(() -> new EntityNotFoundException("entity not found"));
         Problem problem = problemRepository.findById(problemId)
                 .orElseThrow(() -> new EntityNotFoundException("entity not found"));
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyNotFoundException(studyId));
-        System.out.println("problem.getLevel() = " + problem.getLevel());
-        System.out.println("study.getStudyPoint() = " + study.getStudyPoint());
-        System.out.println("study.getSolveCount() = " + study.getSolveCount());
         memberStudy.incrementMemberPoint(problem.getLevel());
         memberStudyRepository.save(memberStudy);
+        member.incrementTotalPoint(problem.getLevel());
+        memberRepository.save(member);
         study.incrementStudyPoint(problem.getLevel());
         study.incrementSolveCount();
-        System.out.println("after study.getStudyPoint() = " + study.getStudyPoint());
-        System.out.println("after study.getSolveCount() = " + study.getSolveCount());
         studyRepository.save(study);
         statusRepository.save(createStatus(memberId, studyId, problemId));
     }

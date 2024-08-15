@@ -42,6 +42,9 @@ public class Member {
     @Builder.Default
     private List<Notification> notifications = new ArrayList<>();
 
+    @Builder.Default
+    private Long totalPoint = 0L;
+
     //==생성 메서드==//
     public static Member createMember(String name, String avatarUrl, MemberRoleStatus role) {
         return Member.builder()
@@ -80,5 +83,9 @@ public class Member {
 
     public void addNotification(Notification notification) {
         this.notifications.add(notification);
+    }
+
+    public void incrementTotalPoint(Long value) {
+        this.totalPoint += value;
     }
 }
