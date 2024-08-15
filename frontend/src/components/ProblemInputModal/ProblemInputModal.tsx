@@ -14,7 +14,6 @@ import { SearchProblemResponse } from '@/types/problem';
 
 import styles from './ProblemInputModal.module.scss';
 
-
 type ProblemInputModalProps = {
   open: boolean;
   onClose: () => void;
@@ -22,6 +21,7 @@ type ProblemInputModalProps = {
 };
 
 const DEBOUNCE_DELAY = 1000;
+const ITEMS_PER_PAGE = 15;
 
 export function ProblemInputModal({
   open,
@@ -33,12 +33,14 @@ export function ProblemInputModal({
   const [keyword, setKeyword] = useState('');
   const [searchResults, setSearchResults] = useState<SearchProblemResponse[] | null>(null);
   const [selectedResult, setSelectedResult] = useState<string>('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const { studyId } = useParams<{ studyId: string }>();
 
   const { clickedDate } = useClickedDate();
   const postProblemMutation = usePostProblemQuery();
   const { data: userInfo } = useGetMyInfoQuery();
-  const { isLoading, refetch } = useSearchProblemsQuery(keyword);
+  const { isLoading, refetch } = useSearchProblemsQuery(keyword, currentPage, ITEMS_PER_PAGE);
   const debouncedQuery = useDebounce(keyword, DEBOUNCE_DELAY);
 
   const getKeyWordsById = useCallback(async () => {
@@ -49,17 +51,18 @@ export function ProblemInputModal({
     const { data } = await refetch();
     if (data && data.problems) {
       setSearchResults(data.problems);
+      setTotalPages(data.totalPages);
     }
-  }, [keyword]);
-
+  }, [keyword, currentPage]);
 
   useEffect(() => {
     getKeyWordsById();
-  }, [debouncedQuery]);
+  }, [debouncedQuery, currentPage]);
 
   const handleKeywordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newKeyword = event.target.value;
     setKeyword(newKeyword);
+    setCurrentPage(0);
   };
 
   const handleResultClick = (result: string) => {
@@ -78,6 +81,10 @@ export function ProblemInputModal({
       refetchSchedule();
       onClose();
     }
+  };
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -106,16 +113,35 @@ export function ProblemInputModal({
             {isLoading ? (
               <div>검색 중...</div>
             ) : searchResults && searchResults.length > 0 ? (
-              searchResults.map((result) => (
-                <div
-                  key={result.problemId}
-                  className={`${styles.resultItem} ${selectedResult === result.problemId ? styles.selected : ''}`}
-                  onClick={() => handleResultClick(result.problemId)}
-                >
-                  <PencilSVG />
-                  {result.problemIdTitle}
+              <>
+                {searchResults.map((result) => (
+                  <div
+                    key={result.problemId}
+                    className={`${styles.resultItem} ${selectedResult === result.problemId ? styles.selected : ''}`}
+                    onClick={() => handleResultClick(result.problemId)}
+                  >
+                    <PencilSVG />
+                    {result.problemIdTitle}
+                  </div>
+                ))}
+                <div className={styles.pagination}>
+                  {Array.from({ length: Math.min(10, totalPages) }, (_, index) => {
+                    const pageNumber = currentPage - 4 + index + 1;
+                    if (pageNumber > 0 && pageNumber <= totalPages) {
+                      return (
+                        <button
+                          key={pageNumber}
+                          onClick={() => handlePageChange(pageNumber)}
+                          className={currentPage + 1 === pageNumber ? styles.activePage : ''}
+                        >
+                          {pageNumber}
+                        </button>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
-              ))
+              </>
             ) : (
               <div className={styles.noResult}>검색 결과가 없습니다.</div>
             )}
