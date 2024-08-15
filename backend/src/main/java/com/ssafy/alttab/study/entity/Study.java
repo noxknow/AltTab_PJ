@@ -110,6 +110,6 @@ public class Study extends BaseTimeEntity {
     }
 
     public void incrementSolveCount() {
-        this.studyPoint++;
+        this.solveCount++;
     }
 }
