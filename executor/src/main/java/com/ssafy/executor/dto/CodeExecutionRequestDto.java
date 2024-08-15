@@ -15,4 +15,5 @@ public class CodeExecutionRequestDto {
     private Long memberId;
     private String input;
     private String code;
+    private String runUsername;
 }
