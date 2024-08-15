@@ -68,6 +68,7 @@ public class StudyController {
     @PostMapping("/schedule/update")
     public ResponseEntity<?> updateSchedule(@AuthenticationPrincipal UserDetails userDetails,
                                             @RequestBody StudyScheduleRequestDto requestDto) {
+        System.out.println("requestDto = " + requestDto);
         return new ResponseEntity<>(studyScheduleService.updateOrCreateStudySchedule(userDetails.getUsername(), requestDto), HttpStatus.OK);
     }
 

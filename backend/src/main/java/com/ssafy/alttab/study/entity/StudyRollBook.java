@@ -1,6 +1,5 @@
 package com.ssafy.alttab.study.entity;
 
-import com.ssafy.alttab.member.entity.Member;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
