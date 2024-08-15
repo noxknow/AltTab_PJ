@@ -29,7 +29,16 @@ export function StudyStatChart({ studyId }: { studyId: string }) {
   }
 
   const data = {
-    labels: ['수학', '다이나믹 프로그래밍', '자료 구조', '구현', '그래프 이론', '탐색', '정렬', '문자열'],
+    labels: [
+      '수학',
+      'DP',
+      '자료 구조',
+      '구현',
+      '그래프 이론',
+      '탐색',
+      '정렬',
+      '문자열',
+    ],
     datasets: [
       {
         label: 'Problem Tags',

@@ -5,9 +5,7 @@
   @include poppins-regular;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  height: 30rem;
   width: 90%;
   gap: 1rem;
 }
@@ -15,16 +13,14 @@
 .top {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 41rem;
+  justify-content: space-between;
 }
 
 .header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   font-size: 2.5rem;
   font-weight: 550;

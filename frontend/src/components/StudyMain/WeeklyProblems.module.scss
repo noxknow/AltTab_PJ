@@ -5,10 +5,9 @@
   @include poppins-regular;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  height: 25rem;
   width: 90%;
+  gap: 1rem;
 }
 
 .top {

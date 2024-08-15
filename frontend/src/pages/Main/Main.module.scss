@@ -2,12 +2,12 @@
 @import '@/styles/font.module.scss';
 
 .main {
+  @include poppins-regular;
   display: flex;
   flex-direction: row;
-  padding: 2rem 0rem 0rem 12rem;
+  padding: 0rem 0rem 0rem 7rem;
   justify-content: space-between;
-  height: 100vh;
-  position: relative;
+  height: calc(100vh - 7rem);
 }
 
 .backgroundImage {
@@ -16,7 +16,6 @@
   left: 50%;
   transform: translate(-50%, -50%);
   max-width: 30%;
-  height: 70vh;
   object-fit: contain;
   z-index: -2;
   border-radius: 10rem;
@@ -35,19 +34,18 @@
 
 .image {
   -webkit-user-drag: none;
-  max-width: 57rem;
-  max-height: 61rem;
+  max-height: 80vh;
   z-index: -1;
   border-radius: 1rem;
 }
 
-.main_left, .main_right {
+.main_left,
+.main_right {
   position: relative;
   z-index: 1;
 }
 
 .main_left {
-  @include poppins-regular;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
