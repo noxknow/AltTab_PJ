@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { CanvasSection } from '@/pages/Canvas/CanvasSection';
 import { Button } from '@/components/Button/Button';
@@ -9,7 +9,7 @@ import { MODAL } from '@/constants/modal';
 import { highlightCode } from '@/utils/highlightCode';
 import { useGetCodeQuery } from '@/queries/executor';
 import { useGetStudyMemberQuery } from '@/queries/study';
-import { useGetMyInfoQuery } from '@/queries/member';
+import { useStudyState } from '@/hooks/useStudyState';
 
 import styles from './Compiler.module.scss';
 import { LineNumber } from './LineNumber';
@@ -17,6 +17,7 @@ import { CompilerSidebar } from './CompilerSidebar';
 
 export function Compiler() {
   const { studyId, problemId } = useParams();
+  const navigate = useNavigate();
   const [codeText, setCodeText] = useState('');
   const [highlightedCode, setHighlightedCode] = useState('');
   const [canvasIsOpen, setCanvasIsOpen] = useState(false);
@@ -31,16 +32,14 @@ export function Compiler() {
     problemId!,
     selected.toString(),
   );
-  const { data: loginUser } = useGetMyInfoQuery();
+  const { isMember } = useStudyState();
 
   useEffect(() => {
-    if (!studyMember || !loginUser) {
-      return;
-    }
-    if (!studyMember.some((member) => member.memberId === loginUser.memberId)) {
+    if (!isMember) {
       alert('스터디 멤버만 접근 가능합니다');
+      navigate(`/study/${studyId}`);
     }
-  }, [loginUser, studyMember]);
+  }, []);
 
   const resizeCodeArea = () => {
     textareaRef.current!.style.width = '100%';
