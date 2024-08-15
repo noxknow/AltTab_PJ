@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDeleteScheduleQuery } from '@/queries/schedule';
 import { useClickedDate } from '@/hooks/useClickedDate';
 import CloseSVG from '@/assets/icons/close.svg?react';
+import { useStudyState } from '@/hooks/useStudyState';
 
 import styles from './AttendanceInfo.module.scss';
 
@@ -28,6 +29,7 @@ export function AttendanceInfo({
   const { clickedDate } = useClickedDate();
   const { studyId } = useParams<{ studyId: string }>();
   const { mutateAsync: deleteScheduleMutation } = useDeleteScheduleQuery();
+  const { isMember } = useStudyState();
 
   const handleDeleteSchedule = async () => {
     if (!confirm('일정을 삭제할까요?')) {
@@ -50,9 +52,11 @@ export function AttendanceInfo({
     <div className={styles.main}>
       <div className={styles.header}>
         {clickedDate}
-        <button className={styles.closeButton} onClick={handleDeleteSchedule}>
-          <CloseSVG width={30} height={30} stroke="#F24242" />
-        </button>
+        {isMember && (
+          <button className={styles.closeButton} onClick={handleDeleteSchedule}>
+            <CloseSVG width={30} height={30} stroke="#F24242" />
+          </button>
+        )}
       </div>
       <div className={styles.members}>
         {participants &&

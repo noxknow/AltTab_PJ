@@ -9,28 +9,31 @@ import {
   usePostAttendanceQuery,
 } from '@/queries/attendance';
 import { useClickedDate } from '@/hooks/useClickedDate';
+import { useStudyState } from '@/hooks/useStudyState';
 
 import styles from './Attendance.module.scss';
 import { Calendar } from './Calendar';
 
 export function Attendance() {
   const { studyId } = useParams<{ studyId: string }>();
+  const today = format(new Date(), 'yyyy-MM-dd');
   const { clickedDate } = useClickedDate();
   const [attendIsAble, setAttendIsAble] = useState(false);
   const [participants, setParticipants] = useState<string[]>();
   const { refetch } = useGetAttendances(parseInt(studyId!), clickedDate);
   const usePostAttendanceQueryMutation = usePostAttendanceQuery(
     parseInt(studyId!),
-    format(new Date(), 'yyyy-MM-dd'),
+    today,
   );
+  const { isMember } = useStudyState();
 
   const refetchAttendances = useCallback(async () => {
     const { data } = await refetch();
     if (data) {
       setParticipants(data.members);
-      setAttendIsAble(data.attendCheck);
+      setAttendIsAble(data.attendCheck && clickedDate === today);
     }
-  }, []);
+  }, [clickedDate]);
 
   useEffect(() => {
     refetchAttendances();
@@ -54,7 +57,7 @@ export function Attendance() {
           </div>
           <div>출석부</div>
         </div>
-        <div>
+        {isMember && (
           <Button
             onClick={handleClick}
             color="green"
@@ -64,7 +67,7 @@ export function Attendance() {
           >
             출석하기
           </Button>
-        </div>
+        )}
       </div>
       <Calendar
         participants={participants}
