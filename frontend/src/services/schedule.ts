@@ -54,9 +54,11 @@ export const schedule = {
     return data;
   },
 
-  getUpcomingSchedule: async (): Promise<studyProblemDetails> => {
+  getUpcomingSchedule: async (
+    studyId: string,
+  ): Promise<studyProblemDetails> => {
     const { data } = await API.get<studyProblemDetails>(
-      `${schedule.endpoint.default}/recent`,
+      `${schedule.endpoint.default}/recent/${studyId}`,
     );
     return data;
   },

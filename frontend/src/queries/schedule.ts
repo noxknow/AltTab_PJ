@@ -78,11 +78,12 @@ export const useGetSchedulesQuery = (studyId: string, yearMonth: string) => {
   return { data, isLoading, refetch };
 };
 
-export const useGetUpcomingScheduleQuery = () => {
+export const useGetUpcomingScheduleQuery = (studyId: string) => {
   const { data, isLoading, refetch } = useQuery({
     queryKey: scheduleKeys.getUpcomingSchedule,
-    queryFn: (): Promise<studyProblemDetails> => schedule.getUpcomingSchedule(),
-    retry: false,
+    queryFn: (): Promise<studyProblemDetails> =>
+      schedule.getUpcomingSchedule(studyId),
+    retry: 3,
     retryOnMount: false,
   });
   return { data, isLoading, refetch };
