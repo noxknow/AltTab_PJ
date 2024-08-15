@@ -25,7 +25,11 @@ export function Modal({ code, selected }: ModalProps) {
     <>
       <div className={modalClass}>
         {modal === MODAL.PROBLEM && <ProblemModal />}
-        {modal === MODAL.SOLUTION && <SolutionModal />}
+        {modal === MODAL.SOLUTION && (
+          <div className={styles.solutionModal}>
+            <SolutionModal />
+          </div>
+        )}
         {modal === MODAL.CANVAS && <CanvasModal />}
         {modal === MODAL.RUN && (
           <RunCodeModal code={code} memberId={selected} />
