@@ -18,4 +18,5 @@ public class CodeExecutionResponseDto {
     private ExecutionStatus status;
     private String output;
     private String errorMessage;
+    private String runUsername;
 }

@@ -15,4 +15,5 @@ public class CodeExecutionResponseDto {
     private Long memberId;
     private String output;
     private String errorMessage;
+    private String runUsername;
 }
