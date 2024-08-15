@@ -74,11 +74,7 @@ export function WeeklyProblems() {
           </button>
         </div>
       </div>
-      <ProblemList
-        styleType="small"
-        studyInfo={studyInfo}
-        refetchSchedule={refetchSchedule}
-      />
+      <ProblemList studyInfo={studyInfo} refetchSchedule={refetchSchedule} />
       <ProblemInputModal
         open={isModal}
         onClose={() => setIsModal(false)}

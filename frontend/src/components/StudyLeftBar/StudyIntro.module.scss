@@ -5,11 +5,8 @@
   @include poppins-regular;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  text-align: center;
-  height: 10rem;
-  width: 20rem;
+  gap: 2rem;
 }
 
 .name {
@@ -19,7 +16,9 @@
   line-height: 1.5;
 }
 
-.intro {
+.info {
   color: $darkgray;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
+  word-break: keep-all;
+  line-height: 1.5;
 }

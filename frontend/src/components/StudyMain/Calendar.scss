@@ -2,13 +2,13 @@
   display: flex;
   width: 100%;
   flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  gap: 5rem;
 }
 
 .fc {
-  width: 50rem;
-  height: 26rem;
+  width: 40vw;
+  height: 40vh;
   text-align: center;
 }
 

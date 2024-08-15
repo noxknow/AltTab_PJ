@@ -5,20 +5,17 @@
   @include poppins-regular;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  height: 8rem;
-  width: 20rem;
+  gap: 2rem;
 }
 
 .header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
   font-size: 2.5rem;
   font-weight: 500;
-  width: 16rem;
+  gap: 1rem;
 }
 .mid {
   color: $darkgray;
@@ -26,5 +23,6 @@
 }
 .bottom {
   color: $lightred;
+  font-weight: 600;
   font-size: 1.2rem;
 }

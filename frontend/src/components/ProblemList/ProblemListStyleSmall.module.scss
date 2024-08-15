@@ -4,14 +4,17 @@
   @include scrollable-container;
   width: 100%;
   overflow-y: auto;
-  font-size: 1.3rem;
-  font-weight: 800;
-  height: 20rem;
+  font-size: 1.4rem;
+  font-weight: 600;
+  max-height: 30vh;
+  background-color: #f8f9fa;
+  box-shadow: 0 0.4rem 0.6rem rgba(0, 0, 0, 0.1);
 
   table {
     table-layout: fixed;
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
   }
 
   th:nth-child(1) {
@@ -42,8 +45,36 @@
   td {
     text-align: center;
     vertical-align: middle;
-    border: 1px solid purple;
     padding: 1rem;
+    border-bottom: 0.1rem solid #e0e0e0;
+    transition: background-color 0.3s ease;
+  }
+
+  th {
+    background-color: #f0e6ff;
+    font-weight: 700;
+
+    &:first-child {
+      border-top-left-radius: 0.8rem;
+    }
+
+    &:last-child {
+      border-top-right-radius: 0.8rem;
+    }
+  }
+
+  tr {
+    &:last-child {
+      td {
+        border-bottom: none;
+      }
+    }
+
+    &:hover {
+      td {
+        background-color: #f1f3f5;
+      }
+    }
   }
 }
 
