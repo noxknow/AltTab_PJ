@@ -11,9 +11,10 @@ import styles from './Header.module.scss';
 
 type HeaderSidebarProps = {
   isVisible: boolean;
+  hideSidebar: () => void;
 };
 
-export function HeaderSidebar({ isVisible }: HeaderSidebarProps) {
+export function HeaderSidebar({ isVisible, hideSidebar }: HeaderSidebarProps) {
   const { data } = useGetMyStudiesQuery();
 
   const sibebarClass = classNames(styles.headerSidebar, {
@@ -22,7 +23,7 @@ export function HeaderSidebar({ isVisible }: HeaderSidebarProps) {
   });
 
   return (
-    <div className={styles.headerSidebarContainer}>
+    <div className={styles.headerSidebarContainer} onMouseLeave={hideSidebar}>
       <div className={sibebarClass}>
         <div className={styles.itemWrapper}>
           <div className={styles.sidebarItem}>
