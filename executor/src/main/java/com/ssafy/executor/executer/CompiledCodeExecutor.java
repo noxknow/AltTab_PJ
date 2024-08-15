@@ -241,6 +241,7 @@ public class CompiledCodeExecutor {
                 .studyId(request.getStudyId())
                 .problemId(request.getProblemId())
                 .memberId(request.getMemberId())
+                .runUsername(request.getRunUsername())
                 .output(output)
                 .build();
     }
