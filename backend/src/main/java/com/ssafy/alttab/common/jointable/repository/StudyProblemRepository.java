@@ -26,8 +26,13 @@ public interface StudyProblemRepository extends JpaRepository<StudyProblem, Long
 
     StudyProblem findByStudyIdAndProblemProblemIdAndDeadline(Long studyId, Long problemId, LocalDate deadline);
 
-    @Modifying
     @Transactional
     @Query("DELETE FROM StudyProblem sp WHERE sp.study.id = :studyId AND sp.deadline = :deadline")
     void deleteAllByStudyIdAndDeadline(@Param("studyId") Long studyId, @Param("deadline") LocalDate deadline);
+
+    @Query("SELECT sp FROM StudyProblem sp WHERE sp.study = :study AND sp.problem.title LIKE %:title%")
+    List<StudyProblem> findByStudyAndProblemTitleContaining(@Param("study") Study study, @Param("title") String title);
+
+    @Query("SELECT sp FROM StudyProblem sp WHERE sp.study = :study AND sp.problem.tag LIKE %:tag%")
+    List<StudyProblem> findByStudyAndProblemTagContaining(@Param("study") Study study, @Param("tag") String tag);
 }

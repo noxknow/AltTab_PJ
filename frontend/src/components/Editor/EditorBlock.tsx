@@ -149,6 +149,7 @@ export function EditorBlock({
         innerText.current = `<img src="${imageUrl}" alt="image" />`;
         setShowImageInput(false);
         setShowBlock(true);
+        updateBlock(id, innerText.current, innerOption);
       }
     };
     reader.readAsDataURL(file);
@@ -180,6 +181,7 @@ export function EditorBlock({
     innerText.current = tableHTML;
     setShowTableInput(false);
     setShowBlock(true);
+    updateBlock(id, innerText.current, innerOption);
   };
 
   const move = (direction: string) => {

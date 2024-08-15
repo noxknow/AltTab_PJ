@@ -45,6 +45,7 @@ public class ProblemController {
     public ResponseEntity<?> queryProblems(@PathVariable Long studyId,
                                            @PathVariable Long option,
                                            @PathVariable String target) throws StudyNotFoundException {
+
         return new ResponseEntity<>(problemService.queryProblems(studyId, option, target), HttpStatus.OK);
     }
 
