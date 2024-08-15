@@ -3,7 +3,9 @@ package com.ssafy.alttab.study.service;
 import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
+import com.ssafy.alttab.common.jointable.repository.StudyProblemRepository;
 import com.ssafy.alttab.member.entity.Member;
+import com.ssafy.alttab.member.enums.MemberRoleStatus;
 import com.ssafy.alttab.member.repository.MemberRepository;
 import com.ssafy.alttab.problem.dto.ScheduleProblemResponseDto;
 import com.ssafy.alttab.problem.entity.Problem;
@@ -44,6 +46,7 @@ public class StudyScheduleService {
     private final MemberRepository memberRepository;
     private final StudyRepository studyRepository;
     private final MemberStudyRepository memberStudyRepository;
+    private final StudyProblemRepository studyProblemRepository;
 
     /**
      * 스터디 스케줄 정보 불러오기
@@ -76,6 +79,7 @@ public class StudyScheduleService {
         Long problemId = requestDto.getProblemId();
         Long studyId = requestDto.getStudyId();
         LocalDate deadline = requestDto.getDeadline();
+        System.out.println("#######################deadline = " + deadline);
         Study study = studyRepository.findById(requestDto.getStudyId())
                 .orElseThrow(() -> new EntityNotFoundException("Study not found for studyId: " + studyId));
         Problem problem = problemRepository.findById(problemId)
@@ -86,9 +90,11 @@ public class StudyScheduleService {
         if (!isDuplicate) {
             StudyProblem newStudyProblem = createStudyProblem(study, problem, deadline, name, memberCount);
             study.addStudyProblem(newStudyProblem);
+            studyProblemRepository.save(newStudyProblem);
         }
 
         // StudySchedule
+        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@deadline = " + deadline);
         StudySchedule studySchedule = studyScheduleRepository
                 .findByStudyIdAndDeadline(requestDto.getStudyId(), requestDto.getDeadline())
                 .orElseGet(() -> StudySchedule.createNewStudySchedule(requestDto));
@@ -106,7 +112,6 @@ public class StudyScheduleService {
         }
 
         studyScheduleRepository.save(studySchedule);
-        studyRepository.save(study);
         return requestDto;
     }
 
@@ -164,7 +169,7 @@ public class StudyScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public DeadlinesResponseDto findDeadlines(Long studyId, LocalDate yearMonth){
+    public DeadlinesResponseDto findDeadlines(Long studyId, LocalDate yearMonth) {
         YearMonth currentYearMonth = YearMonth.from(yearMonth);
         LocalDate startOfMonth = currentYearMonth.atDay(1);
         LocalDate endOfMonth = currentYearMonth.atEndOfMonth();
@@ -201,7 +206,9 @@ public class StudyScheduleService {
     //== mapper ==//
     private List<ScheduleProblemResponseDto> mapToStudyProblems(String username, List<ScheduleProblem> studyProblems, Long studyId) {
         Study study = studyRepository.findById(studyId).orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + studyId));
-        int size = study.getMemberStudies().size();
+        int size = (int) study.getMemberStudies().stream()
+                .filter(memberStudy -> !memberStudy.getRole().equals(MemberRoleStatus.FOLLOWER))
+                .count();
         return studyProblems.stream()
                 .map(studyProblem -> {
                     List<Status> statuses = statusRepository.findByStudyIdAndProblemId(studyId, studyProblem.getProblem().getProblemId());
