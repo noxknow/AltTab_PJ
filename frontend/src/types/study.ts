@@ -2,7 +2,7 @@ export type memberInfo = {
   memberId: number;
   name: string;
   avatarUrl: string;
-  point?: number;
+  memberPoint?: number;
 };
 
 export type studyInfo = {

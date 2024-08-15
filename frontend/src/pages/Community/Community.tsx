@@ -11,6 +11,7 @@ import {
 } from '@/queries/community';
 import { useGetMyInfoQuery } from '@/queries/member';
 import { communityStudy } from '@/types/study';
+import WeeklyStudySVG from '@/assets/icons/weeklyStudy.svg?react';
 
 import styles from './Community.module.scss';
 
@@ -69,7 +70,7 @@ export function Community() {
   return (
     <div className={styles.container}>
       <div className={styles.weeklyStudies}>
-        <div>금주의 스터디</div>
+        <div className={styles.title}><WeeklyStudySVG /> 금주의 스터디</div>
         <div className={styles.cardContainer}>
           {weeklyStudies &&
             weeklyStudies.map((study, index) => (

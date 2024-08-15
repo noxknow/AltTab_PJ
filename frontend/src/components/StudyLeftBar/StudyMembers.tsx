@@ -20,7 +20,7 @@ export function StudyMembers({ members }: studyMemberProps) {
             key={index}
             url={member.avatarUrl}
             name={member.name}
-            point={member.point}
+            point={member.memberPoint}
           />
         ))}
     </div>
