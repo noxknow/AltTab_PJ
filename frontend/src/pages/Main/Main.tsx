@@ -16,7 +16,11 @@ export function MainPage() {
 
   return (
     <div className={styles.main}>
-      <img src={backgroundImage} alt="Background" className={styles.backgroundImage} />
+      <img
+        src={backgroundImage}
+        alt="Background"
+        className={styles.backgroundImage}
+      />
       <div className={styles.overlay}></div>
       <div className={styles.main_left}>
         <div className={styles.title}>
@@ -54,6 +58,7 @@ export function MainPage() {
             check: true,
           }}
           isLink={false}
+          onFollowUpdate={() => {}}
         />
       </div>
       <div className={styles.main_right}>
