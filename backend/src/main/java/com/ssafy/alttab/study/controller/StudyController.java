@@ -90,9 +90,9 @@ public class StudyController {
         return new ResponseEntity<>(studyScheduleService.findDeadlines(studyId, yearMonth), HttpStatus.OK);
     }
 
-    @GetMapping("/schedule/recent")
-    public ResponseEntity<?> getRecentSchedule(@AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(studyScheduleService.findRecentStudySchedule(userDetails.getUsername()), HttpStatus.OK);
+    @GetMapping("/schedule/recent/{studyId}")
+    public ResponseEntity<?> getRecentSchedule(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long studyId) {
+        return new ResponseEntity<>(studyScheduleService.findRecentStudySchedule(userDetails.getUsername(), studyId), HttpStatus.OK);
     }
 
     @PostMapping("/attend/{studyId}/{todayDate}")

@@ -14,5 +14,5 @@ public interface StudyScheduleRepository extends JpaRepository<StudySchedule, Lo
 
     List<StudySchedule> findAllByStudyIdAndDeadlineBetween(Long studyId, LocalDate startDate, LocalDate endDate);
 
-    Optional<StudySchedule> findFirstByDeadlineGreaterThanEqualOrderByDeadlineAsc(LocalDate date);
+    Optional<StudySchedule> findFirstByStudyIdAndDeadlineGreaterThanEqualOrderByDeadlineAsc(Long studyId, LocalDate date);
 }

@@ -184,10 +184,10 @@ public class StudyScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public StudyScheduleResponseDto findRecentStudySchedule(String username) {
+    public StudyScheduleResponseDto findRecentStudySchedule(String username, Long studyId) {
         LocalDate today = LocalDate.now();
 
-        StudySchedule recentSchedule = studyScheduleRepository.findFirstByDeadlineGreaterThanEqualOrderByDeadlineAsc(today)
+        StudySchedule recentSchedule = studyScheduleRepository.findFirstByStudyIdAndDeadlineGreaterThanEqualOrderByDeadlineAsc(studyId, today)
                 .orElseThrow(() -> new EntityNotFoundException("No future study schedules found"));
 
         return StudyScheduleResponseDto.builder()
