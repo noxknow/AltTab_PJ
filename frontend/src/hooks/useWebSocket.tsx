@@ -65,12 +65,8 @@ const useWebSocket = (studyId: string, problemId: string, canvas: fabric.Canvas 
     stompClient.current.onWebSocketClose = () => {
       if (reconnectAttemptsRef.current < maxReconnectAttempts) {
         reconnectAttemptsRef.current += 1;
-        setTimeout(
-          () => {
-            connect();
-          },
-          Math.min(2000 * reconnectAttemptsRef.current, 10000),
-        );
+        const delay = Math.min(1000 * Math.pow(2, reconnectAttemptsRef.current), 30000);
+        setTimeout(connect, delay);
       } else {
         console.log('Max reconnect attempts reached.');
       }
