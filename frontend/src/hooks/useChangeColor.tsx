@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { studyProblemsDetails } from '@/types/problems';
 import { studyProblemDetails } from '@/types/schedule';
 
 const COLORS = [
@@ -61,28 +62,36 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export function useChangeColor(
-  studyInfo: studyProblemDetails | null | undefined,
+  info: studyProblemsDetails | studyProblemDetails | null | undefined,
 ) {
   const tagColors = useMemo(() => {
     const colorMap: { [key: string]: string } = {};
     const shuffledColors = shuffleArray(COLORS);
     let colorIndex = 0;
 
-    studyInfo?.studyProblems.forEach((problem) => {
-      problem.tag.split(';').forEach((tag) => {
-        const trimmedTag = tag.trim();
-        if (!colorMap[trimmedTag]) {
-          colorMap[trimmedTag] =
-            shuffledColors[colorIndex % shuffledColors.length];
-          colorIndex++;
-        }
-      });
-    });
-    return colorMap;
-  }, [studyInfo]);
+    if (info) {
+      const problems =
+        'problemList' in info ? info.problemList : info.studyProblems;
 
-  const getDifficultyColor = (level: number) => DIFFICULTY_MAP[level][1];
-  const getDifficultyLabel = (level: number) => DIFFICULTY_MAP[level][0];
+      problems?.forEach((problem) => {
+        problem.tag.split(';').forEach((tag) => {
+          const trimmedTag = tag.trim();
+          if (!colorMap[trimmedTag]) {
+            colorMap[trimmedTag] =
+              shuffledColors[colorIndex % shuffledColors.length];
+            colorIndex++;
+          }
+        });
+      });
+    }
+
+    return colorMap;
+  }, [info]);
+
+  const getDifficultyColor = (level: number) =>
+    DIFFICULTY_MAP[level]?.[1] ?? 'default';
+  const getDifficultyLabel = (level: number) =>
+    DIFFICULTY_MAP[level]?.[0] ?? 'Unknown';
   const getDeadlineColor = () => DEADLINE_COLOR;
 
   return {
