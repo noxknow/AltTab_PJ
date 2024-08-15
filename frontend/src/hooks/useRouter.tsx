@@ -28,18 +28,31 @@ export const useRouter = () =>
               <Compiler />
             </CompilerProvider>
           ),
+          errorElement: <MainPage />,
         },
         {
           path: 'study/:studyId',
           element: <Study />,
           errorElement: <NoStudy />,
         },
-        { path: 'problems/:studyId', element: <StudyProblems /> },
+        {
+          path: 'problems/:studyId',
+          element: <StudyProblems />,
+          errorElement: <MainPage />,
+        },
         { path: 'noStudy', element: <NoStudy /> },
         { path: 'newStudy', element: <NewStudy /> },
         { path: 'community', element: <Community /> },
-        { path: 'notifications', element: <Notifications /> },
-        { path: 'Recommend/:studyId', element: <Recommend /> },
+        {
+          path: 'notifications',
+          element: <Notifications />,
+          errorElement: <MainPage />,
+        },
+        {
+          path: 'Recommend/:studyId',
+          element: <Recommend />,
+          errorElement: <MainPage />,
+        },
       ],
     },
   ]);

@@ -27,7 +27,6 @@ export function Attendance() {
   const refetchAttendances = useCallback(async () => {
     const { data } = await refetch();
     if (data) {
-      console.log(data);
       setParticipants(data.members);
       setAttendIsAble(data.attendCheck);
     }

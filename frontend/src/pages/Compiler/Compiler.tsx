@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { CanvasSection } from '@/pages/Canvas/CanvasSection';
 import { Button } from '@/components/Button/Button';
@@ -17,7 +17,6 @@ import { CompilerSidebar } from './CompilerSidebar';
 
 export function Compiler() {
   const { studyId, problemId } = useParams();
-  const navigate = useNavigate();
   const [codeText, setCodeText] = useState('');
   const [highlightedCode, setHighlightedCode] = useState('');
   const [canvasIsOpen, setCanvasIsOpen] = useState(false);
@@ -32,17 +31,16 @@ export function Compiler() {
     problemId!,
     selected.toString(),
   );
-  const { isLogin, data: loginUser } = useGetMyInfoQuery();
+  const { data: loginUser } = useGetMyInfoQuery();
 
   useEffect(() => {
-    console.log(loginUser);
-    console.log(studyMember);
-    if (!isLogin) {
-      alert('로그인이 필요한 서비스입니다.');
-      navigate('/');
+    if (!studyMember || !loginUser) {
       return;
     }
-  }, []);
+    if (!studyMember.some((member) => member.memberId === loginUser.memberId)) {
+      alert('스터디 멤버만 접근 가능합니다');
+    }
+  }, [loginUser, studyMember]);
 
   const resizeCodeArea = () => {
     textareaRef.current!.style.width = '100%';
