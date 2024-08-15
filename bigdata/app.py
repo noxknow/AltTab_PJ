@@ -123,7 +123,9 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
             similar_study_problems = fetch_study_problems(int(similar_study_id))
             if 'problem_id' in similar_study_problems.columns:
                 unsolved_problems_from_similar_study = similar_study_problems[~similar_study_problems['problem_id'].isin(solved_problem_ids)]
-                recommendations = pd.concat([recommendations, unsolved_problems_from_similar_study])
+                problem_counts = unsolved_problems_from_similar_study['problem_id'].value_counts().head(5)
+                recommended_problems = unsolved_problems_from_similar_study[unsolved_problems_from_similar_study['problem_id'].isin(problem_counts.index)]
+                recommendations = pd.concat([recommendations, recommended_problems])
     
     return recommendations.drop_duplicates(subset='problem_id').sort_values(by='level', ascending=False).head(5)
 
@@ -166,10 +168,11 @@ def recommend_route():
     recommendations_most_common = sorted(recommendations_most_common, key=lambda x: x['level'], reverse=True)
     recommendations_least_common = sorted(recommendations_least_common, key=lambda x: x['level'], reverse=True)
     
+    # 결과를 원하는 형식으로 반환
     return jsonify({
-        'recommendations': recommendations.to_dict(orient='records'),
-        'most_common_representative': recommendations_most_common,
-        'least_common_representative_opposite': recommendations_least_common
+        "least_common_representative_opposite": recommendations_least_common,
+        "most_common_representative": recommendations_most_common,
+        "recommendations": recommendations.to_dict(orient='records')
     })
 
 @app.route('/flask/problem/<int:problem_id>', methods=['GET'])
