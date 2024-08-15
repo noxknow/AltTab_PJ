@@ -41,7 +41,11 @@ export function Recommend() {
     return <Loading />;
   }
   if (mutation.isError)
-    return <div>Error loading recommendations: {mutation.error?.message}</div>;
+    return (
+      <div className={styles.error}>
+        AI가 문제를 추천하기 위해서는 문제를 등록해주셔야 합니다.
+      </div>
+    );
 
   return (
     <div className={styles.container}>
