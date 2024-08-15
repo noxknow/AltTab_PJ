@@ -46,4 +46,4 @@ export type studyScore = {
   solveCount: number;
   rank: number;
   tagCount: number[];
-}
+};
