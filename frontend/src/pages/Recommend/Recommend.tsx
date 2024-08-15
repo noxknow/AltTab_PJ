@@ -14,8 +14,8 @@ export function Recommend() {
 
   const [recommendations, setRecommendations] =
     useState<RecommendationResponse>({
-      collaborative: [],
-      least_common_representative: [],
+      recommendations: [],
+      least_common_representative_opposite: [],
       most_common_representative: [],
     });
 
@@ -45,10 +45,13 @@ export function Recommend() {
 
   return (
     <div className={styles.container}>
-      <Section title="AI 추천 문제" problems={recommendations.collaborative} />
+      <Section
+        title="AI 추천 문제"
+        problems={recommendations.recommendations}
+      />
       <Section
         title="약점 보완"
-        problems={recommendations.least_common_representative}
+        problems={recommendations.least_common_representative_opposite}
       />
       <Section
         title="강점 강화"

@@ -11,8 +11,8 @@ export type RecommendationRequest = {
 };
 
 export type RecommendationResponse = {
-  collaborative: Problem[];
-  least_common_representative: Problem[];
+  recommendations: Problem[];
+  least_common_representative_opposite: Problem[];
   most_common_representative: Problem[];
 };
 
