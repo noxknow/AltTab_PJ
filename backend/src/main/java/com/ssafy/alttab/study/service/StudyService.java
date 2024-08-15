@@ -112,8 +112,15 @@ public class StudyService {
         return StudyScoreResponseDto.toDto(study, tagCount, rank);
     }
 
-    public void attendStudy(String username, Long studyId, LocalDate todayDate) {
-        studyRollBookRepository.save(StudyRollBook.createStudyRollBook(username,studyId,todayDate));
+    @Transactional
+    public AttendMembersResponse attendStudy(String username, Long studyId, LocalDate todayDate) {
+        studyRollBookRepository.save(StudyRollBook.createStudyRollBook(username, studyId, todayDate));
+        List<StudyRollBook> studyRollBooks = studyRollBookRepository.findByStudyIdAndTodayDate(studyId, todayDate);
+        return AttendMembersResponse.builder()
+                .members(studyRollBooks.stream()
+                        .map(StudyRollBook::getMemberName)
+                        .collect(Collectors.toList()))
+                .build();
     }
 
     public StudyAttendDto getAttendStudy(String username, Long studyId, LocalDate todayDate) {
@@ -140,5 +147,20 @@ public class StudyService {
                         .map(ProblemResponseDto::toDto)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    @Transactional
+    public StudyIdResponseDto addMembers(AddMembersRequestDto dto) {
+        Study study = studyRepository.findById(dto.getStudyId())
+                .orElseThrow(() -> new EntityNotFoundException("study not found"));
+        List<Long> memberIds = dto.getMemberIds();
+        for (Long memberId : memberIds) {
+            try {
+                notificationService.createNotification(memberId, dto.getStudyId(), study.getStudyName());
+            } catch (MemberNotFoundException e) {
+                throw new EntityNotFoundException(memberId + " member not found");
+            }
+        }
+        return StudyIdResponseDto.builder().studyId(dto.getStudyId()).build();
     }
 }
