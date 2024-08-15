@@ -1,4 +1,3 @@
-import logging
 from flask import Flask, request, jsonify, abort
 import mysql.connector
 import pandas as pd
@@ -15,9 +14,6 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
-
-# 로깅 설정
-logging.basicConfig(level=logging.DEBUG)
 
 # MySQL 데이터베이스 연결 함수
 def get_db_connection():
@@ -51,66 +47,27 @@ def fetch_study_problems(study_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute('''
-        SELECT p.problem_id, p.title, p.level, p.tag, p.representative
+        SELECT p.problem_id, p.title, p.level, p.tag
         FROM study_problem sp
         JOIN problem p ON sp.problem_id = p.problem_id
         WHERE sp.study_id = %s
     ''', (study_id,))
     problems = cursor.fetchall()
     conn.close()
-    return pd.DataFrame(problems)
 
-def fetch_problems_by_level_range(min_level, max_level, limit=2):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute('''
-        SELECT problem_id, title, level, tag, representative
-        FROM problem
-        WHERE level BETWEEN %s AND %s
-        ORDER BY RAND()
-        LIMIT %s
-    ''', (min_level, max_level, limit))
-    problems = cursor.fetchall()
-    conn.close()
-    return pd.DataFrame(problems)
+    df_problems = pd.DataFrame(problems)
+    
+    return df_problems
 
-def recommend_by_representative(representative, solved_problem_ids, df_problems_unsolved):
-    logging.debug(f"Representative: {representative}")
-    logging.debug(f"Unsolved problems count: {len(df_problems_unsolved)}")
-    
-    if df_problems_unsolved.empty or representative is None:
-        return []
-
-    vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'), token_pattern=None)
-    
-    try:
-        X = vectorizer.fit_transform(df_problems_unsolved['representative'])
-        model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
-    
-        vec = vectorizer.transform([representative])
-        distances, indices = model.kneighbors(vec)
-        recommended = df_problems_unsolved.iloc[indices[0]]
-    
-        recommended = recommended[~recommended['problem_id'].isin(solved_problem_ids)]
-    
-        if recommended.empty:
-            logging.debug("No recommendations found after filtering solved problems.")
-            return []
-    
-        return recommended.head(5).to_dict(orient='records')
-    except ValueError as e:
-        logging.error(f"Error in TF-IDF Vectorization: {e}")
-        return []
-
-def recommend_by_representative(representative, solved_problem_ids, df_problems_unsolved):
+def recommend_by_representative(tag, solved_problem_ids, df_problems_unsolved):
     if df_problems_unsolved.empty:
         return []
     
     vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
-    X = vectorizer.fit_transform(df_problems_unsolved['representative'])
+    X = vectorizer.fit_transform(df_problems_unsolved['tag'])
     model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
 
-    vec = vectorizer.transform([representative])
+    vec = vectorizer.transform([tag])
     distances, indices = model.kneighbors(vec)
     recommended = df_problems_unsolved.iloc[indices[0]]
 
@@ -121,15 +78,15 @@ def recommend_by_representative(representative, solved_problem_ids, df_problems_
 
     return recommended.head(5).to_dict(orient='records')
 
-def recommend_opposite_of_least_common_representative(least_common_representative, df_problems_unsolved):
+def recommend_opposite_of_least_common_tag(least_common_tag, df_problems_unsolved):
     if df_problems_unsolved.empty:
         return []
 
     vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
-    X = vectorizer.fit_transform(df_problems_unsolved['representative'])
+    X = vectorizer.fit_transform(df_problems_unsolved['tag'])
     model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
 
-    vec = vectorizer.transform([least_common_representative])
+    vec = vectorizer.transform([least_common_tag])
     distances, indices = model.kneighbors(vec)
     
     recommended = df_problems_unsolved.iloc[indices[0][::-1]]  # Reverse the indices to get the least similar ones
@@ -139,31 +96,73 @@ def recommend_opposite_of_least_common_representative(least_common_representativ
 
     return recommended.head(5).to_dict(orient='records')
 
+def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_ids):
+    df_study_scores = fetch_study_scores()
+
+    if len(df_study_scores) == 0:
+        return pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag'])
+
+    study_scores_matrix = df_study_scores.drop(columns=['study_id'])
+    study_index = df_study_scores[df_study_scores['study_id'] == study_id].index[0]
+    
+    cosine_sim = cosine_similarity(study_scores_matrix)
+    similarity_scores = pd.Series(cosine_sim[study_index]).sort_values(ascending=False)
+    similar_studies = df_study_scores.iloc[similarity_scores.index[1:6]]['study_id'].values
+    
+    recommendations = pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag'])
+
+    if len(similar_studies) == 0:
+        random_studies = df_study_scores.sample(n=5)['study_id'].values
+        for random_study_id in random_studies:
+            random_study_problems = fetch_study_problems(int(random_study_id))
+            if 'problem_id' in random_study_problems.columns:
+                unsolved_problems_from_random_study = random_study_problems[~random_study_problems['problem_id'].isin(solved_problem_ids)]
+                recommendations = pd.concat([recommendations, unsolved_problems_from_random_study])
+    else:
+        for similar_study_id in similar_studies:
+            similar_study_problems = fetch_study_problems(int(similar_study_id))
+            if 'problem_id' in similar_study_problems.columns:
+                unsolved_problems_from_similar_study = similar_study_problems[~similar_study_problems['problem_id'].isin(solved_problem_ids)]
+                recommendations = pd.concat([recommendations, unsolved_problems_from_similar_study])
+    
+    return recommendations.drop_duplicates(subset='problem_id').sort_values(by='level', ascending=False).head(5)
+
 @app.route('/flask', methods=['POST'])
 def recommend_route():
     content = request.json
     study_id = content['study_id']
     
+    # 스터디의 점수 및 유사한 스터디 찾기
+    df_study_scores = fetch_study_scores()
+    study_point = df_study_scores[df_study_scores['study_id'] == study_id]['score'].values[0]
+    
     # 현재 스터디에서 푼 문제들을 가져오기
     df_problems = fetch_study_problems(study_id)
     solved_problem_ids = df_problems['problem_id'].values
     
-    # 전체 문제에서 사용자가 풀었던 문제들을 제거하고, 레벨이 15 이하인 문제만 필터링
-    all_problems = pd.read_sql('SELECT * FROM problem', get_db_connection())
-    unsolved_problems = all_problems[(~all_problems['problem_id'].isin(solved_problem_ids)) & (all_problems['level'] <= 15)]
+    # 전체 문제에서 사용자가 풀었던 문제들을 제거
+    conn = get_db_connection()
+    df_problems_all = pd.read_sql('SELECT * FROM problem', conn)
+    conn.close()
+
+    if study_point <= 5000:
+        # 스터디 점수가 5000 이하인 경우, 레벨 15 이하의 문제만 필터링
+        unsolved_problems = df_problems_all[(~df_problems_all['problem_id'].isin(solved_problem_ids)) & (df_problems_all['level'] <= 15)]
+    else:
+        # 스터디 점수가 5000 이상인 경우, 모든 레벨의 문제에서 필터링
+        unsolved_problems = df_problems_all[~df_problems_all['problem_id'].isin(solved_problem_ids)]
+
+    # 협업 필터링 기반 추천 로직
+    recommendations = recommend_by_collaborative_filtering(study_id, study_point, solved_problem_ids)
     
-    # 추천 문제 목록 초기화
-    recommendations = pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag', 'representative'])
-    
-    # 대표자별 문제 추천 추가
-    most_common_representative = df_problems['representative'].mode().iloc[0] if not df_problems.empty else None
-    least_common_representative = df_problems['representative'].value_counts().idxmin() if not df_problems.empty else None
+    # 대표 태그 기반 문제 추천 추가
+    most_common_representative = df_problems['tag'].mode().iloc[0] if not df_problems.empty else None
+    least_common_representative = df_problems['tag'].value_counts().idxmin() if not df_problems.empty else None
 
     recommendations_most_common = recommend_by_representative(most_common_representative, solved_problem_ids, unsolved_problems) if most_common_representative else []
-    recommendations_least_common = recommend_opposite_of_least_common_representative(least_common_representative, unsolved_problems) if least_common_representative else []
+    recommendations_least_common = recommend_opposite_of_least_common_tag(least_common_representative, unsolved_problems) if least_common_representative else []
     
     # 모든 추천 목록을 레벨에 따라 정렬
-    recommendations = unsolved_problems.sort_values(by='level', ascending=False).head(5)
     recommendations_most_common = sorted(recommendations_most_common, key=lambda x: x['level'], reverse=True)
     recommendations_least_common = sorted(recommendations_least_common, key=lambda x: x['level'], reverse=True)
     
@@ -172,7 +171,6 @@ def recommend_route():
         'most_common_representative': recommendations_most_common,
         'least_common_representative_opposite': recommendations_least_common
     })
-
 
 @app.route('/flask/problem/<int:problem_id>', methods=['GET'])
 def get_problem_html(problem_id):
@@ -185,7 +183,6 @@ def get_problem_html(problem_id):
         # HTML 데이터를 반환
         return problem['html'], 200, {'Content-Type': 'text/html'}
     except Exception as e:
-        logging.error(f"Error fetching problem: {e}")
         abort(500, description="Internal Server Error")
 
 if __name__ == '__main__':
