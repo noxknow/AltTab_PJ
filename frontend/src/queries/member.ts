@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { member } from '@/services/member';
-import { memberInfo, joinedStudies,searchedMembers } from '@/types/study.ts';
+import { memberInfo, joinedStudies, searchedMembers } from '@/types/study.ts';
 
 const memberKeys = {
   studies: ['studies'],
@@ -23,6 +23,8 @@ export const useGetMyStudiesQuery = () => {
   const { data, isLoading } = useQuery({
     queryKey: memberKeys.info,
     queryFn: (): Promise<joinedStudies> => member.getMemberStudies(),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
   return { data, isLoading };
 };

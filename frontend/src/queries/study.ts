@@ -24,18 +24,23 @@ export const useCreateStudyQuery = () => {
 };
 
 export const useGetStudyInfoQuery = (studyId: string) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: studyKeys.studyInfo,
     queryFn: (): Promise<studyInfo> => study.getStudyInfo(studyId),
+    retry: false,
+    retryOnMount: false,
+    throwOnError: true,
   });
 
-  return { data, isLoading };
+  return { data, isLoading, isError };
 };
 
 export const useGetStudyMemberQuery = (studyId: string) => {
   const { data, isLoading } = useQuery({
     queryKey: studyKeys.studyMember,
     queryFn: (): Promise<memberInfo[]> => study.getStudyMember(studyId),
+    retry: false,
+    retryOnMount: false,
   });
 
   return { data, isLoading };
@@ -45,6 +50,8 @@ export const useGetStudyScoreQuery = (studyId: string) => {
   const { data, isLoading } = useQuery({
     queryKey: studyKeys.studyScore,
     queryFn: (): Promise<studyScore> => study.getStudyScore(studyId),
+    retry: false,
+    retryOnMount: false,
   });
 
   return { data, isLoading };

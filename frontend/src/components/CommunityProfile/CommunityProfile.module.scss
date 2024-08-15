@@ -13,6 +13,10 @@
   cursor: pointer;
 }
 
+.empty {
+  cursor: default;
+}
+
 .profile_card_title {
   display: flex;
   justify-content: space-between;

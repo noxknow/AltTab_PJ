@@ -16,13 +16,8 @@ import styles from './Header.module.scss';
 export function Header() {
   const [isVisible, setIsVisible] = useState(false);
   const [isModal, setIsModal] = useState(false);
-  // TODO : 사용자 로그인 상태 처리
   const { data: userInfo, isLogin } = useGetMyInfoQuery();
   const { data: notificationCount } = useCountNotificationQuery();
-
-  const showSidebar = () => {
-    setIsVisible(true);
-  };
 
   const hideSidebar = () => {
     setIsVisible(false);
@@ -34,11 +29,7 @@ export function Header() {
 
   return (
     <header className={styles.header}>
-      <HeaderSidebar
-        isVisible={isVisible}
-        showSidebar={showSidebar}
-        hideSidebar={hideSidebar}
-      />
+      <HeaderSidebar isVisible={isVisible} hideSidebar={hideSidebar} />
       <div className={`${styles.header_item} ${styles.left_item}`}>
         <button
           className={styles.button}

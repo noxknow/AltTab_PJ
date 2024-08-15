@@ -25,6 +25,7 @@ export function CommunityProfile({
   }, [study]);
 
   const onClickFollow = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isLink) return;
     e.stopPropagation();
     const data = await follow.mutateAsync(study.studyId.toString());
     setLikeCount(data.like);
@@ -38,10 +39,16 @@ export function CommunityProfile({
   };
 
   return (
-    <div onClick={handleClick} className={styles.profile_card}>
+    <div
+      onClick={handleClick}
+      className={`${styles.profile_card} ${!isLink && styles.empty}`}
+    >
       <div className={styles.profile_card_title}>
         <div className={styles.profile_study}>{study.studyName}</div>
-        <button onClick={onClickFollow} className={styles.like}>
+        <button
+          onClick={onClickFollow}
+          className={`${styles.like} ${!isLink && styles.empty}`}
+        >
           {check ? <FullHeartSVG /> : <EmptyHeartSVG />}
           <div className={styles.like_number}>{likeCount}</div>
         </button>

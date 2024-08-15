@@ -9,6 +9,7 @@ import { MODAL } from '@/constants/modal';
 import { highlightCode } from '@/utils/highlightCode';
 import { useGetCodeQuery } from '@/queries/executor';
 import { useGetStudyMemberQuery } from '@/queries/study';
+import { useGetMyInfoQuery } from '@/queries/member';
 
 import styles from './Compiler.module.scss';
 import { LineNumber } from './LineNumber';
@@ -30,6 +31,16 @@ export function Compiler() {
     problemId!,
     selected.toString(),
   );
+  const { data: loginUser } = useGetMyInfoQuery();
+
+  useEffect(() => {
+    if (!studyMember || !loginUser) {
+      return;
+    }
+    if (!studyMember.some((member) => member.memberId === loginUser.memberId)) {
+      alert('스터디 멤버만 접근 가능합니다');
+    }
+  }, [loginUser, studyMember]);
 
   const resizeCodeArea = () => {
     textareaRef.current!.style.width = '100%';
@@ -53,7 +64,9 @@ export function Compiler() {
   }, [data]);
 
   useEffect(() => {
-    setHighlightedCode(highlightCode(codeText, 'java'));
+    if (codeText) {
+      setHighlightedCode(highlightCode(codeText, 'java'));
+    }
     resizeCodeArea();
   }, [codeText]);
 

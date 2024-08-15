@@ -113,13 +113,15 @@ public class StudyService {
     }
 
     @Transactional
-    public AttendMembersResponse attendStudy(String username, Long studyId, LocalDate todayDate) {
+    public StudyAttendDto attendStudy(String username, Long studyId, LocalDate todayDate) {
         studyRollBookRepository.save(StudyRollBook.createStudyRollBook(username, studyId, todayDate));
         List<StudyRollBook> studyRollBooks = studyRollBookRepository.findByStudyIdAndTodayDate(studyId, todayDate);
-        return AttendMembersResponse.builder()
-                .members(studyRollBooks.stream()
-                        .map(StudyRollBook::getMemberName)
-                        .collect(Collectors.toList()))
+        List<String> members = studyRollBooks.stream()
+                .map(StudyRollBook::getMemberName)
+                .toList();
+        return StudyAttendDto.builder()
+                .members(members)
+                .attendCheck(attendCheck(members, username))
                 .build();
     }
 

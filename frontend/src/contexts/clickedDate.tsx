@@ -1,4 +1,5 @@
 import { createContext, useState } from 'react';
+import { format } from 'date-fns';
 
 interface ClickedDateContextType {
   clickedDate: string;
@@ -14,7 +15,8 @@ type ClickedDateProviderProps = {
 };
 
 export function ClickedDateProvider({ children }: ClickedDateProviderProps) {
-  const [clickedDate, setClickedDate] = useState<string>('');
+  const today = format(new Date(), 'yyyy-MM-dd');
+  const [clickedDate, setClickedDate] = useState<string>(today);
 
   return (
     <ClickedDateContext.Provider value={{ clickedDate, setClickedDate }}>
