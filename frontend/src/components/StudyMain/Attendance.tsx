@@ -15,22 +15,23 @@ import { Calendar } from './Calendar';
 
 export function Attendance() {
   const { studyId } = useParams<{ studyId: string }>();
+  const today = format(new Date(), 'yyyy-MM-dd');
   const { clickedDate } = useClickedDate();
   const [attendIsAble, setAttendIsAble] = useState(false);
   const [participants, setParticipants] = useState<string[]>();
   const { refetch } = useGetAttendances(parseInt(studyId!), clickedDate);
   const usePostAttendanceQueryMutation = usePostAttendanceQuery(
     parseInt(studyId!),
-    format(new Date(), 'yyyy-MM-dd'),
+    today,
   );
 
   const refetchAttendances = useCallback(async () => {
     const { data } = await refetch();
     if (data) {
       setParticipants(data.members);
-      setAttendIsAble(data.attendCheck);
+      setAttendIsAble(data.attendCheck && clickedDate === today);
     }
-  }, []);
+  }, [clickedDate]);
 
   useEffect(() => {
     refetchAttendances();
