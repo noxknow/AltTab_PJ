@@ -3,11 +3,17 @@
 
 .main {
   @include poppins-regular;
-  min-width: 16rem;
+  @include scrollable-container;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2rem;
+  background-color: #ffffff;
+  border-radius: 1.2rem;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  height: 40vh;
+  overflow-y: auto;
 }
 
 .header {
@@ -15,32 +21,46 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  font-size: 2rem;
-  font-weight: 500;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 1rem;
+  border-bottom: 0.2rem solid #f0f0f0;
 }
 
 .members {
-  @include scrollable-container;
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 20rem;
-  overflow-y: auto;
-  gap: 2rem;
+  gap: 1rem;
 }
 .member {
-  font-size: 1.5rem;
-  min-height: 2rem;
+  font-size: 1.6rem;
+  min-height: 2.4rem;
   width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+  background-color: #f8f9fa;
+  border-radius: 0.8rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #e9ecef;
+    transform: translateX(0.5rem);
+  }
 }
 
 .closeButton {
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: transparent;
   border: none;
-  border-radius: 1rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #ffeeee;
+  }
 }

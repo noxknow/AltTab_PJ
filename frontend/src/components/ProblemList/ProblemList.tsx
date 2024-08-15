@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, NavLink } from 'react-router-dom';
-import stylesSmall from './ProblemListStyleSmall.module.scss';
-import stylesBig from './ProblemListStyleBig.module.scss';
+import styles from './ProblemListStyleSmall.module.scss';
 import { DisabledButton } from '@/components/DisabledButton/DisabledButton';
 import { PieChart } from './PieChart';
 import ProgressSVG from '@/assets/icons/progress.svg?react';
@@ -15,17 +14,11 @@ import { studyProblemDetails } from '@/types/schedule';
 import { useChangeColor } from '@/hooks/useChangeColor';
 
 type ProblemListProps = {
-  styleType: 'small' | 'big';
   studyInfo: studyProblemDetails | null | undefined;
   refetchSchedule: () => Promise<void>;
 };
 
-export function ProblemList({
-  styleType,
-  studyInfo,
-  refetchSchedule,
-}: ProblemListProps) {
-  const styles = styleType === 'small' ? stylesSmall : stylesBig;
+export function ProblemList({ studyInfo, refetchSchedule }: ProblemListProps) {
   const [isModal, setIsModal] = useState(false);
   const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 });
   const [modalInfo, setModalInfo] = useState<{

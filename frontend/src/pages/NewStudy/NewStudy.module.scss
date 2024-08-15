@@ -5,12 +5,12 @@
   @include poppins-regular;
   display: flex;
   flex-direction: column;
-  max-width: 70rem;
+  width: 70vw;
+  height: calc(100vh - 7rem);
   margin: 0 auto;
   padding: 6rem 0rem;
   justify-content: space-between;
   align-items: center;
-  gap: 4rem;
 }
 
 .main_mid {
