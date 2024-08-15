@@ -152,7 +152,12 @@ export function ProblemList({
                 </DisabledButton>
               </td>
               <td>
-                <NavLink to={`/compiler/${studyId}/${problem.problemId}`}>
+                <NavLink
+                  to={`/compiler/${studyId}/${problem.problemId}`}
+                  onClick={() => {
+                    localStorage.setItem('presenter', problem.presenter);
+                  }}
+                >
                   <div>
                     {problem.problemId}. {problem.title}
                   </div>

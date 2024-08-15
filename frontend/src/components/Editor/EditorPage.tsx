@@ -12,6 +12,7 @@ import {
 import ReactDOM from 'react-dom';
 import { useCreateBlocksQuery, useGetBlocksQuery } from '@/queries/solutions';
 import { Block } from '@/types/solution';
+import { useGetMyInfoQuery } from '@/queries/member';
 
 export function EditorPage() {
   const initialBlock = { id: v4(), text: '', option: 'content' };
@@ -21,6 +22,7 @@ export function EditorPage() {
   const index = useRef(-1);
   const { studyId, problemId } = useParams();
   const { refetch } = useGetBlocksQuery(studyId!, problemId!);
+  const { data: userInfo } = useGetMyInfoQuery();
 
   const createBlocksMutation = useCreateBlocksQuery(studyId!, problemId!, {
     blocks: blocks,
@@ -36,7 +38,10 @@ export function EditorPage() {
   useEffect(() => {
     refetchBlocks();
     return () => {
-      createBlocksMutation.mutate();
+      if (userInfo?.name === localStorage.getItem('presenter')) {
+        console.log('저장');
+        createBlocksMutation.mutate();
+      }
     };
   }, []);
 
