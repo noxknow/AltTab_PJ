@@ -4,8 +4,6 @@ import classNames from 'classnames';
 import { useGetMyStudiesQuery } from '@/queries/member';
 import StudySVG from '@/assets/icons/study.svg?react';
 import TodayStudySVG from '@/assets/icons/todayStudy.svg?react';
-import RecommendSVG from '@/assets/icons/recommend.svg?react';
-import ListSVG from '@/assets/icons/list.svg?react';
 
 import styles from './Header.module.scss';
 
@@ -43,12 +41,6 @@ export function HeaderSidebar({ isVisible, hideSidebar }: HeaderSidebarProps) {
               <TodayStudySVG /> 금주의 스터디
             </div>
           </NavLink>
-          <div className={styles.sidebarItem}>
-            <RecommendSVG /> 문제 추천
-          </div>
-          <div className={styles.sidebarItem}>
-            <ListSVG /> 전체 문제리스트
-          </div>
         </div>
       </div>
     </div>

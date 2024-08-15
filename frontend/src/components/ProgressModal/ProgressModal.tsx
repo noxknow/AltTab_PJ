@@ -54,7 +54,7 @@ export function ProgressModal({
           <div>
             <PieChart percentage={modalInfo.percentage}></PieChart>
           </div>
-          <div>{modalInfo.percentage}</div>
+          <div>{Math.round(modalInfo.percentage)}</div>
           {isSolved ? (
             <CheckedBoxSVG fill="#66CD00" />
           ) : (
