@@ -4,6 +4,7 @@ import { StudyLeftBar } from '@/components/StudyLeftBar/StudyLeftBar';
 import { StudyStats } from '@/components/StudyStats/StudyStats';
 import { StudyMain } from '@/components/StudyMain/StudyMain';
 import { ClickedDateProvider } from '@/contexts/clickedDate';
+import { StudyProvider } from '@/contexts/study';
 
 import styles from './Study.module.scss';
 
@@ -11,12 +12,14 @@ export function Study() {
   const { studyId } = useParams();
 
   return (
-    <ClickedDateProvider>
-      <div key={studyId} className={styles.main}>
-        <StudyLeftBar />
-        <StudyMain />
-        <StudyStats />
-      </div>
-    </ClickedDateProvider>
+    <StudyProvider>
+      <ClickedDateProvider>
+        <div key={studyId} className={styles.main}>
+          <StudyLeftBar />
+          <StudyMain />
+          <StudyStats />
+        </div>
+      </ClickedDateProvider>
+    </StudyProvider>
   );
 }

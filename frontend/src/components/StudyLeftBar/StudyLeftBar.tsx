@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useGetStudyInfoQuery, useGetStudyMemberQuery } from '@/queries/study';
+import { useGetStudyInfoQuery } from '@/queries/study';
 import { useGetUpcomingScheduleQuery } from '@/queries/schedule';
 import { useClickedDate } from '@/hooks/useClickedDate';
 import { studyProblemDetails } from '@/types/schedule';
+import { useStudyState } from '@/hooks/useStudyState';
 
 import { StudyIntro } from './StudyIntro';
 import { StudyMembers } from './StudyMembers';
@@ -17,9 +18,9 @@ export function StudyLeftBar() {
   const [upcomingSchedule, setUpcomingSchedule] = useState<
     studyProblemDetails | undefined
   >();
+  const { studyMember } = useStudyState();
   const { clickedDate } = useClickedDate();
   const { data: studyInfo } = useGetStudyInfoQuery(studyId!);
-  const { data: studyMember } = useGetStudyMemberQuery(studyId!);
   const { refetch } = useGetUpcomingScheduleQuery(studyId!);
 
   const getUpcomingSchedule = useCallback(async () => {

@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { NavLink, useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 
 import ProblemSVG from '@/assets/icons/problem.svg?react';
@@ -11,22 +12,22 @@ import {
   useGetUpcomingScheduleQuery,
 } from '@/queries/schedule';
 import { studyProblemDetails } from '@/types/schedule';
-import { NavLink, useParams } from 'react-router-dom';
 import { useClickedDate } from '@/hooks/useClickedDate';
 import RobotSVG from '@/assets/icons/robot.svg?react';
 import ProblemsSVG from '@/assets/icons/problems.svg?react';
+import { useStudyState } from '@/hooks/useStudyState';
 
 export function WeeklyProblems() {
   const [isModal, setIsModal] = useState(false);
   const [studyInfo, setStudyInfo] = useState<studyProblemDetails | null>();
   const { studyId } = useParams<{ studyId: string }>();
   const { clickedDate, setClickedDate } = useClickedDate();
-
   const { refetch: refetchGetSchedule } = useGetScheduleQuery(
     studyId!,
     clickedDate,
   );
   const { data: initialStudyInfo } = useGetUpcomingScheduleQuery(studyId!);
+  const { isMember } = useStudyState();
 
   useEffect(() => {
     if (initialStudyInfo) {
@@ -63,23 +64,32 @@ export function WeeklyProblems() {
               <span className={styles.recommendText}>전체 문제</span>
             </div>
           </NavLink>
-          <NavLink to={`/recommend/${studyId}`}>
-            <div className={styles.recommendContainer}>
-              <RobotSVG className={styles.icon} />
-              <span className={styles.recommendText}>AI 추천 문제</span>
-            </div>
-          </NavLink>
-          <button className={styles.button} onClick={() => setIsModal(true)}>
-            <PlusSVG />
-          </button>
+          {isMember && (
+            <>
+              <NavLink to={`/recommend/${studyId}`}>
+                <div className={styles.recommendContainer}>
+                  <RobotSVG className={styles.icon} />
+                  <span className={styles.recommendText}>AI 추천 문제</span>
+                </div>
+              </NavLink>
+              <button
+                className={styles.button}
+                onClick={() => setIsModal(true)}
+              >
+                <PlusSVG />
+              </button>
+            </>
+          )}
         </div>
       </div>
       <ProblemList studyInfo={studyInfo} refetchSchedule={refetchSchedule} />
-      <ProblemInputModal
-        open={isModal}
-        onClose={() => setIsModal(false)}
-        refetchSchedule={refetchSchedule}
-      />
+      {isMember && (
+        <ProblemInputModal
+          open={isModal}
+          onClose={() => setIsModal(false)}
+          refetchSchedule={refetchSchedule}
+        />
+      )}
     </div>
   );
 }

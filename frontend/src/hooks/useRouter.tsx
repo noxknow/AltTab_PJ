@@ -12,6 +12,7 @@ import { StudyProblems } from '@/pages/StudyProblems/StudyProblems';
 import { Community } from '@/pages/Community/Community';
 import { Recommend } from '@/pages/Recommend/Recommend';
 import { Notifications } from '@/pages/Notifications/Notifications';
+import { StudyProvider } from '@/contexts/study';
 
 export const useRouter = () =>
   createBrowserRouter([
@@ -24,9 +25,11 @@ export const useRouter = () =>
         {
           path: 'compiler/:studyId/:problemId',
           element: (
-            <CompilerProvider>
-              <Compiler />
-            </CompilerProvider>
+            <StudyProvider>
+              <CompilerProvider>
+                <Compiler />
+              </CompilerProvider>
+            </StudyProvider>
           ),
           errorElement: <MainPage />,
         },
