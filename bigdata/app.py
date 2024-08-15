@@ -37,7 +37,7 @@ collection = db[collection_name]
 def fetch_study_scores():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute('SELECT study_id, study_point + solve_count as score FROM Study')
+    cursor.execute('SELECT study_id, study_point + solve_count as score FROM study')
     study_scores = cursor.fetchall()
     conn.close()
     return pd.DataFrame(study_scores)
@@ -47,8 +47,8 @@ def fetch_study_problems(study_id):
     cursor = conn.cursor(dictionary=True)
     cursor.execute('''
         SELECT p.problem_id, p.title, p.level, p.tag, p.representative
-        FROM StudyProblem sp
-        JOIN Problem p ON sp.problem_id = p.problem_id
+        FROM study_problem sp
+        JOIN problem p ON sp.problem_id = p.problem_id
         WHERE sp.study_id = %s
     ''', (study_id,))
     problems = cursor.fetchall()
@@ -60,7 +60,7 @@ def fetch_problems_by_level_range(min_level, max_level, limit=2):
     cursor = conn.cursor(dictionary=True)
     cursor.execute('''
         SELECT problem_id, title, level, tag, representative
-        FROM Problem
+        FROM problem
         WHERE level BETWEEN %s AND %s
         ORDER BY RAND()
         LIMIT %s
@@ -102,7 +102,7 @@ def recommend_route():
     df_problems_unsolved = df_problems[~df_problems['problem_id'].isin(solved_problem_ids)]
     
     if study_score <= 2000:
-        # 5 이하의 스터디인 경우
+        # 2000 이하의 스터디인 경우
         recommendations = pd.concat([
             recommendations,
             fetch_problems_by_level_range(15, 20, 1),
@@ -111,7 +111,7 @@ def recommend_route():
             fetch_problems_by_level_range(1, 5, 1)
         ])
     elif study_score <= 4000:
-        # 2000 이하의 스터디인 경우
+        # 4000 이하의 스터디인 경우
         recommendations = pd.concat([
             recommendations,
             fetch_problems_by_level_range(10, 15, 2),
@@ -119,7 +119,7 @@ def recommend_route():
             fetch_problems_by_level_range(1, 5, 1)
         ])
     else:
-        # 2000 이상의 스터디인 경우 (기본 로직)
+        # 4000 이상의 스터디인 경우 (기본 로직)
         study_scores_matrix = df_study_scores.drop(columns=['study_id'])
         study_index = df_study_scores[df_study_scores['study_id'] == study_id].index[0]
         cosine_sim = cosine_similarity(study_scores_matrix)

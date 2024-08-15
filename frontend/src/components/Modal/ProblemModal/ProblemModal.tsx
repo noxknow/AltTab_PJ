@@ -21,6 +21,12 @@ export function ProblemModal() {
           .replace(/src="\//g, 'src="https://www.acmicpc.net/')
           .replace(/href="\//g, 'href="https://www.acmicpc.net/');
 
+        // 복사 버튼을 삭제
+        fixedHtml = fixedHtml.replace(
+          /<button[^>]*copy-button[^>]*>[^<]*<\/button>/g,
+          '',
+        );
+
         // 중복된 출처 섹션 제거
         const sourceSectionRegex =
           /<section id="source">([\s\S]*?)<\/section>/g;
@@ -53,7 +59,7 @@ export function ProblemModal() {
   }
 
   if (!problemData) {
-    return <p>Problem data not available</p>;
+    return <p>잘못된 문제 번호 입니다. 다시 확인 해주세요</p>;
   }
 
   return (
