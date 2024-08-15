@@ -1,19 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { format } from 'date-fns';
+import { v4 } from 'uuid';
+
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction';
-import { AttendanceInfo } from './AttendanceInfo';
-import './Calendar.scss';
 import { EventClickArg, DatesSetArg } from '@fullcalendar/core/index.js';
-import { v4 } from 'uuid';
 import { useClickedDate } from '@/hooks/useClickedDate';
-import { format } from 'date-fns';
 import {
   useDeleteProblemQuery,
   useGetSchedulesQuery,
   usePostProblemQuery,
 } from '@/queries/schedule';
+import { useStudyState } from '@/hooks/useStudyState';
+
+import { AttendanceInfo } from './AttendanceInfo';
+import './Calendar.scss';
 
 type EventData = {
   id: string;
@@ -34,6 +37,7 @@ export function Calendar({ participants, refetchAttendances }: CalendarProps) {
   const deleteProblemMutation = useDeleteProblemQuery();
   const [yearMonth, setYearMonth] = useState(format(new Date(), 'yyyy-MM-dd'));
   const { refetch } = useGetSchedulesQuery(studyId!, yearMonth);
+  const { isMember } = useStudyState();
 
   const refetchSchedules = useCallback(async () => {
     const { data: schedules } = await refetch();
@@ -64,6 +68,9 @@ export function Calendar({ participants, refetchAttendances }: CalendarProps) {
   };
 
   const handleDateClick = async (dateclickarg: DateClickArg) => {
+    if (!isMember) {
+      return;
+    }
     setClickedDate(format(dateclickarg.dateStr, 'yyyy-MM-dd'));
     const updatedEvents = events?.filter(
       (event) => event.start === dateclickarg.dateStr,
