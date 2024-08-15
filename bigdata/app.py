@@ -111,7 +111,6 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
     
     recommendations = pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag'])
 
-    # 모든 경우에 대해 유사한 스터디 또는 랜덤 스터디에서 많이 풀린 문제만을 추천
     if len(similar_studies) == 0:
         random_studies = df_study_scores.sample(n=5)['study_id'].values
         for random_study_id in random_studies:
@@ -124,9 +123,11 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
         for similar_study_id in similar_studies:
             similar_study_problems = fetch_study_problems(int(similar_study_id))
             if 'problem_id' in similar_study_problems.columns:
-                problem_counts = similar_study_problems['problem_id'].value_counts().head(5)
-                recommended_problems = similar_study_problems[similar_study_problems['problem_id'].isin(problem_counts.index)]
-                recommendations = pd.concat([recommendations, recommended_problems])
+                unsolved_problems_from_similar_study = similar_study_problems[~similar_study_problems['problem_id'].isin(solved_problem_ids)]
+                num_samples = min(len(unsolved_problems_from_similar_study), 5)  # 샘플 크기 조정
+                if num_samples > 0:
+                    sampled_problems = unsolved_problems_from_similar_study.sample(n=num_samples, random_state=42)
+                    recommendations = pd.concat([recommendations, sampled_problems])
     
     return recommendations.drop_duplicates(subset='problem_id').sort_values(by='level', ascending=False).head(5)
 
