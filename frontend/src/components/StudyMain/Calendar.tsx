@@ -21,7 +21,12 @@ type EventData = {
   start: string;
 };
 
-export function Calendar() {
+type CalendarProps = {
+  participants: string[] | undefined;
+  refetchAttendances: () => Promise<void>;
+};
+
+export function Calendar({ participants, refetchAttendances }: CalendarProps) {
   const [events, setEvents] = useState<EventData[]>();
   const { studyId } = useParams<{ studyId: string }>();
   const { setClickedDate } = useClickedDate();
@@ -103,7 +108,12 @@ export function Calendar() {
         datesSet={handleDatesSet}
         showNonCurrentDates={false}
       />
-      <AttendanceInfo events={events} refetchSchedules={refetchSchedules} />
+      <AttendanceInfo
+        events={events}
+        refetchSchedules={refetchSchedules}
+        participants={participants}
+        refetchAttendances={refetchAttendances}
+      />
     </div>
   );
 }

@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useGetAttendances } from '@/queries/attendance';
 import { useDeleteScheduleQuery } from '@/queries/schedule';
 import { useClickedDate } from '@/hooks/useClickedDate';
 import CloseSVG from '@/assets/icons/close.svg?react';
@@ -17,29 +15,19 @@ type EventData = {
 type AttendanceInfoProps = {
   events: EventData[] | undefined;
   refetchSchedules: () => Promise<void>;
+  participants: string[] | undefined;
+  refetchAttendances: () => Promise<void>;
 };
 
 export function AttendanceInfo({
   events,
   refetchSchedules,
+  participants,
+  refetchAttendances,
 }: AttendanceInfoProps) {
   const { clickedDate } = useClickedDate();
   const { studyId } = useParams<{ studyId: string }>();
   const { mutateAsync: deleteScheduleMutation } = useDeleteScheduleQuery();
-  const { refetch } = useGetAttendances(parseInt(studyId!), clickedDate);
-
-  const [participants, setParticipants] = useState<string[]>();
-
-  const refetchAttendances = useCallback(async () => {
-    const { data } = await refetch();
-    if (data) {
-      setParticipants(data.members);
-    }
-  }, []);
-
-  useEffect(() => {
-    refetchAttendances();
-  }, [clickedDate]);
 
   const handleDeleteSchedule = async () => {
     if (!confirm('일정을 삭제할까요?')) {
