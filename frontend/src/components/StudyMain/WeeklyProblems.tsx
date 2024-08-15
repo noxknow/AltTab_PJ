@@ -1,4 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
+import { format } from 'date-fns';
+
 import ProblemSVG from '@/assets/icons/problem.svg?react';
 import PlusSVG from '@/assets/icons/plus.svg?react';
 import { ProblemList } from '@/components/ProblemList/ProblemList';
@@ -23,13 +25,16 @@ export function WeeklyProblems() {
     studyId!,
     clickedDate,
   );
-  const { data: initialStudyInfo } = useGetUpcomingScheduleQuery();
+  const { data: initialStudyInfo } = useGetUpcomingScheduleQuery(studyId!);
 
   useEffect(() => {
     if (initialStudyInfo) {
       setStudyInfo(initialStudyInfo);
       setClickedDate(initialStudyInfo.deadline);
+      return;
     }
+    const today = format(new Date(), 'yyyy-MM-dd');
+    setClickedDate(today);
   }, [initialStudyInfo]);
 
   const refetchSchedule = useCallback(async () => {
