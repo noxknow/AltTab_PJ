@@ -11,5 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchProblemListDto {
 
-    List<SearchProblemResponseDto> problems;
+    private List<SearchProblemResponseDto> problems;
+    private int currentPage;
+    private long totalItems;
+    private int totalPages;
 }
