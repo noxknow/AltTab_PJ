@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @AllArgsConstructor
@@ -15,4 +16,9 @@ public class CodeExecutionRequestDto {
     private Long memberId;
     private String input;
     private String code;
+    private String runUsername;
+
+    public void changeUserDetails(String runUsername){
+        this.runUsername = runUsername;
+    }
 }
