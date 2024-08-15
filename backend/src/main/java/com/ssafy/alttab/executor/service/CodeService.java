@@ -15,6 +15,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -99,8 +100,10 @@ public class CodeService {
      * @return 초기 코드 실행 응답 DTO
      */
     @Transactional
-    public CodeExecutionResponseDto executeCodeAsync(CodeExecutionRequestDto request) {
+    public CodeExecutionResponseDto executeCodeAsync(CodeExecutionRequestDto request, UserDetails userDetails) {
         CodeSnippet savedSnippet = saveCode(request);
+        request.changeUserDetails(userDetails.getUsername());
+
         CodeExecutionResponseDto response = CodeExecutionResponseDto.builder()
                 .studyId(savedSnippet.getStudyId())
                 .problemId(savedSnippet.getProblemId())
@@ -158,7 +161,7 @@ public class CodeService {
     private void cacheOutput(CodeSnippet codeSnippet, CodeExecutionResponseDto response) {
         Cache cache = cacheManager.getCache("outputCache");
         if (cache != null) {
-            cache.put(getCacheKey(codeSnippet), response);
+            cache.put(getCacheKey(codeSnippet, response.getRunUsername()), response);
         }
     }
 
@@ -170,12 +173,13 @@ public class CodeService {
      * @param memberId   문제 탭
      * @return 코드 실행 결과 DTO
      */
-    @Transactional
-    public CodeExecutionResponseDto getExecutionResult(Long studyId, Long problemId, Long memberId) {
+    public CodeExecutionResponseDto getExecutionResult(Long studyId, Long problemId, Long memberId, UserDetails userDetails) {
+        String runUsername = userDetails.getUsername();
         return codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(studyId, problemId, memberId)
-                .map(this::processAndGetExecutionResult)
+                .map(snippet -> processAndGetExecutionResult(snippet, runUsername))
                 .orElseGet(() -> createFailResponseDto(studyId, problemId, memberId));
     }
+
 
     /**
      * 코드 스니펫을 처리하고 실행 결과를 반환
@@ -183,8 +187,8 @@ public class CodeService {
      * @param snippet 처리할 코드 스니펫
      * @return 실행 결과 DTO, 또는 실행 상태가 DONE이 아닌 경우 null
      */
-    private CodeExecutionResponseDto processAndGetExecutionResult(CodeSnippet snippet) {
-        CodeExecutionResponseDto response = createResponseDtoFromSnippet(snippet);
+    private CodeExecutionResponseDto processAndGetExecutionResult(CodeSnippet snippet, String runUsername) {
+        CodeExecutionResponseDto response = createResponseDtoFromSnippet(snippet, runUsername);
         if (response.getStatus() == ExecutionStatus.DONE) {
             updateExecutionStatus(snippet);
             return response;
@@ -215,8 +219,8 @@ public class CodeService {
      * @param snippet 코드 스니펫 엔티티
      * @return 생성된 코드 실행 결과 DTO
      */
-    private CodeExecutionResponseDto createResponseDtoFromSnippet(CodeSnippet snippet) {
-        CodeExecutionResponseDto result = getOutputFromCache(snippet);
+    private CodeExecutionResponseDto createResponseDtoFromSnippet(CodeSnippet snippet, String runUsername) {
+        CodeExecutionResponseDto result = getOutputFromCache(snippet, runUsername);
         return CodeExecutionResponseDto.builder()
                 .studyId(snippet.getStudyId())
                 .problemId(snippet.getProblemId())
@@ -233,10 +237,10 @@ public class CodeService {
      * @param codeSnippet 조회할 코드 스니펫
      * @return 캐시된 실행 결과 DTO, 또는 캐시에 없는 경우 null
      */
-    private CodeExecutionResponseDto getOutputFromCache(CodeSnippet codeSnippet) {
+    private CodeExecutionResponseDto getOutputFromCache(CodeSnippet codeSnippet, String runUsername) {
         Cache cache = cacheManager.getCache("outputCache");
         if (cache != null) {
-            Cache.ValueWrapper wrapper = cache.get(getCacheKey(codeSnippet));
+            Cache.ValueWrapper wrapper = cache.get(getCacheKey(codeSnippet, runUsername));
             if (wrapper != null) {
                 Object value = wrapper.get();
                 if (value instanceof CodeExecutionResponseDto) {
@@ -270,8 +274,8 @@ public class CodeService {
      * @param codeSnippet 키를 생성할 코드 스니펫
      * @return 생성된 캐시 키 문자열
      */
-    private String getCacheKey(CodeSnippet codeSnippet) {
-        return String.format("%d:%d:%d", codeSnippet.getStudyId(), codeSnippet.getProblemId(),
-                codeSnippet.getMemberId());
+    private String getCacheKey(CodeSnippet codeSnippet, String runUsername) {
+        return String.format("%d:%d:%d:%s", codeSnippet.getStudyId(), codeSnippet.getProblemId(),
+                codeSnippet.getMemberId(), runUsername);
     }
 }
