@@ -1,6 +1,7 @@
 .main {
   display: flex;
   flex-direction: row;
+  height: calc(100vh - 7rem);
 }
 
 .left {
@@ -11,4 +12,5 @@
   flex: 1;
   display: flex;
   justify-content: center;
+  padding: 0 3rem;
 }
