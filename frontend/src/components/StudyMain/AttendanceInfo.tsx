@@ -2,8 +2,8 @@ import { useParams } from 'react-router-dom';
 
 import { useDeleteScheduleQuery } from '@/queries/schedule';
 import { useClickedDate } from '@/hooks/useClickedDate';
-import CloseSVG from '@/assets/icons/close.svg?react';
 import { useStudyState } from '@/hooks/useStudyState';
+import CloseDrawIcon from '@/assets/icons/closeDraw.svg?react';
 
 import styles from './AttendanceInfo.module.scss';
 
@@ -54,7 +54,7 @@ export function AttendanceInfo({
         {clickedDate}
         {isMember && (
           <button className={styles.closeButton} onClick={handleDeleteSchedule}>
-            <CloseSVG width={30} height={30} stroke="#F24242" />
+            <CloseDrawIcon width={30} height={30} stroke="#F24242" />
           </button>
         )}
       </div>

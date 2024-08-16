@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { problemService } from '@/services/problem'; // 문제 정보 가져오는 함수
+import { problemService } from '@/services/problem';
 import styles from '../Modal.module.scss';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
@@ -16,23 +16,19 @@ export function ProblemModal() {
       try {
         const data = await problemService.getProblemDetails(Number(problemId));
 
-        // HTML 경로 수정 (src와 href 경로를 절대 경로로 바꾸기)
         let fixedHtml: string = data
           .replace(/src="\//g, 'src="https://www.acmicpc.net/')
           .replace(/href="\//g, 'href="https://www.acmicpc.net/');
 
-        // 복사 버튼을 삭제
         fixedHtml = fixedHtml.replace(
           /<button[^>]*copy-button[^>]*>[^<]*<\/button>/g,
           '',
         );
 
-        // 중복된 출처 섹션 제거
         const sourceSectionRegex =
           /<section id="source">([\s\S]*?)<\/section>/g;
         const match = fixedHtml.match(sourceSectionRegex);
         if (match && match.length > 1) {
-          // 여러 번 매칭된 경우 첫 번째만 남기고 제거
           fixedHtml = fixedHtml.replace(sourceSectionRegex, (match, index) =>
             index === 0 ? match : '',
           );
@@ -70,6 +66,7 @@ export function ProblemModal() {
       <h2 className={styles.problemTitle}>문제번호 : {problemId}</h2>
       <div className={styles.backjunbutton}>
         <button
+        className={styles.button}
           onClick={() =>
             window.open(
               `https://www.acmicpc.net/problem/${problemId}`,
