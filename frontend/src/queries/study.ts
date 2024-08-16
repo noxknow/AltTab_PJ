@@ -36,14 +36,14 @@ export const useGetStudyInfoQuery = (studyId: string) => {
 };
 
 export const useGetStudyMemberQuery = (studyId: string) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: studyKeys.studyMember,
     queryFn: (): Promise<memberInfo[]> => study.getStudyMember(studyId),
     retry: false,
     retryOnMount: false,
   });
 
-  return { data, isLoading };
+  return { data, isLoading, refetch };
 };
 
 export const useGetStudyScoreQuery = (studyId: string) => {

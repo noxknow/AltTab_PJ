@@ -8,7 +8,7 @@ import { StudyProvider } from '@/contexts/study';
 
 import styles from './Study.module.scss';
 
-export function Study() {
+export default function Study() {
   const { studyId } = useParams();
 
   return (
