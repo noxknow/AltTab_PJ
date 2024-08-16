@@ -12,6 +12,7 @@ import PersonSVG from '@/assets/icons/person.svg?react';
 import { ProgressModal } from '@/components/ProgressModal/ProgressModal';
 import { studyProblemDetails } from '@/types/schedule';
 import { useChangeColor } from '@/hooks/useChangeColor';
+import { useStudyState } from '@/hooks/useStudyState';
 
 type ProblemListProps = {
   studyInfo: studyProblemDetails | null | undefined;
@@ -28,6 +29,7 @@ export function ProblemList({ studyInfo, refetchSchedule }: ProblemListProps) {
     problemId: number;
   } | null>(null);
   const { studyId } = useParams<{ studyId: string }>();
+  const { isMember } = useStudyState();
 
   const {
     tagColors,
@@ -202,7 +204,7 @@ export function ProblemList({ studyInfo, refetchSchedule }: ProblemListProps) {
           ))}
         </tbody>
       </table>
-      {isModal && modalInfo && (
+      {isMember && isModal && modalInfo && (
         <ProgressModal
           setIsModal={setIsModal}
           style={{

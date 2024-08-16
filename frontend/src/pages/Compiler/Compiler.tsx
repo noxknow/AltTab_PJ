@@ -15,12 +15,15 @@ import styles from './Compiler.module.scss';
 import { LineNumber } from './LineNumber';
 import { CompilerSidebar } from './CompilerSidebar';
 
+const TAB_SIZE = 4;
+
 export function Compiler() {
   const { studyId, problemId } = useParams();
   const navigate = useNavigate();
   const [codeText, setCodeText] = useState('');
   const [highlightedCode, setHighlightedCode] = useState('');
   const [canvasIsOpen, setCanvasIsOpen] = useState(false);
+  const [cursor, setCursor] = useState(0);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const codeAreaRef = useRef<HTMLDivElement | null>(null);
   const { isModalOpen, setIsModalOpen, setModal, setIsFill } =
@@ -53,6 +56,8 @@ export function Compiler() {
   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newCodeText = event.target.value;
     setCodeText(newCodeText);
+    const newCursor = event.target.selectionStart;
+    setCursor(newCursor);
     resizeCodeArea();
   };
 
@@ -65,6 +70,11 @@ export function Compiler() {
   useEffect(() => {
     if (codeText) {
       setHighlightedCode(highlightCode(codeText, 'java'));
+    }
+    if (textareaRef.current) {
+      console.log(cursor);
+      textareaRef.current.selectionStart = cursor;
+      textareaRef.current.selectionEnd = cursor;
     }
     resizeCodeArea();
   }, [codeText]);
@@ -105,6 +115,21 @@ export function Compiler() {
     setSelected(selectedTab);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const { selectionStart } = event.target as EventTarget &
+      HTMLTextAreaElement;
+    setCursor(selectionStart);
+
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setCursor((prev) => prev + TAB_SIZE);
+      setCodeText(
+        (prev) =>
+          `${prev.slice(0, selectionStart)}    ${prev.slice(selectionStart)}`,
+      );
+    }
+  };
+
   return (
     <div className={styles.container}>
       {isModalOpen && <Modal code={codeText} selected={selected} />}
@@ -136,6 +161,7 @@ export function Compiler() {
                 onChange={handleChange}
                 value={codeText}
                 ref={textareaRef}
+                onKeyDown={handleKeyDown}
               ></textarea>
               <pre className={styles.codeArea}>
                 <code

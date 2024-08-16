@@ -30,6 +30,7 @@ public class CodeExecutorAspect {
                 .problemId(request.getProblemId())
                 .memberId(request.getMemberId())
                 .errorMessage(ex.getMessage())
+                .runUsername(request.getRunUsername())
                 .build();
     }
 
