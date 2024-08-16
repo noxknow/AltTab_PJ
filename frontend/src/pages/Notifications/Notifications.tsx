@@ -2,18 +2,26 @@ import { Notice } from './Notice';
 import styles from './Notifications.module.scss';
 
 import AlarmSVG from '@/assets/icons/alarm.svg?react';
-import { useNotificationQuery, useCheckNotificationMutation } from '@/queries/notice';
+import {
+  useNotificationQuery,
+  useCheckNotificationMutation,
+} from '@/queries/notice';
 
 export function Notifications() {
   const { data: notifications, isLoading, error } = useNotificationQuery();
   const checkNotificationMutation = useCheckNotificationMutation();
 
-  const handleCheck = (notificationId: number, studyId: number, check: boolean) => {
-    checkNotificationMutation.mutate({
+  const handleCheck = async (
+    notificationId: number,
+    studyId: number,
+    check: boolean,
+  ) => {
+    await checkNotificationMutation.mutateAsync({
       notificationId,
       studyId,
       check,
     });
+    window.location.reload();
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -26,15 +34,20 @@ export function Notifications() {
         <div>알림</div>
       </div>
       <div>
-        {notifications && notifications.notifications.map((notice) => (
-          <Notice
-            key={notice.notificationId}
-            content={`${notice.studyName}에 초대 되었습니다.`}
-            date={notice.createdAt}
-            onAccept={() => handleCheck(notice.notificationId, notice.studyId, true)}
-            onReject={() => handleCheck(notice.notificationId, notice.studyId, false)}
-          />
-        ))}
+        {notifications &&
+          notifications.notifications.map((notice) => (
+            <Notice
+              key={notice.notificationId}
+              content={`${notice.studyName}에 초대 되었습니다.`}
+              date={notice.createdAt}
+              onAccept={() =>
+                handleCheck(notice.notificationId, notice.studyId, true)
+              }
+              onReject={() =>
+                handleCheck(notice.notificationId, notice.studyId, false)
+              }
+            />
+          ))}
       </div>
     </div>
   );
