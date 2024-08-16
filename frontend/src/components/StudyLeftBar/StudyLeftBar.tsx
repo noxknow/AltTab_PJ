@@ -26,7 +26,7 @@ export function StudyLeftBar() {
   const getUpcomingSchedule = useCallback(async () => {
     const { data: nextSchedule } = await refetch();
     setUpcomingSchedule(nextSchedule);
-  }, []);
+  }, [studyId]);
 
   useEffect(() => {
     getUpcomingSchedule();

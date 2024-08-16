@@ -1,12 +1,7 @@
 package com.ssafy.alttab.common.handler;
 
 import com.ssafy.alttab.common.dto.ErrorResponseDto;
-import com.ssafy.alttab.common.exception.CodeNotFoundException;
-import com.ssafy.alttab.common.exception.MemberNotFoundException;
-import com.ssafy.alttab.common.exception.ProblemNotFoundException;
-import com.ssafy.alttab.common.exception.StudyNotFoundException;
-import com.ssafy.alttab.common.exception.TokenNotFoundException;
-import com.ssafy.alttab.common.exception.TokenNotValidException;
+import com.ssafy.alttab.common.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +46,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(TokenNotFoundException.class)
     public ResponseEntity<?> handleTokenNotFoundException(TokenNotFoundException ex) {
         return ErrorResponseDto.toResponse(ex, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ScheduleNotFoundException.class)
+    public ResponseEntity<?> handleScheduleNotFoundException(ScheduleNotFoundException ex) {
+        return new ResponseEntity<>("", HttpStatus.OK);
     }
 
     //== not valid ==//

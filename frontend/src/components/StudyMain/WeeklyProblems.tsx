@@ -41,10 +41,13 @@ export function WeeklyProblems() {
 
   const refetchSchedule = useCallback(async () => {
     const { data } = await refetchGetSchedule();
+    console.log(data);
     if (data) {
       setStudyInfo(data);
+      return;
     }
-  }, [refetchGetSchedule]);
+    setStudyInfo(null);
+  }, [refetchGetSchedule, studyId]);
 
   useEffect(() => {
     refetchSchedule();
