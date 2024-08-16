@@ -17,7 +17,7 @@ import { CompilerSidebar } from './CompilerSidebar';
 
 const TAB_SIZE = 4;
 
-export function Compiler() {
+export default function Compiler() {
   const { studyId, problemId } = useParams();
   const navigate = useNavigate();
   const [codeText, setCodeText] = useState('');
