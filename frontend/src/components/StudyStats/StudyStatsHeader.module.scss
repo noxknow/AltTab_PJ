@@ -1,0 +1,13 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.main {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 550;
+  gap: 1rem;
+  align-self: flex-start;
+}

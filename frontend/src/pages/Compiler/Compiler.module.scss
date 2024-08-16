@@ -1,0 +1,112 @@
+@import '@/styles/theme.module.scss';
+@import '@/styles/font.module.scss';
+
+.container {
+  position: relative;
+  margin: 0 auto;
+  height: calc(100vh - 7rem);
+}
+
+.compilerContainer {
+  position: relative;
+  padding: 2.4rem;
+  height: 100%;
+}
+
+.compiler {
+  height: 44rem;
+  display: flex;
+  flex-direction: column;
+  border: 2px solid $gray;
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  overflow: auto;
+}
+
+.compilerTitle {
+  @include roboto-mono;
+  display: flex;
+  justify-content: space-between;
+  line-height: 2.4rem;
+  padding: 0.4rem 1.6rem;
+  font-size: 1.4rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border: 2px solid $gray;
+  border-bottom: none;
+}
+
+.compilerBody {
+  display: flex;
+}
+
+.codeContainer {
+  @include roboto-mono;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+
+  -ms-overflow-style: none;
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 1.2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.textArea {
+  @include roboto-mono;
+  position: absolute;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  resize: none;
+  white-space: nowrap;
+  caret-color: $black;
+  background-color: transparent;
+  color: transparent;
+  z-index: 10;
+}
+
+.codeArea {
+  position: absolute;
+  height: 100%;
+  z-index: 0;
+}
+
+.code {
+  width: 100%;
+  height: 100%;
+}
+
+.tabContainer {
+  @include poppins-semibold;
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  padding: 0 1.6rem;
+  font-size: 1.4rem;
+  gap: 1.2rem;
+}
+
+.tab {
+  padding: 1.6rem;
+}
+
+.selected {
+  background-color: $green;
+  color: $white;
+}

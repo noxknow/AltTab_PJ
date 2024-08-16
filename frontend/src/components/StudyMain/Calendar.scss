@@ -1,0 +1,29 @@
+.calendar {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  gap: 3rem;
+}
+
+.fc {
+  width: 40vw;
+  height: 40vh;
+  text-align: center;
+}
+
+.fc-day-sun {
+  div {
+    a {
+      color: red;
+    }
+  }
+}
+
+.fc-day-sat {
+  div {
+    a {
+      color: blue;
+    }
+  }
+}

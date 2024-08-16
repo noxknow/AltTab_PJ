@@ -1,0 +1,138 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.card {
+  position: relative;
+  width: 250px;
+  height: 200px;
+  perspective: 1000px;
+  margin: 10px;
+  cursor: pointer;
+  &.flipped .cardInner {
+    transform: rotateY(180deg);
+  }
+}
+
+.cardInner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.cardFront,
+.cardBack {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cardFront {
+  @include poppins-bold;
+  display: flex;
+  flex-direction: column;
+  //width: 29rem;
+  padding: 2rem;
+  gap: 1.2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cardBack {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+  transform: rotateY(180deg);
+  padding-top: 60px; /* Added padding to push tags down */
+}
+/* Tier-specific color classes */
+
+.bronze .cardBack {
+  background: linear-gradient(135deg, #cc5500, #d78a52);
+}
+
+.silver .cardBack {
+  background: linear-gradient(135deg, #c0c0c0, #d3d3d3);
+}
+
+.gold .cardBack {
+  background: linear-gradient(135deg, #f1c40f, #e67e22);
+}
+
+.platinum .cardBack {
+  background: linear-gradient(135deg, #3a8d97, #4bb3c1);
+}
+
+.diamond .cardBack {
+  background: linear-gradient(135deg, #0ab6ff, #0040ff);
+}
+
+.ruby .cardBack {
+  background: linear-gradient(135deg, #ff007f, #800000);
+}
+
+.cardHeader {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.cardBody {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.tags {
+  @include poppins-bold;
+  @include scrollable-container;
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  height: 12rem;
+  overflow: auto;
+  gap: 0.4rem;
+}
+
+.tagItem {
+  background-color: #1e2021;
+  color: white;
+  height: 2rem;
+  padding: 5px 10px;
+  margin: 2px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+}
+
+.cardButton {
+  background-color: #ffffff;
+  color: #004f8c;
+
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+
+  &:hover {
+    background-color: #004f8c;
+    color: white;
+  }
+}
+
+.tierImage {
+  position: absolute;
+  top: 10px; /* Adjusted the position slightly */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 35px;
+}

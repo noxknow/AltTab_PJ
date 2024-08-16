@@ -1,0 +1,63 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.main {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  gap: 1rem;
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 550;
+  gap: 0.5rem;
+}
+
+.right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.button {
+  background: transparent;
+  border: none;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.recommendContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+  background-color: #f0f8ff;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+  padding: 0.5rem;
+
+  &:hover {
+    background-color: #e6f3ff;
+  }
+}
+
+.recommendText {
+  font-size: 1.6rem;
+  font-weight: 700;
+}

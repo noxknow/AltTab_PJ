@@ -1,0 +1,58 @@
+@import '@/styles/theme.module.scss';
+@import '@/styles/font.module.scss';
+
+.button {
+  @include poppins-semibold;
+  display: flex;
+  align-items: center;
+  padding: 0.6rem;
+  border-radius: 0.5rem;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.black {
+  color: $white;
+  background-color: $black;
+  border: 2px solid $black;
+}
+
+.green {
+  color: $white;
+  background-color: $green;
+  border: 2px solid $green;
+}
+
+.red {
+  color: $white;
+  background-color: $red;
+  border: 2px solid $red;
+}
+
+.empty {
+  color: #000;
+  background-color: #fff;
+}
+
+.large {
+  height: auto;
+  font-size: 2.4rem;
+}
+
+.small {
+  height: 3.8rem;
+  font-size: 1.6rem;
+}
+
+.long {
+  height: auto;
+  width: 100%;
+  font-size: 1.6rem;
+}
+
+.disabled {
+  color: $white;
+  background-color: $gray;
+  border: 2px solid $gray;
+  cursor: not-allowed;
+}

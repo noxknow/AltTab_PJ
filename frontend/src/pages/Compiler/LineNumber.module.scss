@@ -1,0 +1,15 @@
+@import '@/styles/theme.module.scss';
+
+.lineNumberContainer {
+  padding: 0 0.8rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-right: 2px solid $gray;
+}
+
+.lineNumber {
+  line-height: 2.4rem;
+  font-size: 1.2rem;
+  text-align: right;
+}

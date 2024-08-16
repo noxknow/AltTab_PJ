@@ -1,0 +1,151 @@
+@import '@/styles/theme.module.scss';
+@import '@/styles/font.module.scss';
+
+.header {
+  @include poppins-semibold;
+  position: sticky;
+  top: 0;
+  height: 7rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem;
+  background-color: $white;
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+  z-index: 500;
+}
+
+.header_item {
+  display: flex;
+  width: 30rem;
+}
+
+.left_item {
+  display: flex;
+  justify-content: left;
+}
+
+.middle_item {
+  display: flex;
+  justify-content: center;
+}
+
+.right_item {
+  display: flex;
+  justify-content: right;
+}
+
+.profile {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: right;
+  gap: 1.6rem;
+}
+
+.button {
+  width: 4rem;
+  height: 4rem;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.login {
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+}
+
+.headerSidebarContainer {
+  position: absolute;
+  top: 7rem;
+  left: 0;
+  height: calc(100vh - 7rem);
+  width: 2rem;
+}
+
+.headerSidebar {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  height: calc(100vh - 7rem);
+  width: 24rem;
+  padding: 2.4rem 1.6rem;
+  background-color: $white;
+  font-size: 1.8rem;
+  box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+
+  .itemWrapper {
+    @include scrollable-container;
+    display: flex;
+    flex-direction: column;
+    gap: 2.4rem;
+    overflow-y: auto;
+    height: 100%;
+
+    .sidebarItem {
+      padding: 0.8rem 1.2rem;
+      border-radius: 8px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      cursor: pointer;
+      font-weight: bold;
+      color: #333;
+      align-items: center;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        color: #000;
+      }
+
+      .myStudies {
+        margin-top: 1.2rem;
+        margin-left: 1.6rem;
+        font-size: 1.6rem;
+
+        .myStudy {
+          padding: 0.6rem 0;
+          line-height: 2.4rem;
+          color: #555;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: #0000ff;
+          }
+        }
+      }
+    }
+  }
+}
+
+.visible {
+  transform: translateX(0);
+}
+
+.hidden {
+  transform: translateX(-100%);
+}
+
+.profileImg {
+  width: 100%;
+  height: 100%;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.notificationDot {
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  background-color: red;
+  border-radius: 50%;
+}
