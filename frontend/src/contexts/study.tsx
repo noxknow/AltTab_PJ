@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { useGetStudyMemberQuery } from '@/queries/study';
@@ -18,11 +18,29 @@ type StudyProviderProps = {
 
 export function StudyProvider({ children }: StudyProviderProps) {
   const { studyId } = useParams();
-  const { data: studyMember } = useGetStudyMemberQuery(studyId!);
+  const [studyMember, setStudyMember] = useState<memberInfo[] | undefined>();
+  const { data, refetch } = useGetStudyMemberQuery(studyId!);
   const { data: userInfo } = useGetMyInfoQuery();
-  const isMember = studyMember?.some(
-    (member) => member.memberId === userInfo?.memberId,
+  const [isMember, setIsMember] = useState(
+    data?.some((member) => member.memberId === userInfo?.memberId),
   );
+
+  const getStudyMembers = useCallback(async () => {
+    const { data: newStudyMembers } = await refetch();
+    if (!newStudyMembers) {
+      setStudyMember([]);
+      setIsMember(false);
+      return;
+    }
+    setStudyMember(newStudyMembers);
+    setIsMember(
+      newStudyMembers.some((member) => member.memberId === userInfo?.memberId),
+    );
+  }, [userInfo, setStudyMember, setIsMember]);
+
+  useEffect(() => {
+    getStudyMembers();
+  }, [studyId, userInfo]);
 
   return (
     <StudyContext.Provider value={{ studyMember, isMember }}>

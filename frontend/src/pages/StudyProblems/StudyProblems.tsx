@@ -5,7 +5,7 @@ import { StudyProvider } from '@/contexts/study';
 
 import styles from './StudyProblems.module.scss';
 
-export function StudyProblems() {
+export default function StudyProblems() {
   return (
     <StudyProvider>
       <ClickedDateProvider>
