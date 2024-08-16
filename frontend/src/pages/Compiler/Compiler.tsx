@@ -68,7 +68,7 @@ export function Compiler() {
   }, [data]);
 
   useEffect(() => {
-    if (codeText) {
+    if (codeText !== undefined || codeText !== null) {
       setHighlightedCode(highlightCode(codeText, 'java'));
     }
     if (textareaRef.current) {
