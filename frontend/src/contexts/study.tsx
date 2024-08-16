@@ -19,9 +19,11 @@ type StudyProviderProps = {
 export function StudyProvider({ children }: StudyProviderProps) {
   const { studyId } = useParams();
   const [studyMember, setStudyMember] = useState<memberInfo[] | undefined>();
-  const { refetch } = useGetStudyMemberQuery(studyId!);
+  const { data, refetch } = useGetStudyMemberQuery(studyId!);
   const { data: userInfo } = useGetMyInfoQuery();
-  const [isMember, setIsMember] = useState(false);
+  const [isMember, setIsMember] = useState(
+    data?.some((member) => member.memberId === userInfo?.memberId),
+  );
 
   const getStudyMembers = useCallback(async () => {
     const { data: newStudyMembers } = await refetch();
