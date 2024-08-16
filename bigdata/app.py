@@ -124,12 +124,17 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
             similar_study_problems = fetch_study_problems(int(similar_study_id))
             if 'problem_id' in similar_study_problems.columns:
                 unsolved_problems_from_similar_study = similar_study_problems[~similar_study_problems['problem_id'].isin(solved_problem_ids)]
-                num_samples = min(len(unsolved_problems_from_similar_study), 5)  # 샘플 크기 조정
+                num_samples = min(len(unsolved_problems_from_similar_study), 5)
                 if num_samples > 0:
                     sampled_problems = unsolved_problems_from_similar_study.sample(n=num_samples, random_state=42)
                     recommendations = pd.concat([recommendations, sampled_problems])
     
-    return recommendations.drop_duplicates(subset='problem_id').sort_values(by='level', ascending=False).head(5)
+    # 5개의 문제를 추출한 후 정렬
+    if len(recommendations) > 5:
+        recommendations = recommendations.sample(n=5, random_state=42)
+    
+    return recommendations.sort_values(by='level', ascending=False).reset_index(drop=True)
+
 
 @app.route('/flask', methods=['POST'])
 def recommend_route():
