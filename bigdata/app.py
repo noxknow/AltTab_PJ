@@ -47,7 +47,7 @@ def fetch_study_problems(study_id):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute('''
-        SELECT p.problem_id, p.title, p.level, p.representative, p.tag
+        SELECT p.problem_id, p.title, p.level, p.tag
         FROM study_problem sp
         JOIN problem p ON sp.problem_id = p.problem_id
         WHERE sp.study_id = %s
@@ -59,15 +59,15 @@ def fetch_study_problems(study_id):
     
     return df_problems
 
-def recommend_by_representative(representative, solved_problem_ids, df_problems_unsolved):
+def recommend_by_representative(tag, solved_problem_ids, df_problems_unsolved):
     if df_problems_unsolved.empty:
         return []
     
-    vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(df_problems_unsolved['representative'])
+    vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
+    X = vectorizer.fit_transform(df_problems_unsolved['tag'])
     model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
 
-    vec = vectorizer.transform([representative])
+    vec = vectorizer.transform([tag])
     distances, indices = model.kneighbors(vec)
     recommended = df_problems_unsolved.iloc[indices[0]]
 
@@ -78,15 +78,15 @@ def recommend_by_representative(representative, solved_problem_ids, df_problems_
 
     return recommended.head(5).to_dict(orient='records')
 
-def recommend_opposite_of_least_common_representative(least_common_representative, df_problems_unsolved):
+def recommend_opposite_of_least_common_tag(least_common_tag, df_problems_unsolved):
     if df_problems_unsolved.empty:
         return []
 
-    vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(df_problems_unsolved['representative'])
+    vectorizer = TfidfVectorizer(tokenizer=lambda x: x.split(';'))
+    X = vectorizer.fit_transform(df_problems_unsolved['tag'])
     model = NearestNeighbors(n_neighbors=5, algorithm='auto').fit(X)
 
-    vec = vectorizer.transform([least_common_representative])
+    vec = vectorizer.transform([least_common_tag])
     distances, indices = model.kneighbors(vec)
     
     recommended = df_problems_unsolved.iloc[indices[0][::-1]]  # Reverse the indices to get the least similar ones
@@ -100,7 +100,7 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
     df_study_scores = fetch_study_scores()
 
     if len(df_study_scores) == 0:
-        return pd.DataFrame(columns=['problem_id', 'title', 'level', 'representative', 'tag'])
+        return pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag'])
 
     study_scores_matrix = df_study_scores.drop(columns=['study_id'])
     study_index = df_study_scores[df_study_scores['study_id'] == study_id].index[0]
@@ -109,7 +109,7 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
     similarity_scores = pd.Series(cosine_sim[study_index]).sort_values(ascending=False)
     similar_studies = df_study_scores.iloc[similarity_scores.index[1:6]]['study_id'].values
     
-    recommendations = pd.DataFrame(columns=['problem_id', 'title', 'level', 'representative', 'tag'])
+    recommendations = pd.DataFrame(columns=['problem_id', 'title', 'level', 'tag'])
 
     if len(similar_studies) == 0:
         random_studies = df_study_scores.sample(n=5)['study_id'].values
@@ -124,28 +124,11 @@ def recommend_by_collaborative_filtering(study_id, study_point, solved_problem_i
             similar_study_problems = fetch_study_problems(int(similar_study_id))
             if 'problem_id' in similar_study_problems.columns:
                 unsolved_problems_from_similar_study = similar_study_problems[~similar_study_problems['problem_id'].isin(solved_problem_ids)]
-                if len(unsolved_problems_from_similar_study) > 0:
-                    sampled_problems = unsolved_problems_from_similar_study.sample(n=min(5, len(unsolved_problems_from_similar_study)), random_state=42)
+                num_samples = min(len(unsolved_problems_from_similar_study), 5)  # 샘플 크기 조정
+                if num_samples > 0:
+                    sampled_problems = unsolved_problems_from_similar_study.sample(n=num_samples, random_state=42)
                     recommendations = pd.concat([recommendations, sampled_problems])
-
-    # 만약 추천된 문제가 5개 이하라면 남은 문제를 전체 문제에서 추가
-    if len(recommendations) < 5:
-        conn = get_db_connection()
-        df_problems_all = pd.read_sql('SELECT * FROM problem', conn)
-        conn.close()
-
-        if study_point <= 5000:
-            unsolved_problems = df_problems_all[(~df_problems_all['problem_id'].isin(solved_problem_ids)) & (df_problems_all['level'] <= 15)]
-        else:
-            unsolved_problems = df_problems_all[~df_problems_all['problem_id'].isin(solved_problem_ids)]
-        
-        additional_problems_needed = 5 - len(recommendations)
-        if len(unsolved_problems) >= additional_problems_needed:
-            additional_problems = unsolved_problems.sample(n=additional_problems_needed, random_state=42)
-            recommendations = pd.concat([recommendations, additional_problems])
-        else:
-            recommendations = pd.concat([recommendations, unsolved_problems])
-
+    
     return recommendations.drop_duplicates(subset='problem_id').sort_values(by='level', ascending=False).head(5)
 
 @app.route('/flask', methods=['POST'])
@@ -176,17 +159,16 @@ def recommend_route():
     # 협업 필터링 기반 추천 로직
     recommendations = recommend_by_collaborative_filtering(study_id, study_point, solved_problem_ids)
     
-    # 대표 representative 기반 문제 추천 추가
-    most_common_representative = df_problems['representative'].mode().iloc[0] if not df_problems.empty else None
-    least_common_representative = df_problems['representative'].value_counts().idxmin() if not df_problems.empty else None
+    # 대표 태그 기반 문제 추천 추가
+    most_common_representative = df_problems['tag'].mode().iloc[0] if not df_problems.empty else None
+    least_common_representative = df_problems['tag'].value_counts().idxmin() if not df_problems.empty else None
 
     recommendations_most_common = recommend_by_representative(most_common_representative, solved_problem_ids, unsolved_problems) if most_common_representative else []
-    recommendations_least_common = recommend_opposite_of_least_common_representative(least_common_representative, unsolved_problems) if least_common_representative else []
+    recommendations_least_common = recommend_opposite_of_least_common_tag(least_common_representative, unsolved_problems) if least_common_representative else []
     
     # 모든 추천 목록을 레벨에 따라 정렬
     recommendations_most_common = sorted(recommendations_most_common, key=lambda x: x['level'], reverse=True)
     recommendations_least_common = sorted(recommendations_least_common, key=lambda x: x['level'], reverse=True)
-    
     
     # 결과를 원하는 형식으로 반환
     return jsonify({
