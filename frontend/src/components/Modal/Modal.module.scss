@@ -11,7 +11,6 @@
   z-index: 200;
 
   @media screen and (max-width: 880px) {
-    // width: 80%;
     transform: translate(-50%, -40%);
   }
 }
@@ -98,12 +97,12 @@
 }
 
 .backjunbutton {
-  display: flex; // Use flexbox for easy centering
-  justify-content: center; // Center horizontally
-  align-items: center; // Center vertically
-  margin-top: 20px; // Add some space above the button
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 
-  button {
+  .button {
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
