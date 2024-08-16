@@ -65,7 +65,7 @@ export function RunCodeModal({ code, memberId }: RunCodeModalProps) {
     if (isLoading) {
       polling.current = setInterval(() => {
         getStatus();
-      }, 500);
+      }, 300);
     }
     return () => clearInterval(polling.current!);
   }, [isLoading]);
