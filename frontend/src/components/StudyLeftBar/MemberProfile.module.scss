@@ -1,0 +1,43 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.main {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 14rem;
+  padding: 1rem;
+  border-radius: 10%;
+  box-shadow: 0 4px 8px $gray;
+}
+
+.profile_image {
+  -webkit-user-drag: none;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+.right {
+  @include poppins-regular;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 4rem;
+}
+
+.name {
+  color: $darkgray;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.point {
+  font-size: 1.6rem;
+  align-self: flex-end;
+}
+
+.p {
+  color: $blue;
+}

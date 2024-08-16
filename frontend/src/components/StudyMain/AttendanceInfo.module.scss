@@ -1,0 +1,85 @@
+@import '@/styles/font.module.scss';
+@import '@/styles/theme.module.scss';
+
+.main {
+  @include poppins-regular;
+  @include scrollable-container;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  background-color: #ffffff;
+  border-radius: 1.2rem;
+  box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  height: 40vh;
+  overflow-y: auto;
+  width: 22%;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 1rem;
+  border-bottom: 0.2rem solid #f0f0f0;
+}
+
+.members {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+}
+.member {
+  font-size: 1.6rem;
+  min-height: 2.4rem;
+  width: 100%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  background-color: #f8f9fa;
+  border-radius: 0.8rem;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #e9ecef;
+    transform: translateX(0.5rem);
+  }
+}
+
+.closeButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #ffeeee;
+  }
+}
+
+@media (min-width: 768px) {
+  .header {
+    font-size: 1.4rem;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .header {
+    font-size: 1rem;
+  }
+
+  .main {
+    width: 15%;
+  }
+}

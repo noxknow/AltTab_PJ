@@ -1,0 +1,20 @@
+@import '@/styles/theme.module.scss';
+@import '@/styles/font.module.scss';
+
+.main {
+  padding-top: 8rem;
+  padding-left: 8rem;
+  padding-right: 8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 3rem;
+  font-weight: 700;
+}

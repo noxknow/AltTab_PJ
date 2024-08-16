@@ -1,0 +1,23 @@
+@import '../../styles/font.module.scss';
+
+.container {
+  text-align: center;
+  padding: 20px;
+}
+
+.error {
+  color: white; /* 텍스트 색상 */
+  background-color: blue; /* 배경 색상 */
+  font-size: 24px; /* 글꼴 크기 */
+  font-weight: bold; /* 글꼴 두께 */
+  padding: 20px; /* 안쪽 여백 */
+  text-align: center; /* 텍스트 가운데 정렬 */
+  border-radius: 10px; /* 모서리 둥글게 */
+  position: fixed; /* 화면 고정 */
+  top: 50%; /* 세로 중앙 */
+  left: 50%; /* 가로 중앙 */
+  transform: translate(-50%, -50%); /* 정확히 가운데 위치하게 조정 */
+  z-index: 1000; /* 다른 요소보다 앞에 표시 */
+  max-width: 90%; /* 최대 너비 제한 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+}

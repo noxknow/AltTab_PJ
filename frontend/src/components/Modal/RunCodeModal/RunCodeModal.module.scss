@@ -1,0 +1,41 @@
+@import '@/styles/theme.module.scss';
+@import '@/styles/font.module.scss';
+
+.container {
+  margin: 0 auto;
+  padding: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.content {
+  @include roboto-mono;
+  display: flex;
+  padding-top: 2.4rem;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  gap: 3.2rem;
+
+  @media screen and (max-width: 880px) {
+    flex-direction: column;
+  }
+}
+
+.textarea {
+  @include roboto-mono;
+  width: 40rem;
+  height: 20rem;
+  border: 1px solid $gray;
+  outline: none;
+  font-size: 1.4rem;
+  line-height: 2.4rem;
+  resize: none;
+  overflow: auto;
+
+  @media screen and (max-width: 880px) {
+    width: 70vw;
+  }
+}

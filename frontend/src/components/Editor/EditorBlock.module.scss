@@ -1,0 +1,78 @@
+$header-bg-color: #ffffff;
+$header-border-color: #e0e0e0;
+$header-font-size: 3rem;
+$header-margin-top: 1rem;
+$header-padding: 1rem;
+
+$content-bg-color: #ffffff;
+$content-border-color: #e0e0e0;
+$content-font-size: 1.5rem;
+$content-margin-top: 1rem;
+$content-padding: 1rem;
+
+.header {
+  width: 80rem;
+  background-color: $header-bg-color;
+  border: 1px solid $header-border-color;
+  font-size: $header-font-size;
+  padding: $header-padding;
+}
+
+.content {
+  width: 80rem;
+  background-color: $content-bg-color;
+  border: 1px solid $content-border-color;
+  font-size: $content-font-size;
+  padding: $content-padding;
+}
+
+.main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.svg {
+  width: 1.5rem;
+  height: max-content;
+}
+
+.image {
+  display: flex;
+  justify-content: center;
+  background-color: transparent;
+  width: auto;
+}
+
+.block {
+  div:empty:before {
+    content: '내용을 입력하세요. "/"을 입력해 명령어 사용';
+  }
+}
+$table-border-color: #dddddd;
+$table-bg-color: #f9f9f9;
+$table-hover-color: #f1f1f1;
+$table-text-color: #333333;
+$cell-border-color: #eeeeee;
+
+.table {
+  width: 100%;
+  max-width: 1200px;
+  border-collapse: collapse;
+  margin: 2.5rem auto;
+  font-size: 3rem;
+  text-align: center;
+
+  th,
+  td {
+    padding: 2rem 2rem;
+    border: 1px solid $cell-border-color;
+    background-color: $table-bg-color;
+    color: $table-text-color;
+  }
+
+  tr {
+    &:hover {
+      background-color: $table-hover-color;
+    }
+  }
+}
