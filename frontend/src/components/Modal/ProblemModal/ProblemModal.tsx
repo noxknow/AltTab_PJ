@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { problemService } from '@/services/problem';
-import styles from '../Modal.module.scss';
+import styles from '@/components/Modal/Modal.module.scss';
 import CloseSVG from '@/assets/icons/close.svg?react';
 import { useCompilerModalState } from '@/hooks/useCompilerState';
 
@@ -10,6 +10,7 @@ export function ProblemModal() {
   const [problemData, setProblemData] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { setIsModalOpen } = useCompilerModalState();
+  const shadowRootRef = useRef<ShadowRoot | null>(null);
 
   useEffect(() => {
     const fetchProblemData = async () => {
@@ -46,6 +47,12 @@ export function ProblemModal() {
     fetchProblemData();
   }, [problemId]);
 
+  useEffect(() => {
+    if (problemData && shadowRootRef.current) {
+      shadowRootRef.current.innerHTML = problemData;
+    }
+  }, [problemData]);
+
   const handleClose = () => {
     setIsModalOpen(false);
   };
@@ -66,7 +73,7 @@ export function ProblemModal() {
       <h2 className={styles.problemTitle}>문제번호 : {problemId}</h2>
       <div className={styles.backjunbutton}>
         <button
-        className={styles.button}
+          className={styles.button}
           onClick={() =>
             window.open(
               `https://www.acmicpc.net/problem/${problemId}`,
@@ -79,7 +86,11 @@ export function ProblemModal() {
       </div>
       <div
         className={styles.problemContent}
-        dangerouslySetInnerHTML={{ __html: problemData }}
+        ref={(el) => {
+          if (el && !shadowRootRef.current) {
+            shadowRootRef.current = el.attachShadow({ mode: 'open' });
+          }
+        }}
       />
     </div>
   );

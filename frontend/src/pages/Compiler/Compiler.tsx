@@ -72,7 +72,6 @@ export function Compiler() {
       setHighlightedCode(highlightCode(codeText, 'java'));
     }
     if (textareaRef.current) {
-      console.log(cursor);
       textareaRef.current.selectionStart = cursor;
       textareaRef.current.selectionEnd = cursor;
     }

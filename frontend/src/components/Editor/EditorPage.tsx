@@ -39,7 +39,6 @@ export function EditorPage() {
     refetchBlocks();
     return () => {
       if (userInfo?.name === localStorage.getItem('presenter')) {
-        console.log('저장');
         createBlocksMutation.mutate();
       }
     };
