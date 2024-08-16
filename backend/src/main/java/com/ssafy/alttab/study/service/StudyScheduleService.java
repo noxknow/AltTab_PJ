@@ -1,5 +1,6 @@
 package com.ssafy.alttab.study.service;
 
+import com.ssafy.alttab.common.exception.ScheduleNotFoundException;
 import com.ssafy.alttab.common.jointable.entity.ScheduleProblem;
 import com.ssafy.alttab.common.jointable.entity.StudyProblem;
 import com.ssafy.alttab.common.jointable.repository.MemberStudyRepository;
@@ -59,7 +60,8 @@ public class StudyScheduleService {
     public StudyScheduleResponseDto getStudySchedule(String username, Long studyId, LocalDate deadline) {
         StudySchedule studySchedule = studyScheduleRepository
                 .findByStudyIdAndDeadline(studyId, deadline)
-                .orElseThrow(() -> new EntityNotFoundException("Study schedule not found for studyId: " + studyId + " and deadline: " + deadline));
+                .orElseThrow(() -> new ScheduleNotFoundException(studyId));
+
         return StudyScheduleResponseDto.builder()
                 .studyId(studySchedule.getStudyId())
                 .deadline(studySchedule.getDeadline())
@@ -79,7 +81,6 @@ public class StudyScheduleService {
         Long problemId = requestDto.getProblemId();
         Long studyId = requestDto.getStudyId();
         LocalDate deadline = requestDto.getDeadline();
-        System.out.println("#######################deadline = " + deadline);
         Study study = studyRepository.findById(requestDto.getStudyId())
                 .orElseThrow(() -> new EntityNotFoundException("Study not found for studyId: " + studyId));
         Problem problem = problemRepository.findById(problemId)
@@ -94,7 +95,6 @@ public class StudyScheduleService {
         }
 
         // StudySchedule
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@deadline = " + deadline);
         StudySchedule studySchedule = studyScheduleRepository
                 .findByStudyIdAndDeadline(requestDto.getStudyId(), requestDto.getDeadline())
                 .orElseGet(() -> StudySchedule.createNewStudySchedule(requestDto));
@@ -193,7 +193,7 @@ public class StudyScheduleService {
         LocalDate today = LocalDate.now();
 
         StudySchedule recentSchedule = studyScheduleRepository.findFirstByStudyIdAndDeadlineGreaterThanEqualOrderByDeadlineAsc(studyId, today)
-                .orElseThrow(() -> new EntityNotFoundException("No future study schedules found"));
+                .orElseThrow(() -> new ScheduleNotFoundException(studyId));
 
         return StudyScheduleResponseDto.builder()
                 .studyId(recentSchedule.getStudyId())

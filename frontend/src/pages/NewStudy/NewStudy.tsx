@@ -95,6 +95,7 @@ export function NewStudy() {
 
       const { studyId } = await createStudyQuery.mutateAsync(form);
       navigate(`/study/${studyId}`);
+      window.location.reload();
     } catch (error) {
       console.error('스터디 생성 실패:', error);
     }

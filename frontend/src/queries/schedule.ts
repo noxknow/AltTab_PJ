@@ -83,7 +83,6 @@ export const useGetUpcomingScheduleQuery = (studyId: string) => {
     queryKey: scheduleKeys.getUpcomingSchedule,
     queryFn: (): Promise<studyProblemDetails> =>
       schedule.getUpcomingSchedule(studyId),
-    retry: 3,
     retryOnMount: false,
   });
   return { data, isLoading, refetch };

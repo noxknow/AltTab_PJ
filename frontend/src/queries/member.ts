@@ -23,7 +23,6 @@ export const useGetMyStudiesQuery = () => {
   const { data, isLoading } = useQuery({
     queryKey: memberKeys.info,
     queryFn: (): Promise<joinedStudies> => member.getMemberStudies(),
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
   return { data, isLoading };
