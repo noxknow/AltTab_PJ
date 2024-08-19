@@ -12,10 +12,10 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.core.RabbitMessageOperations;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ public class CodeService {
     private final RabbitTemplate rabbitTemplate;
     private final CodeSnippetRepository codeSnippetRepository;
     private final CacheManager cacheManager;
-    private final RabbitMessageOperations messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public CodeResponseDto getCode(Long studyId, Long problemId, Long memberId) {
@@ -139,7 +139,7 @@ public class CodeService {
     public void sendResponseWithSocket(CodeExecutionResponseDto response){
         String destination = String.format("/sub/api/v1/executor/execute/%d/%d/%d",
                 response.getStudyId(), response.getProblemId(), response.getMemberId());
-        messagingTemplate.convertAndSend(destination, getExecutionResult(response));
+        messagingTemplate.convertAndSend(destination, getExecutionResult(response.getStudyId(), response.getProblemId(), response.getMemberId(), response.getRunUsername()));
     }
 
     /**
@@ -179,15 +179,15 @@ public class CodeService {
     /**
      * 주어진 파라미터에 해당하는 코드 실행 결과를 조회
      *
-     * @param response 응답 결과
+     * @param studyId 스터디 그룹 ID
+     * @param problemId    문제 ID
+     * @param memberId   문제 탭
      * @return 코드 실행 결과 DTO
      */
-    public CodeExecutionResponseDto getExecutionResult(CodeExecutionResponseDto response) {
-        String runUsername = response.getRunUsername();
-        return codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(response.getStudyId(), response.getProblemId(),
-                        response.getMemberId())
+    public CodeExecutionResponseDto getExecutionResult(Long studyId, Long problemId, Long memberId, String runUsername) {
+        return codeSnippetRepository.findByStudyIdAndProblemIdAndMemberId(studyId, problemId, memberId)
                 .map(snippet -> processAndGetExecutionResult(snippet, runUsername))
-                .orElseGet(() -> createFailResponseDto(response));
+                .orElseGet(() -> createFailResponseDto(studyId, problemId, memberId));
     }
 
 
@@ -264,14 +264,16 @@ public class CodeService {
     /**
      * 실행 실패 상태의 CodeExecutionResponseDto를 생성
      *
-     * @param response 응답결과
+     * @param studyId 스터디 그룹 ID
+     * @param problemId    문제 ID
+     * @param memberId   문제 탭
      * @return 실행 실패 상태로 설정된 CodeExecutionResponseDto 객체
      */
-    private CodeExecutionResponseDto createFailResponseDto(CodeExecutionResponseDto response) {
+    private CodeExecutionResponseDto createFailResponseDto(Long studyId, Long problemId, Long memberId) {
         return CodeExecutionResponseDto.builder()
-                .studyId(response.getStudyId())
-                .problemId(response.getProblemId())
-                .memberId(response.getMemberId())
+                .studyId(studyId)
+                .problemId(problemId)
+                .memberId(memberId)
                 .status(ExecutionStatus.FAIL)
                 .build();
     }

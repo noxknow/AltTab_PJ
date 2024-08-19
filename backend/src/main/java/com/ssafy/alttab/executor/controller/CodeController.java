@@ -44,6 +44,6 @@ public class CodeController {
             @PathVariable Long problemId,
             @PathVariable Long memberId,
             @AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(codeService.getExecutionResult(studyId, problemId, memberId, userDetails), HttpStatus.OK);
+        return new ResponseEntity<>(codeService.getExecutionResult(studyId, problemId, memberId, userDetails.getUsername()), HttpStatus.OK);
     }
 }
