@@ -43,7 +43,9 @@
 
 ## 🖋 Service Architecture
 
-<img src='https://gist.github.com/user-attachments/assets/e8c12f44-eaf4-4d2a-8cbc-b67903299f6d'>
+<div align="center">
+	<img src='https://gist.github.com/user-attachments/assets/e8c12f44-eaf4-4d2a-8cbc-b67903299f6d'>
+</div>
 
 ## ⛓ Tech Stack
 
@@ -117,7 +119,7 @@
 
 ---
 
-## :octocat: Developers
+## 👥 Developers
 
 <br/>
 <div align="center">
