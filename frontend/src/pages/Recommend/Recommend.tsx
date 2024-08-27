@@ -9,7 +9,7 @@ import { Loading } from '@/components/Loading/Loading';
 import { Section } from './Section';
 import styles from './Recommend.module.scss';
 
-export function Recommend() {
+export default function Recommend() {
   const { studyId } = useParams<{ studyId: string }>();
 
   const [recommendations, setRecommendations] =
