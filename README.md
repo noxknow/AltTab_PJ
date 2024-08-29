@@ -59,7 +59,7 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
 | :----------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------: |
 | <img src='https://gist.github.com/user-attachments/assets/12a42fc2-c65a-4815-9165-413cdcfdc686'> | <img src='https://gist.github.com/user-attachments/assets/10495b8d-6602-49f9-b24a-21d7b3072f76' width = 100% height=280vh> |
 |                                       <b>컴파일러 정답</b>                                       |                                                        <b>Draw</b>                                                         |
-| <img src='https://gist.github.com/user-attachments/assets/f3e9c17b-c6a7-4cde-992c-aa50a3c2ac3b'> | <img src='https://gist.github.com/user-attachments/assets/aaf4a8ad-ac68-49f2-b956-4ae150335488' width = 100% height=280vh> |
+| <img src='https://gist.github.com/user-attachments/assets/89d28b96-6619-455c-894d-2b8bc82235a4'> | <img src='https://gist.github.com/user-attachments/assets/aaf4a8ad-ac68-49f2-b956-4ae150335488' width = 100% height=280vh> |
 |                                       <b>컴파일러 에러</b>                                       |                                                     <b>풀이 페이지</b>                                                     |
 | <img src='https://gist.github.com/user-attachments/assets/98839160-9d52-4456-8125-f1c17026e246'> |              <img src='https://gist.github.com/user-attachments/assets/aba1fb2f-5c7b-4ba8-b7d9-45287c392c1b'>              |
 
@@ -81,7 +81,7 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
         <tr>
             <td rowspan="5" align="center"><b>FE</td>
             <td><img src="https://github.com/noxknow/Java_study/assets/122594223/60b9eb2f-a59b-4c2f-9cfd-cbf70ded94a8" width="15px" alt="_icon" />&nbsp;&nbsp;<b>HTML</td>
-            <td rowspan="3">Website Building Components</td>
+            <td rowspan="3" style="vertical-align: middle;">Website Building Components</td>
         </tr>
         <tr>
             <td><img src="https://github.com/noxknow/Java_study/assets/122594223/15e86c4f-497f-417c-93b3-df11584f5790" width="15px" alt="_icon" />&nbsp;&nbsp;<b>CSS</td>
