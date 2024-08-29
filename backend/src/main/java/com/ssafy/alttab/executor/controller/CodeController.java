@@ -38,12 +38,12 @@ public class CodeController {
         return new ResponseEntity<>(codeService.getCode(studyId, problemId, memberId), HttpStatus.OK);
     }
 
-    @GetMapping("/status/{studyId}/{problemId}/{memberId}")
-    public ResponseEntity<CodeExecutionResponseDto> getExecutionStatus(
-            @PathVariable Long studyId,
-            @PathVariable Long problemId,
-            @PathVariable Long memberId,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(codeService.getExecutionResult(studyId, problemId, memberId, userDetails), HttpStatus.OK);
-    }
+//    @GetMapping("/status/{studyId}/{problemId}/{memberId}")
+//    public ResponseEntity<CodeExecutionResponseDto> getExecutionStatus(
+//            @PathVariable Long studyId,
+//            @PathVariable Long problemId,
+//            @PathVariable Long memberId,
+//            @AuthenticationPrincipal UserDetails userDetails) {
+//        return new ResponseEntity<>(codeService.getExecutionResult(studyId, problemId, memberId, userDetails.getUsername()), HttpStatus.OK);
+//    }
 }
