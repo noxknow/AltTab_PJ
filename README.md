@@ -55,25 +55,44 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
 	</tr>
 </table>
 
-|                                        <b>스터디 생성</b>                                        |                                                      <b>문제 추천</b>                                                      |
-| :----------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------: |
-| <img src='https://gist.github.com/user-attachments/assets/12a42fc2-c65a-4815-9165-413cdcfdc686'> | <img src='https://gist.github.com/user-attachments/assets/10495b8d-6602-49f9-b24a-21d7b3072f76' width = 100% height=280vh> |
-|                                       <b>컴파일러 정답</b>                                       |                                                        <b>Draw</b>                                                         |
-| <img src='https://gist.github.com/user-attachments/assets/89d28b96-6619-455c-894d-2b8bc82235a4'> | <img src='https://gist.github.com/user-attachments/assets/aaf4a8ad-ac68-49f2-b956-4ae150335488' width = 100% height=280vh> |
-|                                       <b>컴파일러 에러</b>                                       |                                                     <b>풀이 페이지</b>                                                     |
-| <img src='https://gist.github.com/user-attachments/assets/98839160-9d52-4456-8125-f1c17026e246'> |              <img src='https://gist.github.com/user-attachments/assets/aba1fb2f-5c7b-4ba8-b7d9-45287c392c1b'>              |
+<table width="100%">
+  <tr>
+    <td align="center" width="50%"><b>스터디 생성</b></td>
+    <td align="center" width="50%"><b>문제 추천</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src='https://github.com/user-attachments/assets/92f3f245-3943-426c-85bd-834134586cc5' style="width:100%; height:auto;"></td>
+    <td align="center" width="50%"><img src='https://github.com/user-attachments/assets/b0489b77-2192-4be1-b157-3fe08c11b3ea' style="width:100%; height:auto;"></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><b>컴파일러 정답</b></td>
+    <td align="center" width="50%"><b>Draw</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src='https://github.com/user-attachments/assets/36dd12b8-c4a1-4f3f-a9bc-930704fae939' style="width:100%; height:auto;"></td>
+    <td align="center" width="50%"><img src='https://github.com/user-attachments/assets/9c865f5f-5f9f-4cc2-af45-1a4d48615709' style="width:100%; height:auto;"></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><b>컴파일러 에러</b></td>
+    <td align="center" width="50%"><b>풀이 페이지</b></td>
+  </tr>
+  <tr>
+    <td align="center" width="50%"><img src='https://github.com/user-attachments/assets/fcb56333-4bb1-4787-8432-ea2455d34f1e' style="width:100%; height:auto;"></td>
+    <td align="center" width="50%"><img src='https://github.com/user-attachments/assets/8a0a33d3-9408-4f74-b9ff-80579f1e86fd' style="width:100%; height:auto;"></td>
+  </tr>
+</table>
 
 ## 🖋 Service Architecture
 
 <div align="center">
-	<img src='https://gist.github.com/user-attachments/assets/e8c12f44-eaf4-4d2a-8cbc-b67903299f6d'>
+	<img src='https://github.com/user-attachments/assets/7676fd19-670b-43af-a834-fc310fda9638'>
 </div>
 
 ## ⛓ Tech Stack
 
 <br/>
 
-<div style="display: flex; justify-content: center;">
+<div align="center">
     <table border=""4>
         <th style="text-align: center;">Role</th>
         <th style="text-align: center;" colspan="2">Framework</th>
@@ -94,7 +113,7 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
             <td>Frontend Framework</tdi>
         </tr>
         <tr>
-            <td><img src="https://gist.github.com/user-attachments/assets/f9a02572-531d-420a-aff3-11c6c30867da" width="15px" alt="_icon" />&nbsp;&nbsp;<b>TypeScript</b></td>
+            <td><img src="https://github.com/user-attachments/assets/544ddde1-c198-4eeb-98af-1ec3057d9b20" width="15px" alt="_icon" />&nbsp;&nbsp;<b>TypeScript</b></td>
             <td>Frontend Programming Language</tdi>
         </tr>
         <!-- Backend Stack -->
@@ -114,11 +133,11 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
             <td>Back-End Main Database</td>
         </tr>     
         <tr>
-            <td><img src="https://gist.github.com/user-attachments/assets/d526f0c0-7002-44b4-8dfe-e4be601c8af8" width="14px" alt="_icon" />&nbsp;&nbsp;<b>Mongo DB</td>
+            <td><img src="https://github.com/user-attachments/assets/6388693e-43d8-4684-98b4-593b298390c3" width="14px" alt="_icon" />&nbsp;&nbsp;<b>Mongo DB</td>
             <td>Back-End Main Database</td>
         </tr>   
         <tr>
-            <td><img src="https://gist.github.com/user-attachments/assets/93aaf6a2-b68f-4e05-883b-3ca4f09367d2" width="14px" alt="_icon" />&nbsp;&nbsp;<b>Redis</td>
+            <td><img src="https://github.com/user-attachments/assets/480d5acf-c944-4695-90a5-76442253db6d" width="14px" alt="_icon" />&nbsp;&nbsp;<b>Redis</td>
             <td>Back-End Main Database</td>
         </tr>   
         <!-- Tools --> 
