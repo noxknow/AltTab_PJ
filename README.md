@@ -6,8 +6,6 @@
 
 </div>
 
----
-
 ## 💬 서비스 소개
 
 ### <img src="./assets/img/AltTab%20-%20logo(Resize).png" alt="Dlook_logo" style="vertical-align: middle; margin-right: 5px;"> <span> 알고리즘 트레이닝의 새로운 차원</span>
@@ -47,7 +45,7 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
 <table>
 	<tr >
 		<td align="center">
-		랜딩 페이지
+		<strong>랜딩 페이지</strong>
 		</td>
 	</tr>
 	<tr>
@@ -57,11 +55,13 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
 	</tr>
 </table>
 
-|                                    <b>컴파일러 정답 화면</b>                                     |                                           <b>Draw</b>                                            |
-| :----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
-| <img src='https://gist.github.com/user-attachments/assets/dc5a34ba-202b-4c11-be1f-9a8404bf0d6c'> | <img src='https://gist.github.com/user-attachments/assets/70796688-7f72-4801-8742-d95a4e032a44'> |
-|                                    <b>컴파일러 에러 화면</b>                                     |                                     <b>풀이 페이지 화면</b>                                      |
-| <img src='https://gist.github.com/user-attachments/assets/98839160-9d52-4456-8125-f1c17026e246'> | <img src='https://gist.github.com/user-attachments/assets/aba1fb2f-5c7b-4ba8-b7d9-45287c392c1b'> |
+|                                        <b>스터디 생성</b>                                        |                                                      <b>문제 추천</b>                                                      |
+| :----------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------: |
+| <img src='https://gist.github.com/user-attachments/assets/12a42fc2-c65a-4815-9165-413cdcfdc686'> | <img src='https://gist.github.com/user-attachments/assets/10495b8d-6602-49f9-b24a-21d7b3072f76' width = 100% height=280vh> |
+|                                       <b>컴파일러 정답</b>                                       |                                                        <b>Draw</b>                                                         |
+| <img src='https://gist.github.com/user-attachments/assets/f3e9c17b-c6a7-4cde-992c-aa50a3c2ac3b'> | <img src='https://gist.github.com/user-attachments/assets/aaf4a8ad-ac68-49f2-b956-4ae150335488' width = 100% height=280vh> |
+|                                       <b>컴파일러 에러</b>                                       |                                                     <b>풀이 페이지</b>                                                     |
+| <img src='https://gist.github.com/user-attachments/assets/98839160-9d52-4456-8125-f1c17026e246'> |              <img src='https://gist.github.com/user-attachments/assets/aba1fb2f-5c7b-4ba8-b7d9-45287c392c1b'>              |
 
 ## 🖋 Service Architecture
 
@@ -71,10 +71,12 @@ AltTab과 함께라면, 여러분의 알고리즘 실력은 새로운 차원으�
 
 ## ⛓ Tech Stack
 
-<div align="center">
+<br/>
+
+<div style="display: flex; justify-content: center;">
     <table border=""4>
-        <th align="center">Role</th>
-        <th style="text-align : center;" colspan="2">Framework</th>
+        <th style="text-align: center;">Role</th>
+        <th style="text-align: center;" colspan="2">Framework</th>
         <!-- FrontEnd Stack -->
         <tr>
             <td rowspan="5" align="center"><b>FE</td>
